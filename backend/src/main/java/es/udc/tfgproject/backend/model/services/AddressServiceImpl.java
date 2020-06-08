@@ -32,25 +32,26 @@ public class AddressServiceImpl implements AddressService {
 		return address;
 	}
 
-	@Override
-	public Address modifyAddress(Long addressId, String street, String cp, Long cityId)
-			throws InstanceNotFoundException {
+	// DUDA : lo añado, o con añadir y eliminar es suficiente.
+	// A lo que me refiero es que si quiero añadir una nueva dirección la añado
+	// normal y si me he equivocado en alguna
+	// puedo eliminarla y volver a añadirla
 
-		City city = checkCity(cityId);
-
-		Optional<Address> addressOpt = addressDao.findById(addressId);
-		Address address = null;
-		if (!addressOpt.isPresent()) {
-			throw new InstanceNotFoundException("project.entities.address", addressId);
-		} else
-			address = addressOpt.get();
-
-		address.setStreet(street);
-		address.setCp(cp);
-		address.setCity(city);
-
-		return address;
-	}
+	/*
+	 * @Override public Address modifyAddress(Long addressId, String street, String
+	 * cp, Long cityId) throws InstanceNotFoundException {
+	 * 
+	 * City city = checkCity(cityId);
+	 * 
+	 * Optional<Address> addressOpt = addressDao.findById(addressId); Address
+	 * address = null; if (!addressOpt.isPresent()) { throw new
+	 * InstanceNotFoundException("project.entities.address", addressId); } else
+	 * address = addressOpt.get();
+	 * 
+	 * address.setStreet(street); address.setCp(cp); address.setCity(city);
+	 * 
+	 * return address; }
+	 */
 
 	@Override
 	public void deleteAddress(Long addressId) throws InstanceNotFoundException {

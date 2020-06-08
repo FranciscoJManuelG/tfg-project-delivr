@@ -7,7 +7,8 @@ public interface AddressService {
 
 	Address addAddress(String street, String cp, Long cityId) throws InstanceNotFoundException;
 
-	Address modifyAddress(Long addressId, String street, String cp, Long cityId) throws InstanceNotFoundException;
+	// Address modifyAddress(Long addressId, String street, String cp, Long cityId)
+	// throws InstanceNotFoundException;
 
 	void deleteAddress(Long addressId) throws InstanceNotFoundException;
 
