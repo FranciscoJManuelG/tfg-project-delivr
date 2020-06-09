@@ -80,9 +80,9 @@ CREATE TABLE CompanyAddress(
     addressId BIGINT NOT NULL,
     CONSTRAINT CompanyAddressPK PRIMARY KEY (id),
     CONSTRAINT CompanyAddressCompanyIdFK FOREIGN KEY(companyId)
-        REFERENCES Company (id) ON DELETE CASCADE,
+        REFERENCES Company (id),
     CONSTRAINT CompanyAddressAddressIdFK FOREIGN KEY(addressId)
-        REFERENCES Address (id) ON DELETE CASCADE
+        REFERENCES Address (id)
     
 ) ENGINE = InnoDB;
 

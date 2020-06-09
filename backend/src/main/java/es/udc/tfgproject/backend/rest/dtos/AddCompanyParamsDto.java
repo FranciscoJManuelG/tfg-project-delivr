@@ -1,12 +1,8 @@
 package es.udc.tfgproject.backend.rest.dtos;
 
-import java.util.List;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import es.udc.tfgproject.backend.model.entities.Address;
 
 public class AddCompanyParamsDto {
 
@@ -16,7 +12,6 @@ public class AddCompanyParamsDto {
 	private Boolean homeSale;
 	private int reservePercentage;
 	private Long companyCategoryId;
-	private List<Address> addresses;
 
 	@NotNull
 	@Size(min = 1, max = 60)
@@ -74,14 +69,4 @@ public class AddCompanyParamsDto {
 	public void setCompanyCategoryId(Long companyCategoryId) {
 		this.companyCategoryId = companyCategoryId;
 	}
-
-	@NotNull
-	public List<Address> getAddresses() {
-		return addresses;
-	}
-
-	public void setAddresses(List<Address> addresses) {
-		this.addresses = addresses;
-	}
-
 }

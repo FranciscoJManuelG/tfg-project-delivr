@@ -23,7 +23,6 @@ import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
 import es.udc.tfgproject.backend.model.services.CompanyService;
 import es.udc.tfgproject.backend.rest.common.ErrorsDto;
-import es.udc.tfgproject.backend.rest.common.JwtGenerator;
 import es.udc.tfgproject.backend.rest.dtos.AddCompanyParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyDto;
 
@@ -35,9 +34,6 @@ public class CompanyController {
 
 	@Autowired
 	private MessageSource messageSource;
-
-	@Autowired
-	private JwtGenerator jwtGenerator;
 
 	@Autowired
 	private CompanyService companyService;
@@ -58,19 +54,20 @@ public class CompanyController {
 	public CompanyDto addCompany(@RequestAttribute Long userId, @Validated @RequestBody AddCompanyParamsDto params)
 			throws InstanceNotFoundException {
 
-		return toCompanyDto(companyService.addCompany(userId, params.getName(), params.getCapacity(),
-				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				params.getAddresses()));
+		return toCompanyDto(
+				companyService.addCompany(userId, params.getName(), params.getCapacity(), params.getReserve(),
+						params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId()));
 
 	}
 
+	/* DUDA : mejor crear otro ParamsDto aunque sea igual, o así es válido */
 	@PutMapping("/{id}")
 	public CompanyDto modifyCompany(@RequestAttribute Long userId, @PathVariable Long id,
 			@Validated @RequestBody AddCompanyParamsDto params) throws WrongUserException, InstanceNotFoundException {
 
-		return toCompanyDto(companyService.modifyCompany(userId, id, params.getName(), params.getCapacity(),
-				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				params.getAddresses()));
+		return toCompanyDto(
+				companyService.modifyCompany(userId, id, params.getName(), params.getCapacity(), params.getReserve(),
+						params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId()));
 
 	}
 

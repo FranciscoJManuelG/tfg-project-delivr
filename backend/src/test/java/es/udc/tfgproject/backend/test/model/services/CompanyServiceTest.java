@@ -2,10 +2,6 @@ package es.udc.tfgproject.backend.test.model.services;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import javax.transaction.Transactional;
 
 import org.junit.Test;
@@ -15,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
@@ -86,21 +81,17 @@ public class CompanyServiceTest {
 		City city = new City("Lugo");
 		cityDao.save(city);
 
-		List<Address> addresses = new ArrayList<>();
+		Company company = companyService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
 
-		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId());
-		Address address2 = addressService.addAddress("Castelao 35", "15900", city.getId());
+		Company expectedCompany = companyDao.findById(company.getId()).get();
 
-		addresses.add(address1);
-		addresses.add(address2);
-
-		Company company = companyService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId(),
-				addresses);
-
-		Optional<Company> expectedCompany = companyDao.findById(company.getId());
-
-		assertEquals(expectedCompany.get(), company);
-
+		assertEquals(expectedCompany, company);
+		assertEquals(expectedCompany.getName(), "Delivr");
+		assertEquals(expectedCompany.getCapacity(), 27);
+		assertEquals(expectedCompany.getReserve(), true);
+		assertEquals(expectedCompany.getHomeSale(), true);
+		assertEquals(expectedCompany.getReservePercentage(), 25);
+		assertEquals(expectedCompany.getCompanyCategory().getId(), category.getId());
 	}
 
 	@Test(expected = InstanceNotFoundException.class)
@@ -111,10 +102,7 @@ public class CompanyServiceTest {
 		City city = new City("Lugo");
 		cityDao.save(city);
 
-		List<Address> addresses = new ArrayList<>();
-
-		companyService.addCompany(user.getId(), "Delivr", 27, true, true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID,
-				addresses);
+		companyService.addCompany(user.getId(), "Delivr", 27, true, true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID);
 
 	}
 
@@ -123,37 +111,32 @@ public class CompanyServiceTest {
 
 		User user = signUpUser("user");
 
-		CompanyCategory category = new CompanyCategory("Vegetariano");
-		companyCategoryDao.save(category);
+		CompanyCategory category1 = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category1);
+		CompanyCategory category2 = new CompanyCategory("Vegano");
+		companyCategoryDao.save(category2);
 
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		List<Address> addresses = new ArrayList<>();
+		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
-		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId());
-		Address address2 = addressService.addAddress("Castelao 35", "15900", city.getId());
+		Company modifiedCompany = companyService.modifyCompany(user.getId(), company.getId(), "VegFood", 40, false,
+				false, 15, category2.getId());
 
-		addresses.add(address1);
-		addresses.add(address2);
-
-		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				addresses);
-
-		List<Address> newAddresses = new ArrayList<>();
-
-		Company modifiedCompany = companyService.modifyCompany(user.getId(), company.getId(), "GreenFood", 40, true,
-				false, 15, category.getId(), newAddresses);
-
-		assertEquals(modifiedCompany.getName(), "GreenFood");
+		assertEquals(modifiedCompany.getName(), "VegFood");
 		assertEquals(modifiedCompany.getCapacity(), 40);
-		assertEquals(modifiedCompany.getReserve(), true);
+		assertEquals(modifiedCompany.getReserve(), false);
 		assertEquals(modifiedCompany.getHomeSale(), false);
 		assertEquals(modifiedCompany.getReservePercentage(), 15);
-		assertEquals(modifiedCompany.getCompanyCategory().getId(), category.getId());
+		assertEquals(modifiedCompany.getCompanyCategory().getId(), category2.getId());
 
 	}
 
+	/*
+	 * TODO : Falta añadir direcciones. En métodos de Address se realiza la
+	 * asignación address con company
+	 */
 	@Test
 	public void testDeregisterCompany() throws InstanceNotFoundException, WrongUserException {
 
@@ -165,19 +148,10 @@ public class CompanyServiceTest {
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		List<Address> addresses = new ArrayList<>();
-
-		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId());
-		Address address2 = addressService.addAddress("Castelao 35", "15900", city.getId());
-
-		addresses.add(address1);
-		addresses.add(address2);
-
-		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				addresses);
+		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
 		long numberOfCompanies = companyDao.count();
-		long numberOfAddresses = addressDao.count();
+		// long numberOfAddresses = addressDao.count();
 
 		companyService.deregister(user.getId(), company.getId());
 
@@ -187,7 +161,7 @@ public class CompanyServiceTest {
 		 * Comprobamos que las dos direcciones relacionadas con la empresa se han
 		 * eliminado
 		 */
-		assertEquals(numberOfAddresses - 2, addressDao.count());
+		// assertEquals(numberOfAddresses - 2, addressDao.count());
 
 	}
 
@@ -202,12 +176,10 @@ public class CompanyServiceTest {
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		List<Address> newAddresses = new ArrayList<>();
-
-		companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(), newAddresses);
+		companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
 		companyService.modifyCompany(user.getId(), NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false, 15,
-				category.getId(), newAddresses);
+				category.getId());
 
 	}
 
@@ -223,13 +195,10 @@ public class CompanyServiceTest {
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		List<Address> newAddresses = new ArrayList<>();
-
-		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				newAddresses);
+		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
 		companyService.modifyCompany(wrongUser.getId(), company.getId(), "GreenFood", 40, true, false, 15,
-				category.getId(), newAddresses);
+				category.getId());
 
 	}
 

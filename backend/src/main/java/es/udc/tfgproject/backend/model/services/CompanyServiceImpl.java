@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
@@ -40,7 +39,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId, List<Address> addresses) throws InstanceNotFoundException {
+			int reservePercentage, Long companyCategoryId) throws InstanceNotFoundException {
 
 		User user = permissionChecker.checkUser(userId);
 
@@ -49,16 +48,12 @@ public class CompanyServiceImpl implements CompanyService {
 		Company company = new Company(user, name, capacity, reserve, homeSale, reservePercentage, companyCategory);
 		companyDao.save(company);
 
-		for (Address address : addresses) {
-			companyAddressDao.save(new CompanyAddress(company, address));
-		}
-
 		return company;
 	}
 
 	@Override
 	public Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve,
-			Boolean homeSale, int reservePercentage, Long companyCategoryId, List<Address> newAddresses)
+			Boolean homeSale, int reservePercentage, Long companyCategoryId)
 			throws InstanceNotFoundException, WrongUserException {
 
 		User user = permissionChecker.checkUser(userId);
@@ -78,11 +73,6 @@ public class CompanyServiceImpl implements CompanyService {
 			company.setHomeSale(homeSale);
 			company.setReservePercentage(reservePercentage);
 			company.setCompanyCategory(companyCategory);
-
-			/* Asigno las nuevas direcciones añadidas a Company */
-			for (Address address : newAddresses) {
-				companyAddressDao.save(new CompanyAddress(company, address));
-			}
 
 			return company;
 		} else {
@@ -106,18 +96,14 @@ public class CompanyServiceImpl implements CompanyService {
 		 */
 		if (company.getUser().getId().equals(user.getId())) {
 			/*
-			 * Cuando eliminamos una empresa, también debemos eliminar la dirección a la
-			 * cual estaba asignada
+			 * Cuando eliminamos una empresa, también debemos eliminar las direcciones a las
+			 * cuales estaba asignada
 			 */
 			for (CompanyAddress companyAddress : companyAddresses) {
 				addressDao.deleteById(companyAddress.getAddress().getId());
+				companyAddressDao.deleteById(companyAddress.getId());
 			}
 
-			/*
-			 * DUDA : puede que al eliminar Address antes y tener ON CASCADE, no es
-			 * necesario, o me puede saltar error, al tenerlo también en CompanyAddress
-			 * relacionado con Company
-			 */
 			companyDao.deleteById(companyId);
 
 		} else {

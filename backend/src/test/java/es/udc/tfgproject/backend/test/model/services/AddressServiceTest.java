@@ -55,29 +55,30 @@ public class AddressServiceTest {
 		addressService.addAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID);
 	}
 
-	@Test
-	public void testModifyAddress() throws InstanceNotFoundException {
-		City city = new City("A Coruña");
-		cityDao.save(city);
-
-		Address address = addressService.addAddress("Rosalia 18", "15700", city.getId());
-
-		Address modifiedAddress = addressService.modifyAddress(address.getId(), "Monelos 23", "15870", city.getId());
-
-		assertEquals(modifiedAddress.getStreet(), "Monelos 23");
-		assertEquals(modifiedAddress.getCp(), "15870");
-		assertEquals(modifiedAddress.getCity().getId(), city.getId());
-
-	}
-
-	@Test(expected = InstanceNotFoundException.class)
-	public void testModifyToNonExistingAddress() throws InstanceNotFoundException {
-
-		City city = new City("A Coruña");
-		cityDao.save(city);
-
-		addressService.modifyAddress(NON_EXISTENT_ADDRESS_ID, "Monelos 23", "15870", city.getId());
-	}
+	/*
+	 * @Test public void testModifyAddress() throws InstanceNotFoundException { City
+	 * city = new City("A Coruña"); cityDao.save(city);
+	 * 
+	 * Address address = addressService.addAddress("Rosalia 18", "15700",
+	 * city.getId());
+	 * 
+	 * Address modifiedAddress = addressService.modifyAddress(address.getId(),
+	 * "Monelos 23", "15870", city.getId());
+	 * 
+	 * assertEquals(modifiedAddress.getStreet(), "Monelos 23");
+	 * assertEquals(modifiedAddress.getCp(), "15870");
+	 * assertEquals(modifiedAddress.getCity().getId(), city.getId());
+	 * 
+	 * }
+	 * 
+	 * @Test(expected = InstanceNotFoundException.class) public void
+	 * testModifyToNonExistingAddress() throws InstanceNotFoundException {
+	 * 
+	 * City city = new City("A Coruña"); cityDao.save(city);
+	 * 
+	 * addressService.modifyAddress(NON_EXISTENT_ADDRESS_ID, "Monelos 23", "15870",
+	 * city.getId()); }
+	 */
 
 	@Test
 	public void testDeleteAddress() throws InstanceNotFoundException {
