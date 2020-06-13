@@ -2,6 +2,8 @@ package es.udc.tfgproject.backend.test.model.services;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import javax.transaction.Transactional;
 
 import org.junit.Test;
@@ -11,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
@@ -22,7 +23,6 @@ import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
-import es.udc.tfgproject.backend.model.services.AddressService;
 import es.udc.tfgproject.backend.model.services.CompanyService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
@@ -42,9 +42,6 @@ public class CompanyServiceTest {
 	private CompanyService companyService;
 
 	@Autowired
-	private AddressService addressService;
-
-	@Autowired
 	private CompanyCategoryDao companyCategoryDao;
 
 	@Autowired
@@ -52,9 +49,6 @@ public class CompanyServiceTest {
 
 	@Autowired
 	private CompanyDao companyDao;
-
-	@Autowired
-	private AddressDao addressDao;
 
 	private User signUpUser(String userName) {
 
@@ -199,6 +193,19 @@ public class CompanyServiceTest {
 
 		companyService.modifyCompany(wrongUser.getId(), company.getId(), "GreenFood", 40, true, false, 15,
 				category.getId());
+
+	}
+
+	@Test
+	public void testFindAllCategories() {
+
+		CompanyCategory category1 = new CompanyCategory("category1");
+		CompanyCategory category2 = new CompanyCategory("category2");
+
+		companyCategoryDao.save(category2);
+		companyCategoryDao.save(category1);
+
+		assertEquals(Arrays.asList(category1, category2), companyService.findAllCompanyCategories());
 
 	}
 

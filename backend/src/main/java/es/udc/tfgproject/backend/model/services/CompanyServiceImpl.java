@@ -1,8 +1,11 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.annotations.SortType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,26 @@ import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
 @Service
 @Transactional
 public class CompanyServiceImpl implements CompanyService {
+
+	private final class SortImplementation implements org.hibernate.annotations.Sort {
+		@Override
+		public Class<? extends Annotation> annotationType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public SortType type() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Class comparator() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
 
 	@Autowired
 	private PermissionChecker permissionChecker;
@@ -109,6 +132,18 @@ public class CompanyServiceImpl implements CompanyService {
 		} else {
 			throw new WrongUserException();
 		}
+
+	}
+
+	@Override
+	public List<CompanyCategory> findAllCompanyCategories() {
+
+		Iterable<CompanyCategory> categories = companyCategoryDao.findAll();
+		List<CompanyCategory> categoriesList = new ArrayList<>();
+
+		categories.forEach(category -> categoriesList.add(category));
+
+		return categoriesList;
 
 	}
 

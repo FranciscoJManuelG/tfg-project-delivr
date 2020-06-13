@@ -1,6 +1,9 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.util.List;
+
 import es.udc.tfgproject.backend.model.entities.Company;
+import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
 
@@ -13,5 +16,7 @@ public interface CompanyService {
 			int reservePercentage, Long companyCategoryId) throws InstanceNotFoundException, WrongUserException;
 
 	void deregister(Long userId, Long companyId) throws InstanceNotFoundException, WrongUserException;
+
+	List<CompanyCategory> findAllCompanyCategories();
 
 }
