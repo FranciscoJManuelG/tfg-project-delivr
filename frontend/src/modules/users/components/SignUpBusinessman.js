@@ -30,12 +30,12 @@ const SignUpBusinessman = () => {
             
             dispatch(actions.signUpBusinessman(
                 {userName: userName.trim(),
-                password: password,
+                password: password.trim(),
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
                 email: email.trim(),
                 phone: phone.trim()},
-                () => history.push('/'),
+                () => history.push('/companies/add-company'),
                 errors => setBackendErrors(errors),
                 () => {
                     history.push('/users/login');
@@ -78,7 +78,7 @@ const SignUpBusinessman = () => {
 
     return (
         <div className="container">
-            <div className="row justify-content-center">
+            <div className="row justify-content-center" >
                 <aside className="col-sm-6 align-self-center">
                     <h1>Comienza hoy a trabajar con nosotros</h1>
                     <p>Únete a nosotros y permite a tu empresa crecer...</p>

@@ -82,7 +82,7 @@ const SignUp = () => {
             <div class="row justify-content-center">
                 <aside class="col-sm-6">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
-                    <p className="text-center">
+                    <p class="text-center">
                         <Link to="/users/signup-businessman">
                             <FormattedMessage id="project.users.SignUpCompany.title"/>
                         </Link>
@@ -134,12 +134,12 @@ const SignUp = () => {
                                         value={firstName}
                                         onChange={e => setFirstName(e.target.value)}
                                         required/>
-                                    <div className="invalid-feedback">
+                                    <div class="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" id="lastName" className="form-control"
+                                    <input type="text" id="lastName" class="form-control"
                                         placeholder="Apellidos"
                                         value={lastName}
                                         onChange={e => setLastName(e.target.value)}
@@ -149,7 +149,7 @@ const SignUp = () => {
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" id="email" className="form-control"
+                                    <input type="email" id="email" class="form-control"
                                         placeholder="Email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
@@ -159,7 +159,7 @@ const SignUp = () => {
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" id="phone" className="form-control"
+                                    <input type="text" id="phone" class="form-control"
                                         placeholder="Teléfono"
                                         value={phone}
                                         onChange={e => setPhone(e.target.value)}
