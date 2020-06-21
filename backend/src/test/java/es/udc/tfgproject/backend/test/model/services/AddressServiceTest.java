@@ -2,6 +2,8 @@ package es.udc.tfgproject.backend.test.model.services;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import javax.transaction.Transactional;
 
 import org.junit.Test;
@@ -15,8 +17,16 @@ import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
+import es.udc.tfgproject.backend.model.entities.Company;
+import es.udc.tfgproject.backend.model.entities.CompanyCategory;
+import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
+import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.services.AddressService;
+import es.udc.tfgproject.backend.model.services.Block;
+import es.udc.tfgproject.backend.model.services.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,19 +41,48 @@ public class AddressServiceTest {
 	private AddressService addressService;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private CityDao cityDao;
 
 	@Autowired
 	private AddressDao addressDao;
 
+	@Autowired
+	private CompanyCategoryDao companyCategoryDao;
+
+	@Autowired
+	private CompanyDao companyDao;
+
+	private User signUpUser(String userName) {
+
+		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
+
+		try {
+			userService.signUpBusinessman(user);
+		} catch (DuplicateInstanceException e) {
+			throw new RuntimeException(e);
+		}
+
+		return user;
+
+	}
+
 	@Test
 	public void testAddAddress() throws InstanceNotFoundException {
+		User user = signUpUser("user");
 		City city = new City("A Coruña");
 		cityDao.save(city);
+		CompanyCategory category = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category);
 
 		long numberOfAddresses = addressDao.count();
 
-		addressService.addAddress("Rosalia 18", "15700", city.getId());
+		Company company = new Company(user, "Delivr", 13, true, true, 10, category);
+		companyDao.save(company);
+
+		addressService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
 
 		assertEquals(numberOfAddresses + 1, addressDao.count());
 
@@ -52,7 +91,13 @@ public class AddressServiceTest {
 	@Test(expected = InstanceNotFoundException.class)
 	public void testNonExistingCity() throws InstanceNotFoundException {
 
-		addressService.addAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID);
+		User user = signUpUser("user");
+		CompanyCategory category = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category);
+		Company company = new Company(user, "Delivr", 13, true, true, 10, category);
+		companyDao.save(company);
+
+		addressService.addAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId());
 	}
 
 	/*
@@ -82,16 +127,45 @@ public class AddressServiceTest {
 
 	@Test
 	public void testDeleteAddress() throws InstanceNotFoundException {
+		User user = signUpUser("user");
+		CompanyCategory category = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category);
+		Company company = new Company(user, "Delivr", 13, true, true, 10, category);
+		companyDao.save(company);
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		Address address = addressService.addAddress("Rosalia 18", "15700", city.getId());
+		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
+		addressService.addAddress("Magan 23", "13456", city.getId(), company.getId());
 
 		long actualNumberOfAddresses = addressDao.count();
 
-		addressService.deleteAddress(address.getId());
+		addressService.deleteAddress(address1.getId());
 
-		assertEquals(actualNumberOfAddresses - 1, addressDao.count());
+		assertEquals(actualNumberOfAddresses - 1, 1);
+
+	}
+
+	@Test
+	public void testFindAllCompanyAddress() throws InstanceNotFoundException {
+		User user = signUpUser("user");
+		CompanyCategory category = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category);
+		Company company1 = new Company(user, "Delivr", 13, true, true, 10, category);
+		companyDao.save(company1);
+		Company company2 = new Company(user, "Foodfast", 14, true, true, 15, category);
+		companyDao.save(company2);
+		City city = new City("A Coruña");
+		cityDao.save(city);
+
+		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId(), company1.getId());
+		Address address2 = addressService.addAddress("Manuel 36", "12760", city.getId(), company1.getId());
+		addressService.addAddress("Juan 48", "14900", city.getId(), company2.getId());
+
+		Block<Address> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
+		Block<Address> actual = addressService.findAllCompanyAddress(company1.getId(), 0, 10);
+
+		assertEquals(expectedBlock, actual);
 
 	}
 

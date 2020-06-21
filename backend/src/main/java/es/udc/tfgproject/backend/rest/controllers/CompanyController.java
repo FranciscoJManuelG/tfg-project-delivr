@@ -31,6 +31,7 @@ import es.udc.tfgproject.backend.rest.dtos.CompanyCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyDto;
 
 @RestController
+//TODO : revisar nombre
 @RequestMapping("/companies")
 public class CompanyController {
 
@@ -83,6 +84,8 @@ public class CompanyController {
 		companyService.deregister(userId, id);
 
 	}
+
+	//TODO : deregister marcar estado a no disponible y crear otro método para elimianar la Company
 
 	@GetMapping("/categories")
 	public List<CompanyCategoryDto> findAllCompanyCategories() {
