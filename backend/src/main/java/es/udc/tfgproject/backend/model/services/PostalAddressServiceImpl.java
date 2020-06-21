@@ -1,5 +1,7 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 
 @Service
 @Transactional
-public class AddressServiceImpl implements AddressService {
+public class PostalAddressServiceImpl implements PostalAddressService {
 
 	@Autowired
 	private CityDao cityDao;
@@ -70,15 +72,29 @@ public class AddressServiceImpl implements AddressService {
 	@Override
 	public void deleteAddress(Long addressId) throws InstanceNotFoundException {
 
+		companyAddressDao.delete(companyAddressDao.findByAddressId(addressId).get());
+
 		addressDao.deleteById(addressId);
 	}
 
 	@Override
-	public Block<Address> findAllCompanyAddress(Long companyId, int page, int size) {
+	public Block<Address> findAddresses(Long companyId, int page, int size) {
 
 		Slice<Address> slice = addressDao.find(companyId, page, size);
 
 		return new Block<>(slice.getContent(), slice.hasNext());
+
+	}
+
+	@Override
+	public List<City> findAllCities() {
+
+		Iterable<City> cities = cityDao.findAll();
+		List<City> citiesList = new ArrayList<>();
+
+		cities.forEach(city -> citiesList.add(city));
+
+		return citiesList;
 
 	}
 

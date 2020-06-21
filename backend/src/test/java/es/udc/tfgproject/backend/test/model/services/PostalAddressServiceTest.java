@@ -18,27 +18,28 @@ import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
+import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.services.AddressService;
 import es.udc.tfgproject.backend.model.services.Block;
+import es.udc.tfgproject.backend.model.services.PostalAddressService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class AddressServiceTest {
+public class PostalAddressServiceTest {
 
 	private final long NON_EXISTENT_ADDRESS_ID = new Long(-1);
 	private final long NON_EXISTENT_CITY_ID = new Long(-1);
 
 	@Autowired
-	private AddressService addressService;
+	private PostalAddressService postalAddressService;
 
 	@Autowired
 	private UserService userService;
@@ -54,6 +55,9 @@ public class AddressServiceTest {
 
 	@Autowired
 	private CompanyDao companyDao;
+
+	@Autowired
+	private CompanyAddressDao companyAddressDao;
 
 	private User signUpUser(String userName) {
 
@@ -82,7 +86,7 @@ public class AddressServiceTest {
 		Company company = new Company(user, "Delivr", 13, true, true, 10, category);
 		companyDao.save(company);
 
-		addressService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
+		postalAddressService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
 
 		assertEquals(numberOfAddresses + 1, addressDao.count());
 
@@ -97,7 +101,7 @@ public class AddressServiceTest {
 		Company company = new Company(user, "Delivr", 13, true, true, 10, category);
 		companyDao.save(company);
 
-		addressService.addAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId());
+		postalAddressService.addAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId());
 	}
 
 	/*
@@ -135,19 +139,21 @@ public class AddressServiceTest {
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
-		addressService.addAddress("Magan 23", "13456", city.getId(), company.getId());
+		Address address1 = postalAddressService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
+		postalAddressService.addAddress("Magan 23", "13456", city.getId(), company.getId());
 
-		long actualNumberOfAddresses = addressDao.count();
+		long numberOfAddresses = addressDao.count();
+		long numberOfCompanyAddresses = companyAddressDao.count();
 
-		addressService.deleteAddress(address1.getId());
+		postalAddressService.deleteAddress(address1.getId());
 
-		assertEquals(actualNumberOfAddresses - 1, 1);
+		assertEquals(numberOfAddresses - 1, 1);
+		assertEquals(numberOfCompanyAddresses - 1, 1);
 
 	}
 
 	@Test
-	public void testFindAllCompanyAddress() throws InstanceNotFoundException {
+	public void testFindAddresses() throws InstanceNotFoundException {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
@@ -158,14 +164,27 @@ public class AddressServiceTest {
 		City city = new City("A Coruña");
 		cityDao.save(city);
 
-		Address address1 = addressService.addAddress("Rosalia 18", "15700", city.getId(), company1.getId());
-		Address address2 = addressService.addAddress("Manuel 36", "12760", city.getId(), company1.getId());
-		addressService.addAddress("Juan 48", "14900", city.getId(), company2.getId());
+		Address address1 = postalAddressService.addAddress("Rosalia 18", "15700", city.getId(), company1.getId());
+		Address address2 = postalAddressService.addAddress("Manuel 36", "12760", city.getId(), company1.getId());
+		postalAddressService.addAddress("Juan 48", "14900", city.getId(), company2.getId());
 
 		Block<Address> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
-		Block<Address> actual = addressService.findAllCompanyAddress(company1.getId(), 0, 10);
+		Block<Address> actual = postalAddressService.findAddresses(company1.getId(), 0, 10);
 
 		assertEquals(expectedBlock, actual);
+
+	}
+
+	@Test
+	public void testFindAllCities() {
+
+		City city1 = new City("Barcelona");
+		City city2 = new City("Madrid");
+
+		cityDao.save(city1);
+		cityDao.save(city2);
+
+		assertEquals(Arrays.asList(city1, city2), postalAddressService.findAllCities());
 
 	}
 

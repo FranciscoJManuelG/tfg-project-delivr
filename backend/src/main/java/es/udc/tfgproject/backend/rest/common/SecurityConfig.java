@@ -24,8 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().addFilter(new JwtFilter(authenticationManager(), jwtGenerator)).authorizeRequests()
 				.antMatchers("/users/signUp").permitAll().antMatchers("/users/login").permitAll()
-				.antMatchers("/users/loginFromServiceToken").permitAll().antMatchers("/users/signUpBusinessman").permitAll().antMatchers("/companies/categories")
-				.permitAll().anyRequest().hasAnyRole("CLIENT", "BUSINESSMAN", "ADMIN");
+				.antMatchers("/users/loginFromServiceToken").permitAll().antMatchers("/users/signUpBusinessman")
+				.permitAll().antMatchers("/companies/categories").permitAll().anyRequest()
+				.hasAnyRole("CLIENT", "BUSINESSMAN", "ADMIN");
 
 	}
 
