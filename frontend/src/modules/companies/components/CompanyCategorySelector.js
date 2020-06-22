@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import * as selectors from '../selectors';
 
-const CategorySelectorAddCompany = (selectProps) => {
+const CompanyCategorySelector = (selectProps) => {
 
     const companyCategories = useSelector(selectors.getCompanyCategories);
     
@@ -24,8 +24,8 @@ const CategorySelectorAddCompany = (selectProps) => {
 
 }
 
-CategorySelectorAddCompany.propTypes = {
+CompanyCategorySelector.propTypes = {
     selectProps: PropTypes.object
 };
 
-export default CategorySelectorAddCompany;
+export default CompanyCategorySelector;

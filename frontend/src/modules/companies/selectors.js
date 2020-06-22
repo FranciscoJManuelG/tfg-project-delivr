@@ -1,5 +1,8 @@
 const getModuleState = state => state.companies
 
+export const getCompany = state => 
+    getModuleState(state).company;
+
 export const getCompanyCategories = state =>
     getModuleState(state).companyCategories;
 

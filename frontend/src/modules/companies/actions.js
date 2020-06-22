@@ -2,16 +2,29 @@ import * as actionTypes from './actionTypes';
 import backend from '../../backend';
 import * as selectors from './selectors';
 
-const addedCompanyCompleted = companyId => ({
+const addedCompanyCompleted = company => ({
     type: actionTypes.ADDED_COMPANY_COMPLETED,
-    companyId
+    company
 });
 
 export const addCompany = (name, capacity, reserve, homeSale, reservePercentage, companyCategoryId, 
     onSuccess, onErrors) => dispatch =>
     backend.companyService.addCompany(name, capacity, reserve, homeSale, reservePercentage, companyCategoryId, 
-        ({id}) => {
-            dispatch(addedCompanyCompleted(id));
+        company => {
+            dispatch(addedCompanyCompleted(company));
+            onSuccess();
+        },
+        onErrors);
+
+export const modifyCompanyCompleted = company => ({
+    type: actionTypes.MODIFY_COMPANY_COMPLETED,
+    company
+})
+
+export const modifyCompany = (company, onSuccess, onErrors) => dispatch =>
+    backend.companyService.modifyCompany(company, 
+        company => {
+            dispatch(modifyCompanyCompleted(company));
             onSuccess();
         },
         onErrors);

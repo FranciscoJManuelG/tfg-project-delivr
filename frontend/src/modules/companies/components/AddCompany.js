@@ -5,7 +5,7 @@ import {useHistory} from 'react-router-dom';
 
 import {Errors} from '../../common';
 import * as actions from '../actions';
-import CategorySelectorAddCompany from './CategorySelectorAddCompany';
+import CompanyCategorySelector from './CompanyCategorySelector';
 
 const AddCompany = () => {
 
@@ -27,7 +27,8 @@ const AddCompany = () => {
         if (form.checkValidity()) {
             
             dispatch(actions.addCompany(name.trim(),
-                capacity, reserve, homeSale,reservePercentage, 1,
+                capacity, reserve, homeSale,
+                reservePercentage, 1,
                 () => history.push('/users/login'),
                 errors => setBackendErrors(errors)));
 
@@ -75,9 +76,23 @@ const AddCompany = () => {
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>
                                 </div> 
-                                <CategorySelectorAddCompany id="companyCategoryId" className="custom-select my-1 mr-sm-2"
-                                value={companyCategoryId} 
-                                onChange={e => setCompanyCategoryId(e.target.value)}/>
+                                <div className="form-group">
+                                    <label htmlFor="companyCategoryId">Categoría: </label>
+                                    <CompanyCategorySelector id="companyCategoryId" className="custom-select my-1 mr-sm-2"
+                                    value={companyCategoryId} 
+                                    onChange={e => setCompanyCategoryId(e.target.value)}/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="reservePercentage">Porcentaje de la señal de reserva: </label>
+                                    <input type="number" id="reservePercentage" min="0" step ="1" className="form-control" 
+                                        value={reservePercentage}
+                                        onChange={e => setReservePercentage(e.target.value)}
+                                        autoFocus
+                                        required/>
+                                    <div className="invalid-feedback">
+                                        <FormattedMessage id='project.global.validator.required'/>
+                                    </div>
+                                </div>
                                 <div>
                                     <label htmlFor="reserve">Reserva: </label>
                                     <div className="form-check-inline">
@@ -120,17 +135,6 @@ const AddCompany = () => {
                                             required/>
                                         <label class="form-check-label" htmlFor="homeSale2">No</label>
                                     </div>
-                                    <div className="invalid-feedback">
-                                        <FormattedMessage id='project.global.validator.required'/>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="reservePercentage">Porcentaje de la señal de reserva: </label>
-                                    <input type="number" id="reservePercentage" min="0" step ="1" className="form-control" 
-                                        value={reservePercentage}
-                                        onChange={e => setReservePercentage(e.target.value)}
-                                        autoFocus
-                                        required/>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>

@@ -4,7 +4,25 @@ import * as actionTypes from './actionTypes';
 
 const initialState = {
     companyCategories: null,
+    company: null,
 };
+
+const company = (state = initialState.company, action) => {
+
+    switch (action.type) {
+
+        case actionTypes.ADDED_COMPANY_COMPLETED:
+            return action.company;
+        
+        case actionTypes.MODIFY_COMPANY_COMPLETED:
+            return action.company;
+
+        default:
+            return state;
+
+    }
+
+}
 
 const companyCategories = (state = initialState.companyCategories, action) => {
 
@@ -21,7 +39,8 @@ const companyCategories = (state = initialState.companyCategories, action) => {
 }
 
 const reducer = combineReducers({
-    companyCategories
+    companyCategories,
+    company
 });
 
 export default reducer;
