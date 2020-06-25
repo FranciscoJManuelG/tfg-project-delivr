@@ -156,11 +156,11 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
-	public Block<Address> findAddresses(Long companyId, int page, int size) {
+	public Block<CompanyAddress> findAddresses(Long companyId, int page, int size) {
+    // TODO Revisar implementación !! ¿debe devolver un Block? En ese caso, paginar ...
+		List<CompanyAddress> list = companyAddressDao.findByCompanyId(companyId);
 
-		Slice<Address> slice = addressDao.findByCompanyAddressCompanyId(companyId, PageRequest.of(page, size));
-
-		return new Block<>(slice.getContent(), slice.hasNext());
+		return new Block<>(list, false);
 
 	}
 

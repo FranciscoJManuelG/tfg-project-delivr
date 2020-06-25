@@ -5,6 +5,7 @@ import java.util.List;
 import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.Company;
+import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
@@ -25,7 +26,7 @@ public interface BusinessService {
 
 	void deleteAddress(Long addressId) throws InstanceNotFoundException;
 
-	Block<Address> findAddresses(Long companyId, int page, int size);
+	Block<CompanyAddress> findAddresses(Long companyId, int page, int size);
 
 	List<City> findAllCities();
 

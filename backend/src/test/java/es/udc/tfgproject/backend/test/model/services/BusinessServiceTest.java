@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import es.udc.tfgproject.backend.model.entities.Address;
+import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
@@ -291,7 +292,7 @@ public class BusinessServiceTest {
 		companyService.addAddress("Juan 48", "14900", city.getId(), company2.getId());
 
 		Block<Address> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
-		Block<Address> actual = companyService.findAddresses(company1.getId(), 0, 10);
+		Block<CompanyAddress> actual = companyService.findAddresses(company1.getId(), 0, 10);
 
 		assertEquals(expectedBlock, actual);
 

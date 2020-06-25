@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.tfgproject.backend.model.entities.Address;
+import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
 import es.udc.tfgproject.backend.model.services.Block;
@@ -127,7 +128,7 @@ public class BusinessController {
 	public BlockDto<AddressSummaryDto> findAddresses(@PathVariable Long companyId,
 			@RequestParam(defaultValue = "0") int page) {
 
-		Block<Address> addressBlock = companyService.findAddresses(companyId, page, 10);
+		Block<CompanyAddress> addressBlock = companyService.findAddresses(companyId, page, 10);
 
 		return new BlockDto<>(toAddressSummaryDtos(addressBlock.getItems()), addressBlock.getExistMoreItems());
 
