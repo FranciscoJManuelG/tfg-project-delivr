@@ -1,5 +1,8 @@
 package es.udc.tfgproject.backend.rest.controllers;
 
+import static es.udc.tfgproject.backend.rest.dtos.AddressConversor.toAddressDto;
+import static es.udc.tfgproject.backend.rest.dtos.AddressConversor.toAddressSummaryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.CityConversor.toCityDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyCategoryConversor.toCompanyCategoryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyConversor.toCompanyDto;
 
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,22 +22,29 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
-import es.udc.tfgproject.backend.model.services.CompanyService;
+import es.udc.tfgproject.backend.model.services.Block;
+import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.rest.common.ErrorsDto;
+import es.udc.tfgproject.backend.rest.dtos.AddAddressParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddCompanyParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.AddressDto;
+import es.udc.tfgproject.backend.rest.dtos.AddressSummaryDto;
+import es.udc.tfgproject.backend.rest.dtos.BlockDto;
+import es.udc.tfgproject.backend.rest.dtos.CityDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyDto;
 
 @RestController
-//TODO : revisar nombre
-@RequestMapping("/companies")
-public class CompanyController {
+@RequestMapping("/business")
+public class BusinessController {
 
 	private final static String WRONG_USER_EXCEPTION_CODE = "project.exceptions.WrongUserException";
 
@@ -41,7 +52,7 @@ public class CompanyController {
 	private MessageSource messageSource;
 
 	@Autowired
-	private CompanyService companyService;
+	private BusinessService companyService;
 
 	@ExceptionHandler(WrongUserException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
@@ -55,7 +66,7 @@ public class CompanyController {
 
 	}
 
-	@PostMapping("/add")
+	@PostMapping("/companies")
 	public CompanyDto addCompany(@RequestAttribute Long userId, @Validated @RequestBody AddCompanyParamsDto params)
 			throws InstanceNotFoundException {
 
@@ -66,7 +77,7 @@ public class CompanyController {
 	}
 
 	/* DUDA : mejor crear otro ParamsDto aunque sea igual, o así es válido */
-	@PutMapping("/{id}")
+	@PutMapping("/companies/{id}")
 	public CompanyDto modifyCompany(@RequestAttribute Long userId, @PathVariable Long id,
 			@Validated @RequestBody AddCompanyParamsDto params) throws WrongUserException, InstanceNotFoundException {
 
@@ -76,7 +87,7 @@ public class CompanyController {
 
 	}
 
-	@PostMapping("/{id}/deregister")
+	@PostMapping("/companies/{id}/deregister")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deregister(@RequestAttribute Long userId, @PathVariable Long id)
 			throws InstanceNotFoundException, WrongUserException {
@@ -85,11 +96,46 @@ public class CompanyController {
 
 	}
 
-	//TODO : deregister marcar estado a no disponible y crear otro método para elimianar la Company
+	// TODO : deregister marcar estado a no disponible y crear otro método para
+	// elimianar la Company
 
-	@GetMapping("/categories")
+	@GetMapping("/companies/categories")
 	public List<CompanyCategoryDto> findAllCompanyCategories() {
 		return toCompanyCategoryDtos(companyService.findAllCompanyCategories());
+	}
+
+///global/companies/{companyId}/addresses
+///global/addresses
+	@PostMapping("/addresses")
+	public AddressDto addAddress(@PathVariable Long companyId, @Validated @RequestBody AddAddressParamsDto params)
+			throws InstanceNotFoundException {
+
+		return toAddressDto(
+				companyService.addAddress(params.getStreet(), params.getCp(), params.getCityId(), companyId));
+
+	}
+
+	@DeleteMapping("/addresses/{addressId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteAddress(@PathVariable Long addressId) throws InstanceNotFoundException {
+
+		companyService.deleteAddress(addressId);
+
+	}
+
+	@GetMapping("/addresses/find")
+	public BlockDto<AddressSummaryDto> findAddresses(@PathVariable Long companyId,
+			@RequestParam(defaultValue = "0") int page) {
+
+		Block<Address> addressBlock = companyService.findAddresses(companyId, page, 10);
+
+		return new BlockDto<>(toAddressSummaryDtos(addressBlock.getItems()), addressBlock.getExistMoreItems());
+
+	}
+
+	@GetMapping("/cities")
+	public List<CityDto> findAllCities() {
+		return toCityDtos(companyService.findAllCities());
 	}
 
 }

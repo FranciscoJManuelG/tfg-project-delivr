@@ -6,6 +6,7 @@ public class AuthenticatedUserDto {
 	
 	private String serviceToken;
 	private UserDto userDto;
+	//private List<CompanyDto> companyDto;
 
 	public AuthenticatedUserDto() {}
 	

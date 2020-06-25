@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.entities.AddressDao;
+import es.udc.tfgproject.backend.model.entities.City;
+import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
@@ -21,7 +26,7 @@ import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
 
 @Service
 @Transactional
-public class CompanyServiceImpl implements CompanyService {
+public class BusinessServiceImpl implements BusinessService {
 
 	@Autowired
 	private PermissionChecker permissionChecker;
@@ -38,6 +43,9 @@ public class CompanyServiceImpl implements CompanyService {
 	@Autowired
 	private AddressDao addressDao;
 
+	@Autowired
+	private CityDao cityDao;
+
 	@Override
 	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
 			int reservePercentage, Long companyCategoryId) throws InstanceNotFoundException {
@@ -46,7 +54,8 @@ public class CompanyServiceImpl implements CompanyService {
 
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
-		Company company = new Company(user, name, capacity, reserve, homeSale, reservePercentage, companyCategory);
+		Company company = new Company(user, name, capacity, reserve, homeSale, reservePercentage, false,
+				companyCategory);
 		companyDao.save(company);
 
 		return company;
@@ -123,6 +132,63 @@ public class CompanyServiceImpl implements CompanyService {
 
 		return categoriesList;
 
+	}
+
+	@Override
+	public Address addAddress(String street, String cp, Long cityId, Long companyId) throws InstanceNotFoundException {
+
+		City city = checkCity(cityId);
+		Company company = checkCompany(companyId);
+
+		Address address = addressDao.save(new Address(street, cp, city));
+
+		companyAddressDao.save(new CompanyAddress(company, address));
+
+		return address;
+	}
+
+	@Override
+	public void deleteAddress(Long addressId) throws InstanceNotFoundException {
+
+		companyAddressDao.delete(companyAddressDao.findByAddressId(addressId).get());
+
+		addressDao.deleteById(addressId);
+	}
+
+	@Override
+	public Block<Address> findAddresses(Long companyId, int page, int size) {
+
+		Slice<Address> slice = addressDao.findByCompanyAddressCompanyId(companyId, PageRequest.of(page, size));
+
+		return new Block<>(slice.getContent(), slice.hasNext());
+
+	}
+
+	@Override
+	public List<City> findAllCities() {
+
+		Iterable<City> cities = cityDao.findAll();
+		List<City> citiesList = new ArrayList<>();
+
+		cities.forEach(city -> citiesList.add(city));
+
+		return citiesList;
+
+	}
+
+	/*
+	 * Método privado que comprueba que la ciudad está registrada en el sistema
+	 */
+	private City checkCity(Long cityId) throws InstanceNotFoundException {
+		Optional<City> cityOpt = cityDao.findById(cityId);
+		City city = null;
+
+		if (!cityOpt.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.city", cityId);
+		} else
+			city = cityOpt.get();
+
+		return city;
 	}
 
 	/*

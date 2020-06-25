@@ -17,6 +17,7 @@ public class Company {
 	private Boolean reserve;
 	private Boolean homeSale;
 	private int reservePercentage;
+	private Boolean block;
 	private User user;
 	private CompanyCategory companyCategory;
 
@@ -24,13 +25,14 @@ public class Company {
 	}
 
 	public Company(User user, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			CompanyCategory companyCategory) {
+			Boolean block, CompanyCategory companyCategory) {
 		this.user = user;
 		this.name = name;
 		this.capacity = capacity;
 		this.reserve = reserve;
 		this.homeSale = homeSale;
 		this.reservePercentage = reservePercentage;
+		this.block = block;
 		this.companyCategory = companyCategory;
 	}
 
@@ -82,6 +84,14 @@ public class Company {
 
 	public void setReservePercentage(int reservePercentage) {
 		this.reservePercentage = reservePercentage;
+	}
+
+	public Boolean getBlock() {
+		return block;
+	}
+
+	public void setBlock(Boolean block) {
+		this.block = block;
 	}
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
