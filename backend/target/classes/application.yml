@@ -5,9 +5,9 @@ logging:
         SQL: debug
 spring:
   datasource:
-    url: jdbc:mysql://localhost/tfgproject?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Madrid
-    username: tfg
-    password: tfg
+    url: jdbc:mysql://localhost/paproject?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Madrid
+    username: pa
+    password: pa
     max-active: 4
     max-idle: 2
     max-wait: 10000

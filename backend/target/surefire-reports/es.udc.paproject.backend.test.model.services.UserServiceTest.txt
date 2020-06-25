@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: es.udc.paproject.backend.test.model.services.UserServiceTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.537 s <<< FAILURE! - in es.udc.paproject.backend.test.model.services.UserServiceTest
-es.udc.paproject.backend.test.model.services.UserServiceTest  Time elapsed: 0.534 s  <<< ERROR!
-java.lang.IllegalStateException: Unable to find a @SpringBootConfiguration, you need to use @ContextConfiguration or @SpringBootTest(classes=...) with your test
-
