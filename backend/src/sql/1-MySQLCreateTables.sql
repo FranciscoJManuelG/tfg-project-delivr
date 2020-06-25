@@ -63,6 +63,7 @@ CREATE TABLE Company(
     reservePercentage SMALLINT NOT NULL,
     userId BIGINT NOT NULL,
     categoryId BIGINT NOT NULL,
+    block BOOLEAN NOT NULL,
     CONSTRAINT CompanyIdPK PRIMARY KEY (id),
     CONSTRAINT CompanyUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
