@@ -10,8 +10,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.udc.tfgproject.backend.model.entities.Address;
-import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
@@ -22,7 +20,7 @@ import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
+import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 @Service
 @Transactional
@@ -39,9 +37,6 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Autowired
 	private CompanyCategoryDao companyCategoryDao;
-
-	@Autowired
-	private AddressDao addressDao;
 
 	@Autowired
 	private CityDao cityDao;
@@ -64,61 +59,62 @@ public class BusinessServiceImpl implements BusinessService {
 	@Override
 	public Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve,
 			Boolean homeSale, int reservePercentage, Long companyCategoryId)
-			throws InstanceNotFoundException, WrongUserException {
+			throws InstanceNotFoundException, PermissionException {
 
-		User user = permissionChecker.checkUser(userId);
+		Company company = permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
 
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
-		Company company = checkCompany(companyId);
+		company.setName(name);
+		company.setCapacity(capacity);
+		company.setReserve(reserve);
+		company.setHomeSale(homeSale);
+		company.setReservePercentage(reservePercentage);
+		company.setCompanyCategory(companyCategory);
 
-		/*
-		 * Comprobamos que el usuario que va a modificar los datos de la empresa es el
-		 * mismo que está asignado a esa empresa
-		 */
-		if (company.getUser().getId().equals(user.getId())) {
-			company.setName(name);
-			company.setCapacity(capacity);
-			company.setReserve(reserve);
-			company.setHomeSale(homeSale);
-			company.setReservePercentage(reservePercentage);
-			company.setCompanyCategory(companyCategory);
-
-			return company;
-		} else {
-			throw new WrongUserException();
-		}
+		return company;
 
 	}
 
 	@Override
-	public void deregister(Long userId, Long companyId) throws InstanceNotFoundException, WrongUserException {
+	public Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException {
 
-		User user = permissionChecker.checkUser(userId);
-
+		permissionChecker.checkUser(userId);
 		Company company = checkCompany(companyId);
 
+		company.setBlock(true);
+
+		return company;
+
+	}
+
+	@Override
+	public Company unlockCompany(Long userId, Long companyId) throws InstanceNotFoundException {
+
+		permissionChecker.checkUser(userId);
+		Company company = checkCompany(companyId);
+
+		company.setBlock(false);
+
+		return company;
+
+	}
+
+	@Override
+	public void deregister(Long userId, Long companyId) throws InstanceNotFoundException {
+
+		permissionChecker.checkUser(userId);
 		List<CompanyAddress> companyAddresses = companyAddressDao.findByCompanyId(companyId);
 
 		/*
-		 * Comprobamos que el usuario que va a dar de baja la empresa es el mismo que
-		 * está asignado a esa empresa
+		 * Cuando eliminamos una empresa, también debemos eliminar las direcciones a las
+		 * cuales estaba asignada
 		 */
-		if (company.getUser().getId().equals(user.getId())) {
-			/*
-			 * Cuando eliminamos una empresa, también debemos eliminar las direcciones a las
-			 * cuales estaba asignada
-			 */
-			for (CompanyAddress companyAddress : companyAddresses) {
-				addressDao.deleteById(companyAddress.getAddress().getId());
-				companyAddressDao.deleteById(companyAddress.getId());
-			}
-
-			companyDao.deleteById(companyId);
-
-		} else {
-			throw new WrongUserException();
+		for (CompanyAddress companyAddress : companyAddresses) {
+			companyAddressDao.delete(companyAddress);
 		}
+
+		companyDao.deleteById(companyId);
 
 	}
 
@@ -135,32 +131,40 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
-	public Address addAddress(String street, String cp, Long cityId, Long companyId) throws InstanceNotFoundException {
+	public CompanyAddress addCompanyAddress(String street, String cp, Long cityId, Long companyId)
+			throws InstanceNotFoundException {
 
 		City city = checkCity(cityId);
 		Company company = checkCompany(companyId);
 
-		Address address = addressDao.save(new Address(street, cp, city));
+		CompanyAddress companyAddress = new CompanyAddress();
 
-		companyAddressDao.save(new CompanyAddress(company, address));
+		companyAddress.setCompany(company);
+		companyAddress.setCity(city);
+		companyAddress.setCp(cp);
+		companyAddress.setStreet(street);
 
-		return address;
+		companyAddressDao.save(companyAddress);
+
+		return companyAddress;
 	}
 
 	@Override
-	public void deleteAddress(Long addressId) throws InstanceNotFoundException {
+	public void deleteCompanyAddress(Long userId, Long addressId)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkCompanyAddressExistsAndBelongsTo(addressId, userId);
 
 		companyAddressDao.delete(companyAddressDao.findByAddressId(addressId).get());
 
-		addressDao.deleteById(addressId);
 	}
 
 	@Override
-	public Block<CompanyAddress> findAddresses(Long companyId, int page, int size) {
-    // TODO Revisar implementación !! ¿debe devolver un Block? En ese caso, paginar ...
-		List<CompanyAddress> list = companyAddressDao.findByCompanyId(companyId);
+	public Block<CompanyAddress> findCompanyAddresses(Long companyId, int page, int size) {
 
-		return new Block<>(list, false);
+		Slice<CompanyAddress> slice = companyAddressDao.findByCompanyId(companyId, PageRequest.of(page, size));
+
+		return new Block<>(slice.getContent(), slice.hasNext());
 
 	}
 

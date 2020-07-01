@@ -1,17 +1,21 @@
 package es.udc.tfgproject.backend.model.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Address {
 
-	private Long id;
+	private Long addressId;
 	private String street;
 	private String cp;
 	private City city;
@@ -28,12 +32,13 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getId() {
-		return id;
+	@Column(name = "id")
+	public Long getAddressId() {
+		return addressId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setAddressId(Long id) {
+		this.addressId = id;
 	}
 
 	public String getStreet() {

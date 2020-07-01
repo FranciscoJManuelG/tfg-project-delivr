@@ -1,6 +1,8 @@
 package es.udc.tfgproject.backend.test.model.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -13,12 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import es.udc.tfgproject.backend.model.entities.Address;
-import es.udc.tfgproject.backend.model.entities.CompanyAddress;
-import es.udc.tfgproject.backend.model.entities.AddressDao;
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
+import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
@@ -26,7 +26,7 @@ import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.exceptions.WrongUserException;
+import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.UserService;
@@ -45,7 +45,7 @@ public class BusinessServiceTest {
 	private UserService userService;
 
 	@Autowired
-	private BusinessService companyService;
+	private BusinessService businessService;
 
 	@Autowired
 	private CompanyCategoryDao companyCategoryDao;
@@ -55,9 +55,6 @@ public class BusinessServiceTest {
 
 	@Autowired
 	private CompanyDao companyDao;
-
-	@Autowired
-	private AddressDao addressDao;
 
 	@Autowired
 	private CompanyAddressDao companyAddressDao;
@@ -87,7 +84,7 @@ public class BusinessServiceTest {
 		City city = new City("Lugo");
 		cityDao.save(city);
 
-		Company company = companyService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
+		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
 
 		Company expectedCompany = companyDao.findById(company.getId()).get();
 
@@ -108,12 +105,12 @@ public class BusinessServiceTest {
 		City city = new City("Lugo");
 		cityDao.save(city);
 
-		companyService.addCompany(user.getId(), "Delivr", 27, true, true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID);
+		businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID);
 
 	}
 
 	@Test
-	public void testModifyCompany() throws InstanceNotFoundException, WrongUserException {
+	public void testModifyCompany() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
 
@@ -122,12 +119,12 @@ public class BusinessServiceTest {
 		CompanyCategory category2 = new CompanyCategory("Vegano");
 		companyCategoryDao.save(category2);
 
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 
-		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
-		Company modifiedCompany = companyService.modifyCompany(user.getId(), company.getId(), "VegFood", 40, false,
+		Company modifiedCompany = businessService.modifyCompany(user.getId(), company.getId(), "VegFood", 40, false,
 				false, 15, category2.getId());
 
 		assertEquals(modifiedCompany.getName(), "VegFood");
@@ -139,27 +136,51 @@ public class BusinessServiceTest {
 
 	}
 
-	/*
-	 * TODO : Falta añadir direcciones. En métodos de Address se realiza la
-	 * asignación address con company
-	 */
 	@Test
-	public void testDeregisterCompany() throws InstanceNotFoundException, WrongUserException {
+	public void testBlockAndUnlockCompany() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
 
 		CompanyCategory category = new CompanyCategory("Vegetariano");
 		companyCategoryDao.save(category);
 
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 
-		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+
+		Company blockedCompany = businessService.blockCompany(user.getId(), company.getId());
+
+		assertTrue(blockedCompany.getBlock());
+		assertEquals(blockedCompany.getId(), company.getId());
+
+		Company unlockedCompany = businessService.unlockCompany(user.getId(), company.getId());
+
+		assertFalse(unlockedCompany.getBlock());
+		assertEquals(unlockedCompany.getId(), company.getId());
+
+	}
+
+	@Test
+	public void testDeregisterCompany() throws InstanceNotFoundException {
+
+		User user = signUpUser("user");
+
+		CompanyCategory category = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+
+		businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(), company.getId());
+		businessService.addCompanyAddress("Jorge 21", "15700", city.getId(), company.getId());
 
 		long numberOfCompanies = companyDao.count();
-		// long numberOfAddresses = addressDao.count();
+		long numberOfCompanyAddresses = companyAddressDao.count();
 
-		companyService.deregister(user.getId(), company.getId());
+		businessService.deregister(user.getId(), company.getId());
 
 		/* Comprobamos que hay una fila menos en Company */
 		assertEquals(numberOfCompanies - 1, companyDao.count());
@@ -167,30 +188,30 @@ public class BusinessServiceTest {
 		 * Comprobamos que las dos direcciones relacionadas con la empresa se han
 		 * eliminado
 		 */
-		// assertEquals(numberOfAddresses - 2, addressDao.count());
+		assertEquals(numberOfCompanyAddresses - 2, companyAddressDao.count());
 
 	}
 
 	@Test(expected = InstanceNotFoundException.class)
-	public void testNonExistingCompany() throws InstanceNotFoundException, WrongUserException {
+	public void testNonExistingCompany() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
 
 		CompanyCategory category = new CompanyCategory("Vegetariano");
 		companyCategoryDao.save(category);
 
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 
-		companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
-		companyService.modifyCompany(user.getId(), NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false, 15,
+		businessService.modifyCompany(user.getId(), NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false, 15,
 				category.getId());
 
 	}
 
-	@Test(expected = WrongUserException.class)
-	public void testWrongUser() throws InstanceNotFoundException, WrongUserException {
+	@Test(expected = PermissionException.class)
+	public void testWrongUser() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
 		User wrongUser = signUpUser("wrongUser");
@@ -198,12 +219,12 @@ public class BusinessServiceTest {
 		CompanyCategory category = new CompanyCategory("Vegetariano");
 		companyCategoryDao.save(category);
 
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 
-		Company company = companyService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
-		companyService.modifyCompany(wrongUser.getId(), company.getId(), "GreenFood", 40, true, false, 15,
+		businessService.modifyCompany(wrongUser.getId(), company.getId(), "GreenFood", 40, true, false, 15,
 				category.getId());
 
 	}
@@ -217,26 +238,29 @@ public class BusinessServiceTest {
 		companyCategoryDao.save(category2);
 		companyCategoryDao.save(category1);
 
-		assertEquals(Arrays.asList(category1, category2), companyService.findAllCompanyCategories());
+		assertEquals(Arrays.asList(category1, category2), businessService.findAllCompanyCategories());
 
 	}
 
 	@Test
-	public void testAddAddress() throws InstanceNotFoundException {
+	public void testAddCompanyAddress() throws InstanceNotFoundException {
 		User user = signUpUser("user");
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
 
-		long numberOfAddresses = addressDao.count();
+		long numberOfAddresses = companyAddressDao.count();
 
 		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category);
 		companyDao.save(company);
 
-		companyService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
+		businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(), company.getId());
+		businessService.addCompanyAddress("Jorge 21", "15700", city.getId(), company.getId());
 
-		assertEquals(numberOfAddresses + 1, addressDao.count());
+		long count = companyAddressDao.count();
+
+		assertEquals(numberOfAddresses + 2, count);
 
 	}
 
@@ -249,26 +273,27 @@ public class BusinessServiceTest {
 		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category);
 		companyDao.save(company);
 
-		companyService.addAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId());
+		businessService.addCompanyAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId());
 	}
 
 	@Test
-	public void testDeleteAddress() throws InstanceNotFoundException {
+	public void testDeleteCompanyAddress() throws InstanceNotFoundException, PermissionException {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
 		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category);
 		companyDao.save(company);
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 
-		Address address1 = companyService.addAddress("Rosalia 18", "15700", city.getId(), company.getId());
-		companyService.addAddress("Magan 23", "13456", city.getId(), company.getId());
+		CompanyAddress address1 = businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(),
+				company.getId());
+		businessService.addCompanyAddress("Magan 23", "13456", city.getId(), company.getId());
 
-		long numberOfAddresses = addressDao.count();
+		long numberOfAddresses = companyAddressDao.count();
 		long numberOfCompanyAddresses = companyAddressDao.count();
 
-		companyService.deleteAddress(address1.getId());
+		businessService.deleteCompanyAddress(user.getId(), address1.getAddressId());
 
 		assertEquals(numberOfAddresses - 1, 1);
 		assertEquals(numberOfCompanyAddresses - 1, 1);
@@ -276,7 +301,7 @@ public class BusinessServiceTest {
 	}
 
 	@Test
-	public void testFindAddresses() throws InstanceNotFoundException {
+	public void testFindCompanyAddresses() throws InstanceNotFoundException {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
@@ -284,15 +309,17 @@ public class BusinessServiceTest {
 		companyDao.save(company1);
 		Company company2 = new Company(user, "Delivr", 13, true, true, 10, false, category);
 		companyDao.save(company2);
-		City city = new City("A Coruña");
+		City city = new City("Lugo");
 		cityDao.save(city);
 
-		Address address1 = companyService.addAddress("Rosalia 18", "15700", city.getId(), company1.getId());
-		Address address2 = companyService.addAddress("Manuel 36", "12760", city.getId(), company1.getId());
-		companyService.addAddress("Juan 48", "14900", city.getId(), company2.getId());
+		CompanyAddress address1 = businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(),
+				company1.getId());
+		CompanyAddress address2 = businessService.addCompanyAddress("Manuel 36", "12760", city.getId(),
+				company1.getId());
+		businessService.addCompanyAddress("Juan 48", "14900", city.getId(), company2.getId());
 
-		Block<Address> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
-		Block<CompanyAddress> actual = companyService.findAddresses(company1.getId(), 0, 10);
+		Block<CompanyAddress> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
+		Block<CompanyAddress> actual = businessService.findCompanyAddresses(company1.getId(), 0, 10);
 
 		assertEquals(expectedBlock, actual);
 
@@ -307,7 +334,7 @@ public class BusinessServiceTest {
 		cityDao.save(city1);
 		cityDao.save(city2);
 
-		assertEquals(Arrays.asList(city1, city2), companyService.findAllCities());
+		assertEquals(Arrays.asList(city1, city2), businessService.findAllCities());
 
 	}
 

@@ -1,16 +1,16 @@
 package es.udc.tfgproject.backend.rest.dtos;
 
-public class AddressSummaryDto {
+public class CompanyAddressDto {
 
 	private Long id;
 	private String street;
 	private String cp;
 	private Long cityId;
 
-	public AddressSummaryDto() {
+	public CompanyAddressDto() {
 	}
 
-	public AddressSummaryDto(Long id, String street, String cp, Long cityId) {
+	public CompanyAddressDto(Long id, String street, String cp, Long cityId) {
 		this.id = id;
 		this.street = street;
 		this.cp = cp;

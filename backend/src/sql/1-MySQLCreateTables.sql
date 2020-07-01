@@ -36,6 +36,7 @@ CREATE TABLE Address(
     street VARCHAR(60) COLLATE latin1_bin NOT NULL,
     cp VARCHAR(20) NOT NULL,
     cityId BIGINT NOT NULL,
+    
     CONSTRAINT AddressPK PRIMARY KEY (id),
     CONSTRAINT AddressCityIdFK FOREIGN KEY(cityId)
         REFERENCES City (id)
@@ -76,10 +77,8 @@ CREATE TABLE Company(
 CREATE INDEX CompanyIndexByName ON Company (name);
 
 CREATE TABLE CompanyAddress(
-    id BIGINT NOT NULL AUTO_INCREMENT,
     companyId BIGINT NOT NULL,
     addressId BIGINT NOT NULL,
-    CONSTRAINT CompanyAddressPK PRIMARY KEY (id),
     CONSTRAINT CompanyAddressCompanyIdFK FOREIGN KEY(companyId)
         REFERENCES Company (id),
     CONSTRAINT CompanyAddressAddressIdFK FOREIGN KEY(addressId)

@@ -1,41 +1,20 @@
 package es.udc.tfgproject.backend.rest.dtos;
 
-public class CompanyDto {
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-	private Long id;
+public class ModifyCompanyParamsDto {
+
 	private String name;
 	private int capacity;
 	private Boolean reserve;
 	private Boolean homeSale;
 	private int reservePercentage;
-	private Boolean block;
-	private String userName;
 	private Long companyCategoryId;
 
-	public CompanyDto() {
-	}
-
-	public CompanyDto(Long id, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			Boolean block, Long companyCategoryId, String userName) {
-		this.id = id;
-		this.userName = userName;
-		this.name = name;
-		this.capacity = capacity;
-		this.reserve = reserve;
-		this.homeSale = homeSale;
-		this.reservePercentage = reservePercentage;
-		this.block = block;
-		this.companyCategoryId = companyCategoryId;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+	@NotNull
+	@Size(min = 1, max = 60)
 	public String getName() {
 		return name;
 	}
@@ -44,6 +23,8 @@ public class CompanyDto {
 		this.name = name;
 	}
 
+	@NotNull
+	@Min(value = 1)
 	public int getCapacity() {
 		return capacity;
 	}
@@ -52,6 +33,7 @@ public class CompanyDto {
 		this.capacity = capacity;
 	}
 
+	@NotNull
 	public Boolean getReserve() {
 		return reserve;
 	}
@@ -60,6 +42,7 @@ public class CompanyDto {
 		this.reserve = reserve;
 	}
 
+	@NotNull
 	public Boolean getHomeSale() {
 		return homeSale;
 	}
@@ -68,6 +51,8 @@ public class CompanyDto {
 		this.homeSale = homeSale;
 	}
 
+	@NotNull
+	@Min(value = 0)
 	public int getReservePercentage() {
 		return reservePercentage;
 	}
@@ -76,22 +61,7 @@ public class CompanyDto {
 		this.reservePercentage = reservePercentage;
 	}
 
-	public Boolean getBlock() {
-		return block;
-	}
-
-	public void setBlock(Boolean block) {
-		this.block = block;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
+	@NotNull
 	public Long getCompanyCategoryId() {
 		return companyCategoryId;
 	}
@@ -99,5 +69,4 @@ public class CompanyDto {
 	public void setCompanyCategoryId(Long companyCategoryId) {
 		this.companyCategoryId = companyCategoryId;
 	}
-
 }
