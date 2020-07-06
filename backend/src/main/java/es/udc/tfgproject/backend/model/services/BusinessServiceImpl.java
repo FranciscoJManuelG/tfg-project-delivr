@@ -119,6 +119,15 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
+	public Company findCompany(Long userId) throws InstanceNotFoundException {
+		User user = permissionChecker.checkUser(userId);
+
+		Company company = companyDao.findByUserId(user.getId()).get();
+
+		return company;
+	}
+
+	@Override
 	public List<CompanyCategory> findAllCompanyCategories() {
 
 		Iterable<CompanyCategory> categories = companyCategoryDao.findAll();

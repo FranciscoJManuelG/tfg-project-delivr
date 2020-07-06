@@ -230,6 +230,24 @@ public class BusinessServiceTest {
 	}
 
 	@Test
+	public void testFindCompany() throws InstanceNotFoundException {
+
+		User user = signUpUser("user");
+
+		CompanyCategory category = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company actual = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+
+		Company expected = businessService.findCompany(user.getId());
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void testFindAllCategories() {
 
 		CompanyCategory category1 = new CompanyCategory("category1");

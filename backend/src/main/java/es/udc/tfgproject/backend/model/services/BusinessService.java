@@ -23,6 +23,8 @@ public interface BusinessService {
 
 	void deregister(Long userId, Long companyId) throws InstanceNotFoundException;
 
+	Company findCompany(Long userId) throws InstanceNotFoundException;
+
 	List<CompanyCategory> findAllCompanyCategories();
 
 	CompanyAddress addCompanyAddress(String street, String cp, Long cityId, Long companyId)

@@ -91,6 +91,11 @@ public class BusinessController {
 
 	}
 
+	@GetMapping("/companies/company")
+	public CompanyDto findCompany(@RequestAttribute Long userId) throws InstanceNotFoundException {
+		return toCompanyDto(businessService.findCompany(userId));
+	}
+
 	@GetMapping("/companies/categories")
 	public List<CompanyCategoryDto> findAllCompanyCategories() {
 		return toCompanyCategoryDtos(businessService.findAllCompanyCategories());
