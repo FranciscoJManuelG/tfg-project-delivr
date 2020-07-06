@@ -4,11 +4,15 @@ import {Link} from 'react-router-dom';
 import {FormattedMessage} from 'react-intl';
 
 import users from '../../users';
+import business from '../../business';
 
 const Header = () => {
 
     const userName = useSelector(users.selectors.getUserName);
-
+    const block = useSelector(business.selectors.getBlock);
+    const role = useSelector(users.selectors.getRole);
+    const existsCompany = useSelector(business.selectors.existsCompany)
+    
     return (
 
         <nav className="navbar navbar-expand-lg navbar-light">
@@ -23,11 +27,30 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
 
                 <ul className="navbar-nav mr-auto">
+
                 </ul>
-                
+
                 {userName ? 
 
                 <ul className="navbar-nav">
+
+                    {block === false ?
+
+                    <Link className="dropdown-item" to="/business/block-company">
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-danger">Bloquear</button>
+                        </div> 
+                    </Link>
+
+                    :
+
+                    <Link className="dropdown-item" to="/business/unlock-company">
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-success">Desbloquear</button>
+                        </div> 
+                    </Link>
+
+                    }
                 
                     <li className="nav-item dropdown">
 
@@ -36,16 +59,27 @@ const Header = () => {
                             <span className="fas fa-user"></span>&nbsp;
                             {userName}
                         </a>
+                        
                         <div className="dropdown-menu dropdown-menu-right">
-                            <Link className="dropdown-item" to="/users/update-profile">
-                                <FormattedMessage id="project.users.UpdateProfile.title"/>
-                            </Link>
                             <Link className="dropdown-item" to="/users/change-password">
-                                <FormattedMessage id="project.users.ChangePassword.title"/>
+                                <FormattedMessage id="project.users.UserSettings.title"/>
                             </Link>
-                            <Link className="dropdown-item" to="/companies/modify-company">
-                                <FormattedMessage id="project.companies.ModifyCompany.title"/>
-                            </Link>
+
+                            {role === "BUSINESSMAN" && existsCompany &&
+                                <div>
+                                    <Link className="dropdown-item" to="/business/modify-company">
+                                        <FormattedMessage id="project.business.BusinessSettings.title"/>
+                                    </Link>
+                                </div>
+                            }
+                            {role === "BUSINESSMAN" && !existsCompany &&     
+                                <div>
+                                    <Link className="dropdown-item" to="/business/add-company">
+                                        <FormattedMessage id="project.business.AddCompany.title"/>
+                                    </Link>
+                                </div>
+                            }
+
                             <div className="dropdown-divider"></div>
                             <Link className="dropdown-item" to="/users/logout">
                                 <FormattedMessage id="project.app.Header.logout"/>

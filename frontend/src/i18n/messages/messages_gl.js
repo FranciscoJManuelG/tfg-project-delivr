@@ -32,6 +32,7 @@ export default {
     'project.users.ChangePassword.fields.newPassword': 'Contrasinal nova',
     'project.users.ChangePassword.fields.oldPassword': 'Contrasinal antiga',
     'project.users.ChangePassword.title': 'Cambiar contrasinal',
+    'project.users.UserSettings.title': 'Axustes de usuario',
     'project.users.Login.title': 'Autenticarse',
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contrasinal',
     'project.users.SignUp.title': 'Rexistrarse',

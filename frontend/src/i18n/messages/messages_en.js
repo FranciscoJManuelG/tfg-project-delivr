@@ -32,6 +32,7 @@ export default {
     'project.users.ChangePassword.fields.newPassword': 'New password',
     'project.users.ChangePassword.fields.oldPassword': 'Old password',
     'project.users.ChangePassword.title': 'Change password',
+    'project.users.UserSettings.title': 'User settings',
     'project.users.Login.title': 'Login',
     'project.users.SignUp.fields.confirmPassword': 'Confirm password',
     'project.users.SignUp.title': 'Sign up',

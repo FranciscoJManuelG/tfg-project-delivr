@@ -7,6 +7,7 @@ import {Errors} from '../../common';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
 import CompanyCategorySelector from './CompanyCategorySelector';
+import Sidebar from '../../common/components/BusinessSidebar'
 
 const ModifyCompany = () => {
 
@@ -15,8 +16,8 @@ const ModifyCompany = () => {
     const history = useHistory();
     const [name, setName] = useState(company.name);
     const [capacity, setCapacity] = useState(company.capacity);
-    const [reserve, setReserve] = useState('');
-    const [homeSale, setHomeSale] = useState('');
+    const [reserve, setReserve] = useState(company.reserve);
+    const [homeSale, setHomeSale] = useState(company.homeSale);
     const [reservePercentage, setReservePercentage] = useState(company.reservePercentage);
     const [companyCategoryId, setCompanyCategoryId]  = useState(company.companyCategoryId);
     const [backendErrors, setBackendErrors] = useState(null);
@@ -51,6 +52,7 @@ const ModifyCompany = () => {
 
     return (
         <div class="container">
+            <Sidebar/>
             <div className="row justify-content-center" >
                 <aside className="col-sm-6">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
@@ -101,7 +103,7 @@ const ModifyCompany = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="reserve">Reserva: </label>
+                                    <label htmlFor="reserve">Reserva: </label> 
                                     <div className="form-check-inline">
                                         <input type="radio" id="reserve" name="reserve" className="form-check-input" 
                                             value={true}

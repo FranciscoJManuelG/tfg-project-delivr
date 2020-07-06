@@ -6,6 +6,7 @@ import {useHistory} from 'react-router-dom';
 import {Errors} from '../../common';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
+import Sidebar from '../../common/components/UserSidebar'
 
 const ChangePassword = () => {
 
@@ -64,6 +65,7 @@ const ChangePassword = () => {
 
     return (
         <div class="container">
+            <Sidebar/>
             <div class="row justify-content-center">
                 <aside class="col-sm-5">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>

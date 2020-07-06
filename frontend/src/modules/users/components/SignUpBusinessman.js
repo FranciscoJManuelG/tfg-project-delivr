@@ -35,7 +35,7 @@ const SignUpBusinessman = () => {
                 lastName: lastName.trim(),
                 email: email.trim(),
                 phone: phone.trim()},
-                () => history.push('/companies/add-company'),
+                () => history.push('/business/add-company'),
                 errors => setBackendErrors(errors),
                 () => {
                     history.push('/users/login');

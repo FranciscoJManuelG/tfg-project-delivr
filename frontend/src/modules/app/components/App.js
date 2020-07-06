@@ -6,8 +6,7 @@ import Header from './Header';
 import Body from './Body';
 import Footer from './Footer';
 import users from '../../users';
-import companies from '../../companies';
-import { createDispatchHook } from 'react-redux/lib/hooks/useDispatch';
+import business from '../../business';
 
 const App = () => {
 
@@ -18,7 +17,9 @@ const App = () => {
         dispatch(users.actions.tryLoginFromServiceToken(
             () => dispatch(users.actions.logout())));
 
-        dispatch(companies.actions.findAllCompanyCategories());
+        dispatch(business.actions.findAllCompanyCategories());
+
+        dispatch(business.actions.findAllCities());
     
     });
 

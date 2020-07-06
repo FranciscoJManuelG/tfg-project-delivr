@@ -32,6 +32,7 @@ export default {
     'project.users.ChangePassword.fields.newPassword': 'Contraseña nueva',
     'project.users.ChangePassword.fields.oldPassword': 'Contraseña antigua',
     'project.users.ChangePassword.title': 'Cambiar contraseña',
+    'project.users.UserSettings.title': 'Ajustes de usuario',
     'project.users.Login.title': 'Autenticarse',
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contraseña',
     'project.users.SignUpCompany.title': 'Únete a Delivr',

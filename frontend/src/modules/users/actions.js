@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
 import backend from '../../backend';
+import * as businessActions from '../business/actions';
 
 const signUpCompleted = authenticatedUser => ({
     type: actionTypes.SIGN_UP_COMPLETED,
@@ -34,6 +35,11 @@ export const login = (userName, password, onSuccess, onErrors, reauthenticationC
         authenticatedUser => {
             dispatch(loginCompleted(authenticatedUser));
             onSuccess();
+            backend.businessService.findCompany(
+                company => {
+                    dispatch(businessActions.findCompanyCompleted(company));
+                }
+            );
         },
         onErrors,
         reauthenticationCallback
@@ -44,7 +50,13 @@ export const tryLoginFromServiceToken = reauthenticationCallback => dispatch =>
         authenticatedUser => {
             if (authenticatedUser) {
                 dispatch(loginCompleted(authenticatedUser));
+                backend.businessService.findCompany(
+                    company => {
+                        dispatch(businessActions.findCompanyCompleted(company));
+                    }
+                );
             }
+            
         },
         reauthenticationCallback
     );
