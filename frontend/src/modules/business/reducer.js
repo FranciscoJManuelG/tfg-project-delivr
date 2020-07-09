@@ -20,9 +20,6 @@ const company = (state = initialState.company, action) => {
         case actionTypes.MODIFY_COMPANY_COMPLETED:
             return action.company;
 
-        case actionTypes.COMPANY_ADDRESS_DELETED:
-            return action.company;
-
         case actionTypes.BLOCK_COMPANY_COMPLETED:
             return action.company;
 
@@ -66,6 +63,13 @@ const companyAddressSearch = (state = initialState.companyAddressSearch, action)
 
         case actionTypes.CLEAR_COMPANY_ADDRESS_SEARCH:
             return initialState.companyAddressSearch;
+
+        case actionTypes.COMPANY_ADDRESS_DELETED:
+            return { criteria: state.criteria, 
+                result: {
+                     items: state.result.items.filter
+                        (companyAddress => companyAddress.id !== action.addressId), 
+                    existMoreItems : state.result.existMoreItems} };
 
         default:
             return state;

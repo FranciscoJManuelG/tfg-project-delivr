@@ -7,7 +7,7 @@ const CompanyAddress = ({companyAddress, cities, onDeleteItem, onBackendErrors})
 
     const handleDeleteItem = () => {
 
-        onDeleteItem(companyAddress.addressId, 
+        onDeleteItem(companyAddress.id, 
             () => onBackendErrors(null), 
             backendErrors => onBackendErrors(backendErrors));
 
@@ -40,7 +40,7 @@ const CompanyAddress = ({companyAddress, cities, onDeleteItem, onBackendErrors})
 }
 
 CompanyAddress.propTypes = {
-    companyAddress: PropTypes.array.isRequired,
+    companyAddress: PropTypes.object.isRequired,
     cities: PropTypes.array.isRequired,
     onDeleteItem: PropTypes.func,
     onBackendErrors: PropTypes.func

@@ -109,16 +109,16 @@ export const addCompanyAddress = (street, cp, cityId, companyId, onSuccess, onEr
         },
         onErrors);
 
-const companyAddressDeleted = companyAddress => ({
+const companyAddressDeleted = addressId => ({
     type: actionTypes.COMPANY_ADDRESS_DELETED,
-    companyAddress
+    addressId
 });
 
 export const deleteCompanyAddress = (addressId, onSuccess, 
     onErrors) => dispatch => 
     backend.businessService.deleteCompanyAddress(addressId,
         companyAddress => {
-            dispatch(companyAddressDeleted(companyAddress));
+            dispatch(companyAddressDeleted(addressId));
             onSuccess();
         },
         onErrors);

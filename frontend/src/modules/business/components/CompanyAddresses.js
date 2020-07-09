@@ -35,7 +35,7 @@ const CompanyAddresses = ({companyAddresses, cities, onDeleteItem}) => {
 
                 <tbody>
                     {companyAddresses.map(companyAddress => 
-                        <CompanyAddress key={companyAddress.addressId}
+                        <CompanyAddress key={companyAddress.id}
                             companyAddress={companyAddress}
                             cities={cities}
                             onDeleteItem={onDeleteItem}
