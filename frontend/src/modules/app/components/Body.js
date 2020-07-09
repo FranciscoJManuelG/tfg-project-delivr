@@ -4,7 +4,7 @@ import {Route, Switch} from 'react-router-dom';
 
 import AppGlobalComponents from './AppGlobalComponents';
 import {Login, SignUp, UpdateProfile, ChangePassword, Logout, SignUpBusinessman} from '../../users';
-import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, BlockCompany, UnlockCompany} from '../../business';
+import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany} from '../../business';
 import users from '../../users';
 
 const Body = () => {
@@ -26,8 +26,7 @@ const Body = () => {
                 {loggedIn && <Route exact path="/business/find-company-addresses"><FindCompanyAddresses/></Route>}
                 {loggedIn && <Route exact path="/business/find-company-addresses-result"><FindCompanyAddressesResult/></Route>}
                 {loggedIn && <Route exact path="/business/add-company-address"><AddCompanyAddress/></Route>}
-                {loggedIn && <Route exact path="/business/block-company"><BlockCompany/></Route>}
-                {loggedIn && <Route exact path="/business/unlock-company"><UnlockCompany/></Route>}
+                {loggedIn && <Route exact path="/business/state-company"><StateCompany/></Route>}
                 {!loggedIn && <Route exact path="/users/login"><Login/></Route>}
                 {!loggedIn && <Route exact path="/users/signup"><SignUp/></Route>}
                 {!loggedIn && <Route exact path="/users/signup-businessman"><SignUpBusinessman/></Route>}

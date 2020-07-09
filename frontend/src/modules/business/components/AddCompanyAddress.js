@@ -26,7 +26,7 @@ const AddCompanyAddress = () => {
         if (form.checkValidity()) {
             
             dispatch(actions.addCompanyAddress(street.trim(),
-                cp.trim(), 5, company.id,
+                cp.trim(), toNumber(cityId), company.id,
                 () => history.push('/business/find-company-addresses'),
                 errors => setBackendErrors(errors)));
 
@@ -38,7 +38,7 @@ const AddCompanyAddress = () => {
         }
     }
 
-    //const toNumber = value => value.length > 0 ? Number(value) : null;
+    const toNumber = value => value.length > 0 ? Number(value) : null;
 
     return (
         <div class="container">

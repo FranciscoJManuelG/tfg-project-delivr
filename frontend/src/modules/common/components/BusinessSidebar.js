@@ -18,7 +18,7 @@ const BusinessSidebar = () => {
                     </Link>
                 </div>
                 <div class="list-group list-group-flush">
-                    <Link className="list-group-item list-group-item-action" to="/business/block-company">
+                    <Link className="list-group-item list-group-item-action" to="/business/state-company">
                         <FormattedMessage id="project.business.BlockCompany.title"/>
                     </Link>
                 </div>

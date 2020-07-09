@@ -9,7 +9,6 @@ import business from '../../business';
 const Header = () => {
 
     const userName = useSelector(users.selectors.getUserName);
-    const block = useSelector(business.selectors.getBlock);
     const role = useSelector(users.selectors.getRole);
     const existsCompany = useSelector(business.selectors.existsCompany)
     
@@ -33,24 +32,6 @@ const Header = () => {
                 {userName ? 
 
                 <ul className="navbar-nav">
-
-                    {block === false ?
-
-                    <Link className="dropdown-item" to="/business/block-company">
-                        <div className="form-group">
-                            <button type="submit" className="btn btn-danger">Bloquear</button>
-                        </div> 
-                    </Link>
-
-                    :
-
-                    <Link className="dropdown-item" to="/business/unlock-company">
-                        <div className="form-group">
-                            <button type="submit" className="btn btn-success">Desbloquear</button>
-                        </div> 
-                    </Link>
-
-                    }
                 
                     <li className="nav-item dropdown">
 

@@ -27,6 +27,9 @@ export default {
     'project.global.validator.email': 'Introduzca una dirección de correo electrónico correcta',
     'project.global.validator.passwordsDoNotMatch': 'Las contraseñas no coinciden',
     'project.global.validator.required': 'Campo obligatorio',
+    'project.global.fields.street': 'Calle',
+    'project.global.fields.cp': 'Código postal',
+    'project.global.fields.city': 'Ciudad',
 
     'project.users.ChangePassword.fields.confirmNewPassword': 'Confirmar contraseña nueva',
     'project.users.ChangePassword.fields.newPassword': 'Contraseña nueva',
@@ -37,6 +40,13 @@ export default {
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contraseña',
     'project.users.SignUpCompany.title': 'Únete a Delivr',
     'project.users.SignUpClient.title': 'Registrarse',
-    'project.users.UpdateProfile.title': 'Actualizar perfil'
+    'project.users.UpdateProfile.title': 'Actualizar perfil',
+
+    'project.business.BusinessSettings.title': 'Ajustes de empresa',
+    'project.business.AddCompany.title': 'Añadir empresa',
+    'project.business.ModifyCompany.title': 'Modificar información de la empresa',
+    'project.business.FindAddresses.title': 'Direcciones de la empresa',
+    'project.business.BlockCompany.title': 'Bloquear empresa',
+    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'No existe ninguna dirección asignada a esta empresa'
 
 }

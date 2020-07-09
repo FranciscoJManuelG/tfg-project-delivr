@@ -23,8 +23,9 @@ const FindCompanyAddressesResult = () => {
     if (companyAddressSearch.result.items.length === 0) {
         return (
             <div>
+                <Sidebar/>
                 <div className="alert alert-info" role="alert">
-                    <FormattedMessage id='project.shopping.FindOrdersResult.noOrders'/>
+                    <FormattedMessage id='project.business.FindCompanyAddressesResult.noCompanyAddresses'/>
                 </div>
                 <Link to='/business/add-company-address'>
                     <div className="form-group">

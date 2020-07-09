@@ -28,7 +28,7 @@ const AddCompany = () => {
             
             dispatch(actions.addCompany(name.trim(),
                 capacity, reserve, homeSale,
-                reservePercentage, 1,
+                reservePercentage, toNumber(companyCategoryId),
                 () => history.push('/users/login'),
                 errors => setBackendErrors(errors)));
 

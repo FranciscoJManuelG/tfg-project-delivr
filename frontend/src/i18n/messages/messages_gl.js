@@ -27,6 +27,9 @@ export default {
     'project.global.validator.email': 'Introduzca unha dirección de correo electrónico correcta',
     'project.global.validator.passwordsDoNotMatch': 'As contrasinais non coinciden',
     'project.global.validator.required': 'Campo obrigatorio',
+    'project.global.fields.street': 'Rúa',
+    'project.global.fields.cp': 'Código postal',
+    'project.global.fields.city': 'Cidade',
 
     'project.users.ChangePassword.fields.confirmNewPassword': 'Confirmar contrasinal nova',
     'project.users.ChangePassword.fields.newPassword': 'Contrasinal nova',
@@ -36,6 +39,13 @@ export default {
     'project.users.Login.title': 'Autenticarse',
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contrasinal',
     'project.users.SignUp.title': 'Rexistrarse',
-    'project.users.UpdateProfile.title': 'Actualizar perfil'
+    'project.users.UpdateProfile.title': 'Actualizar perfil',
+
+    'project.business.BusinessSettings.title': 'Axustes de empresa',
+    'project.business.AddCompany.title': 'Engadir empresa',
+    'project.business.ModifyCompany.title': 'Modificar información da empresa',
+    'project.business.FindAddresses.title': 'Direccións da empresa',
+    'project.business.BlockCompany.title': 'Bloquear empresa',
+    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'Non existe ningunha dirección asignada a esta empresa'
 
 }

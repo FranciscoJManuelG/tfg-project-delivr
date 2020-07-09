@@ -27,6 +27,9 @@ export default {
     'project.global.validator.email': 'Provide a correct e-mail address',
     'project.global.validator.passwordsDoNotMatch': 'Passwords do not match',
     'project.global.validator.required': 'Required field',
+    'project.global.fields.street': 'Street',
+    'project.global.fields.cp': 'Postal code',
+    'project.global.fields.city': 'City',
 
     'project.users.ChangePassword.fields.confirmNewPassword': 'Confirm new password',
     'project.users.ChangePassword.fields.newPassword': 'New password',
@@ -36,6 +39,13 @@ export default {
     'project.users.Login.title': 'Login',
     'project.users.SignUp.fields.confirmPassword': 'Confirm password',
     'project.users.SignUp.title': 'Sign up',
-    'project.users.UpdateProfile.title': 'Update profile'
+    'project.users.UpdateProfile.title': 'Update profile',
+
+    'project.business.BusinessSettings.title': 'Business settings',
+    'project.business.AddCompany.title': 'Add company',
+    'project.business.ModifyCompany.title': 'Modify company information',
+    'project.business.FindAddresses.title': 'Company addresses',
+    'project.business.BlockCompany.title': 'Block company',
+    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'No company addresses found'
 
 }

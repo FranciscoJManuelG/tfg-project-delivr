@@ -25,7 +25,6 @@
       "last 1 edge version"
     ]
   },
-
   "author": "Francisco Javier Manuel García",
   "license": "BSD",
   "dependencies": {
@@ -38,7 +37,7 @@
     "react-intl": "^3.9.2",
     "react-redux": "^7.1.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.3.0",
+    "react-scripts": "^3.4.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0"

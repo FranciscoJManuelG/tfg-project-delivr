@@ -36,7 +36,7 @@ const ModifyCompany = () => {
                 reserve: reserve,
                 homeSale: homeSale,
                 reservePercentage: reservePercentage,
-                companyCategoryId: 1},
+                companyCategoryId: toNumber(companyCategoryId)},
                 () => history.push('/'),
                 errors => setBackendErrors(errors)));
 
@@ -58,7 +58,7 @@ const ModifyCompany = () => {
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
                     <div className="card">
                         <article className="card-body">
-                	        <h4 className="card-title mb-4 mt-1">Modifica los datos de la empresa</h4>
+                	        <h4 className="card-title mb-4 mt-1">Modificar información de la empresa</h4>
                 	        <br/>
                             <form ref={node => form = node} className="needs-validation" 
                                 noValidate onSubmit={e => handleSubmit(e)}>
