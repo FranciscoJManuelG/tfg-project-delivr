@@ -63,12 +63,12 @@ CREATE TABLE Company(
     homeSale BOOLEAN NOT NULL,
     reservePercentage SMALLINT NOT NULL,
     userId BIGINT NOT NULL,
-    categoryId BIGINT NOT NULL,
+    companyCategoryId BIGINT NOT NULL,
     block BOOLEAN NOT NULL,
     CONSTRAINT CompanyIdPK PRIMARY KEY (id),
     CONSTRAINT CompanyUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
-    CONSTRAINT CompanyCategoryIdFK FOREIGN KEY(categoryId)
+    CONSTRAINT CompanyCategoryIdFK FOREIGN KEY(companyCategoryId)
         REFERENCES CompanyCategory (id)
     
     

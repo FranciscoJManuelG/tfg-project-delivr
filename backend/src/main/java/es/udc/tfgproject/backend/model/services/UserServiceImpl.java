@@ -66,9 +66,10 @@ public class UserServiceImpl implements UserService {
 			throw new IncorrectLoginException(userName, password);
 		}
 
-		if (!passwordEncoder.matches(password, user.get().getPassword())) {
+		//TODO : volver a ponerlo cuando no haga pruebas
+		/*if (!passwordEncoder.matches(password, user.get().getPassword())) {
 			throw new IncorrectLoginException(userName, password);
-		}
+		}*/
 
 		return user.get();
 

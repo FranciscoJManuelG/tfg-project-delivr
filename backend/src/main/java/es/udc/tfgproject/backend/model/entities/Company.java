@@ -1,5 +1,8 @@
 package es.udc.tfgproject.backend.model.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -7,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Company {
@@ -20,6 +24,7 @@ public class Company {
 	private Boolean block;
 	private User user;
 	private CompanyCategory companyCategory;
+	private Set<CompanyAddress> addresses = new HashSet<>();
 
 	public Company() {
 	}
@@ -105,13 +110,22 @@ public class Company {
 	}
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "categoryId")
+	@JoinColumn(name = "companyCategoryId")
 	public CompanyCategory getCompanyCategory() {
 		return companyCategory;
 	}
 
 	public void setCompanyCategory(CompanyCategory companyCategory) {
 		this.companyCategory = companyCategory;
+	}
+
+	@OneToMany(mappedBy = "company")
+	public Set<CompanyAddress> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(Set<CompanyAddress> addresses) {
+		this.addresses = addresses;
 	}
 
 }
