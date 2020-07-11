@@ -1,7 +1,9 @@
 package es.udc.tfgproject.backend.test.model.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Arrays;
 
 import javax.transaction.Transactional;
 
@@ -12,12 +14,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import es.udc.tfgproject.backend.model.entities.City;
+import es.udc.tfgproject.backend.model.entities.CityDao;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.entities.User.RoleType;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectLoginException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectPasswordException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
+import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.UserService;
 
 @RunWith(SpringRunner.class)
@@ -27,9 +35,16 @@ import es.udc.tfgproject.backend.model.services.UserService;
 public class UserServiceTest {
 
 	private final Long NON_EXISTENT_ID = new Long(-1);
+	private final long NON_EXISTENT_CITY_ID = new Long(-1);
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private CityDao cityDao;
+
+	@Autowired
+	private FavouriteAddressDao favouriteAddressDao;
 
 	private User createUser(String userName) {
 		return new User(userName, "password", "firstName", "lastName", userName + "@" + userName + ".com", "675123098");
@@ -164,6 +179,74 @@ public class UserServiceTest {
 		userService.signUp(user);
 		assertThrows(IncorrectPasswordException.class,
 				() -> userService.changePassword(user.getId(), 'Y' + oldPassword, newPassword));
+
+	}
+
+	@Test
+	public void testAddFavouriteAddress() throws InstanceNotFoundException, DuplicateInstanceException {
+		User user = createUser("user");
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		userService.signUp(user);
+
+		long numberOfAddresses = favouriteAddressDao.count();
+
+		userService.addFavouriteAddress("Rosalia 18", "15700", city.getId(), user.getId());
+		userService.addFavouriteAddress("Jorge 21", "15700", city.getId(), user.getId());
+
+		long count = favouriteAddressDao.count();
+
+		assertEquals(numberOfAddresses + 2, count);
+
+	}
+
+	@Test(expected = InstanceNotFoundException.class)
+	public void testNonExistingCity() throws InstanceNotFoundException {
+
+		User user = createUser("user");
+
+		userService.addFavouriteAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, user.getId());
+	}
+
+	@Test
+	public void testDeleteFavouriteAddress()
+			throws InstanceNotFoundException, PermissionException, DuplicateInstanceException {
+		User user = createUser("user");
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		userService.signUp(user);
+
+		FavouriteAddress address1 = userService.addFavouriteAddress("Rosalia 18", "15700", city.getId(), user.getId());
+		userService.addFavouriteAddress("Magan 23", "13456", city.getId(), user.getId());
+
+		long numberOfFavouriteAddresses = favouriteAddressDao.count();
+
+		userService.deleteFavouriteAddress(user.getId(), address1.getAddressId());
+
+		assertEquals(numberOfFavouriteAddresses - 1, 1);
+
+	}
+
+	@Test
+	public void testFindCompanyAddresses() throws InstanceNotFoundException, DuplicateInstanceException {
+		User user = createUser("user");
+		User user2 = createUser("other");
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		userService.signUp(user);
+		userService.signUp(user2);
+
+		FavouriteAddress address1 = userService.addFavouriteAddress("Rosalia 18", "15700", city.getId(), user.getId());
+		FavouriteAddress address2 = userService.addFavouriteAddress("Manuel 36", "12760", city.getId(), user.getId());
+		userService.addFavouriteAddress("Juan 48", "14900", city.getId(), user2.getId());
+
+		Block<FavouriteAddress> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
+		Block<FavouriteAddress> actual = userService.findFavouriteAddresses(user.getId(), 0, 10);
+
+		assertEquals(expectedBlock, actual);
 
 	}
 

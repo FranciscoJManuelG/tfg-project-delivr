@@ -1,5 +1,6 @@
 -- Indexes for primary keys have been explicitly created.
 
+DROP TABLE FavouriteAddress;
 DROP TABLE CompanyAddress;
 DROP TABLE Company;
 DROP TABLE CompanyCategory;
@@ -82,6 +83,16 @@ CREATE TABLE CompanyAddress(
     CONSTRAINT CompanyAddressCompanyIdFK FOREIGN KEY(companyId)
         REFERENCES Company (id),
     CONSTRAINT CompanyAddressAddressIdFK FOREIGN KEY(addressId)
+        REFERENCES Address (id)
+    
+) ENGINE = InnoDB;
+
+CREATE TABLE FavouriteAddress(
+    userId BIGINT NOT NULL,
+    addressId BIGINT NOT NULL,
+    CONSTRAINT FavouriteAddressUserIdFK FOREIGN KEY(userId)
+        REFERENCES User (id),
+    CONSTRAINT FavouriteAddressAddressIdFK FOREIGN KEY(addressId)
         REFERENCES Address (id)
     
 ) ENGINE = InnoDB;

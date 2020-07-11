@@ -3,10 +3,16 @@ package es.udc.tfgproject.backend.model.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.udc.tfgproject.backend.model.entities.City;
+import es.udc.tfgproject.backend.model.entities.CityDao;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.entities.User.RoleType;
 import es.udc.tfgproject.backend.model.entities.UserDao;
@@ -14,6 +20,7 @@ import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectLoginException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectPasswordException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
+import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 @Service
 @Transactional
@@ -27,6 +34,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
+
+	@Autowired
+	private CityDao cityDao;
+
+	@Autowired
+	private FavouriteAddressDao favouriteAddressDao;
 
 	@Override
 	public void signUp(User user) throws DuplicateInstanceException {
@@ -66,10 +79,9 @@ public class UserServiceImpl implements UserService {
 			throw new IncorrectLoginException(userName, password);
 		}
 
-		//TODO : volver a ponerlo cuando no haga pruebas
-		/*if (!passwordEncoder.matches(password, user.get().getPassword())) {
+		if (!passwordEncoder.matches(password, user.get().getPassword())) {
 			throw new IncorrectLoginException(userName, password);
-		}*/
+		}
 
 		return user.get();
 
@@ -108,6 +120,58 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(passwordEncoder.encode(newPassword));
 		}
 
+	}
+
+	@Override
+	public FavouriteAddress addFavouriteAddress(String street, String cp, Long cityId, Long userId)
+			throws InstanceNotFoundException {
+
+		City city = checkCity(cityId);
+		User user = permissionChecker.checkUser(userId);
+
+		FavouriteAddress favouriteAddress = new FavouriteAddress();
+
+		favouriteAddress.setUser(user);
+		favouriteAddress.setCity(city);
+		favouriteAddress.setCp(cp);
+		favouriteAddress.setStreet(street);
+
+		favouriteAddressDao.save(favouriteAddress);
+
+		return favouriteAddress;
+	}
+
+	@Override
+	public void deleteFavouriteAddress(Long userId, Long addressId)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUser(userId);
+
+		favouriteAddressDao.delete(favouriteAddressDao.findByAddressId(addressId).get());
+
+	}
+
+	@Override
+	public Block<FavouriteAddress> findFavouriteAddresses(Long userId, int page, int size) {
+
+		Slice<FavouriteAddress> slice = favouriteAddressDao.findByUserId(userId, PageRequest.of(page, size));
+
+		return new Block<>(slice.getContent(), slice.hasNext());
+	}
+
+	/*
+	 * Método privado que comprueba que la ciudad está registrada en el sistema
+	 */
+	private City checkCity(Long cityId) throws InstanceNotFoundException {
+		Optional<City> cityOpt = cityDao.findById(cityId);
+		City city = null;
+
+		if (!cityOpt.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.city", cityId);
+		} else
+			city = cityOpt.get();
+
+		return city;
 	}
 
 }

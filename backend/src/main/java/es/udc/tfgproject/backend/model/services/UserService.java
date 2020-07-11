@@ -1,10 +1,12 @@
 package es.udc.tfgproject.backend.model.services;
 
+import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectLoginException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectPasswordException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
+import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 public interface UserService {
 
@@ -21,5 +23,12 @@ public interface UserService {
 
 	void changePassword(Long id, String oldPassword, String newPassword)
 			throws InstanceNotFoundException, IncorrectPasswordException;
+
+	FavouriteAddress addFavouriteAddress(String street, String cp, Long cityId, Long userId)
+			throws InstanceNotFoundException;
+
+	void deleteFavouriteAddress(Long userId, Long addressId) throws InstanceNotFoundException, PermissionException;
+
+	Block<FavouriteAddress> findFavouriteAddresses(Long userId, int page, int size);
 
 }
