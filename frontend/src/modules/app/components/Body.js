@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux';
 import {Route, Switch} from 'react-router-dom';
 
 import AppGlobalComponents from './AppGlobalComponents';
-import {Login, SignUp, UpdateProfile, ChangePassword, Logout, SignUpBusinessman} from '../../users';
+import {Login, SignUp, UpdateProfile, ChangePassword, Logout, SignUpBusinessman, AddFavouriteAddress, FindFavouriteAddresses, FindFavouriteAddressesResult} from '../../users';
 import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany} from '../../business';
 import users from '../../users';
 
@@ -21,6 +21,9 @@ const Body = () => {
                 {loggedIn && <Route exact path="/users/update-profile"><UpdateProfile/></Route>}
                 {loggedIn && <Route exact path="/users/change-password"><ChangePassword/></Route>}
                 {loggedIn && <Route exact path="/users/logout"><Logout/></Route>}
+                {loggedIn && <Route exact path="/users/add-favourite-address"><AddFavouriteAddress/></Route>}
+                {loggedIn && <Route exact path="/users/find-favourite-addresses"><FindFavouriteAddresses/></Route>}
+                {loggedIn && <Route exact path="/users/find-favourite-addresses-result"><FindFavouriteAddressesResult/></Route>}
                 {loggedIn && <Route exact path="/business/add-company"><AddCompany/></Route>}
                 {loggedIn && <Route exact path="/business/modify-company"><ModifyCompany/></Route>}
                 {loggedIn && <Route exact path="/business/find-company-addresses"><FindCompanyAddresses/></Route>}

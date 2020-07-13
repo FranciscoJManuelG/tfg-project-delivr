@@ -33,7 +33,7 @@ const StateCompany = () => {
     
     return (
 
-        <div class="container">
+        <div className="container">
             <Sidebar/>
             {block === false ?
             

@@ -62,3 +62,16 @@ export const changePassword = (id, oldPassword, newPassword, onSuccess,
     appFetch(`/users/${id}/changePassword`, 
         config('POST', {oldPassword, newPassword}),
         onSuccess, onErrors);
+
+export const addFavouriteAddress = (street, cp, cityId, onSuccess, onErrors) =>
+appFetch(`/users/favouriteAddresses`,
+    config('POST', {street, cp, cityId}),
+    onSuccess, onErrors);
+
+export const deleteFavouriteAddress = (addressId, onSuccess, onErrors) =>
+    appFetch(`/users/favouriteAddresses/${addressId}`,
+        config('DELETE'), onSuccess, onErrors);
+
+export const findFavouriteAddresses = ({page}, onSuccess) => 
+    appFetch(`/users/favouriteAddresses?page=${page}`, 
+        config('GET'), onSuccess);

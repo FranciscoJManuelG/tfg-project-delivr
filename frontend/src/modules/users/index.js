@@ -9,5 +9,8 @@ export {default as SignUpBusinessman} from './components/SignUpBusinessman';
 export {default as UpdateProfile} from './components/UpdateProfile';
 export {default as ChangePassword} from './components/ChangePassword';
 export {default as Logout} from './components/Logout';
+export {default as AddFavouriteAddress} from './components/AddFavouriteAddress';
+export {default as FindFavouriteAddresses} from './components/FindFavouriteAddresses';
+export {default as FindFavouriteAddressesResult} from './components/FindFavouriteAddressesResult';
 
 export default {actions, actionTypes, reducer, selectors};

@@ -3,7 +3,8 @@ import {combineReducers} from 'redux';
 import * as actionTypes from './actionTypes';
 
 const initialState = {
-    user: null
+    user: null,
+    favouriteAddressSearch: null
 };
 
 const user = (state = initialState.user, action) => {
@@ -29,8 +30,33 @@ const user = (state = initialState.user, action) => {
 
 }
 
+const favouriteAddressSearch = (state = initialState.favouriteAddressSearch, action) => {
+
+    switch (action.type) {
+
+        case actionTypes.FIND_FAVOURITE_ADDRESSES_COMPLETED:
+            return action.favouriteAddressSearch;
+
+        case actionTypes.CLEAR_FAVOURITE_ADDRESS_SEARCH:
+            return initialState.favouriteAddressSearch;
+
+        case actionTypes.FAVOURITE_ADDRESS_DELETED:
+            return { criteria: state.criteria, 
+                result: {
+                     items: state.result.items.filter
+                        (favouriteAddress => favouriteAddress.id !== action.addressId), 
+                    existMoreItems : state.result.existMoreItems} };
+
+        default:
+            return state;
+
+    }
+
+}
+
 const reducer = combineReducers({
-    user
+    user,
+    favouriteAddressSearch
 });
 
 export default reducer;

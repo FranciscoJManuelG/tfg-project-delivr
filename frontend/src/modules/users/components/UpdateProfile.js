@@ -45,23 +45,23 @@ const UpdateProfile = () => {
     }
 
     return (
-        <div class="container">
+        <div className="container">
             <Sidebar/>
-            <div class="row justify-content-center">
-                <aside class="col-sm-5">
+            <div className="row justify-content-center">
+                <aside className="col-sm-5">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
-                    <div class="card">
-                        <article class="card-body">
-                	        <h4 class="card-title mb-4 mt-1">
+                    <div className="card">
+                        <article className="card-body">
+                	        <h4 className="card-title mb-4 mt-1">
                                 <FormattedMessage id="project.users.UpdateProfile.title"/>
                             </h4>
                 	        <br/>
-                            <form ref={node => form = node} class="needs-validation" 
+                            <form ref={node => form = node} className="needs-validation" 
                                 noValidate onSubmit={e => handleSubmit(e)}>
                                 <label htmlFor="firstName" className="col-form-label">
                                     <FormattedMessage id="project.global.fields.firstName"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="text" id="firstName" className="form-control"
                                         value={firstName}
                                         onChange={e => setFirstName(e.target.value)}
@@ -74,7 +74,7 @@ const UpdateProfile = () => {
                                 <label htmlFor="lastName" className="col-form-label">
                                     <FormattedMessage id="project.global.fields.lastName"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="text" id="lastName" className="form-control"
                                         value={lastName}
                                         onChange={e => setLastName(e.target.value)}
@@ -86,7 +86,7 @@ const UpdateProfile = () => {
                                 <label htmlFor="email" className="col-form-label">
                                     <FormattedMessage id="project.global.fields.email"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="email" id="email" className="form-control"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
@@ -98,7 +98,7 @@ const UpdateProfile = () => {
                                 <label htmlFor="phone" className="col-form-label">
                                     <FormattedMessage id="project.global.fields.phone"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="tel" id="phone" className="form-control"
                                         value={phone}
                                         onChange={e => setPhone(e.target.value)}
@@ -109,10 +109,10 @@ const UpdateProfile = () => {
                                     </div>
                                 </div>  
                                 <br/>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary btn-block">
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <button type="submit" className="btn btn-primary btn-block">
                                                 <FormattedMessage id="project.global.buttons.save"/>
                                             </button>
                                         </div> 

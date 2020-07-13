@@ -64,23 +64,23 @@ const ChangePassword = () => {
     }
 
     return (
-        <div class="container">
+        <div className="container">
             <Sidebar/>
-            <div class="row justify-content-center">
-                <aside class="col-sm-5">
+            <div className="row justify-content-center">
+                <aside className="col-sm-5">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
-                    <div class="card">
-                        <article class="card-body">
-                	        <h4 class="card-title mb-4 mt-1">
+                    <div className="card">
+                        <article className="card-body">
+                	        <h4 className="card-title mb-4 mt-1">
                                 <FormattedMessage id="project.users.ChangePassword.title"/>
                             </h4>
                 	        <br/>
-                            <form ref={node => form = node} class="needs-validation" 
+                            <form ref={node => form = node} className="needs-validation" 
                                 noValidate onSubmit={e => handleSubmit(e)}>
                                 <label htmlFor="oldPassword" className="col-form-label">
                                     <FormattedMessage id="project.users.ChangePassword.fields.oldPassword"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="password" id="oldPassword" className="form-control"   
                                         placeholder ="******"        
                                         value={oldPassword}
@@ -94,7 +94,7 @@ const ChangePassword = () => {
                                 <label htmlFor="newPassword" className="col-form-label">
                                     <FormattedMessage id="project.users.ChangePassword.fields.newPassword"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="password" id="newPassword" className="form-control"
                                         placeholder ="******"
                                         value={newPassword}
@@ -107,7 +107,7 @@ const ChangePassword = () => {
                                 <label htmlFor="confirmNewPassword" className="col-form-label">
                                     <FormattedMessage id="project.users.ChangePassword.fields.confirmNewPassword"/>
                                 </label>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input ref={node => confirmNewPasswordInput = node}
                                         type="password" id="confirmNewPassword" className="form-control"
                                         placeholder ="******"
@@ -122,10 +122,10 @@ const ChangePassword = () => {
                                     </div>
                                 </div>    
                                 <br/>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary btn-block">
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <button type="submit" className="btn btn-primary btn-block">
                                                 <FormattedMessage id="project.global.buttons.save"/>
                                             </button>
                                         </div> 

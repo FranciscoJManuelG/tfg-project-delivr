@@ -51,7 +51,7 @@ const ModifyCompany = () => {
     const toNumber = value => value.length > 0 ? Number(value) : null;
 
     return (
-        <div class="container">
+        <div className="container">
             <Sidebar/>
             <div className="row justify-content-center" >
                 <aside className="col-sm-6">
@@ -110,7 +110,7 @@ const ModifyCompany = () => {
                                             onChange={e => setReserve(e.target.value)}
                                             autoFocus
                                             required/>
-                                        <label class="form-check-label" htmlFor="reserve">Yes</label>
+                                        <label className="form-check-label" htmlFor="reserve">Yes</label>
                                     </div>
                                     <div className="form-check-inline">
                                         <input type="radio" id="reserve2" name="reserve" className="form-check-input" 
@@ -118,7 +118,7 @@ const ModifyCompany = () => {
                                             onChange={e => setReserve(e.target.value)}
                                             autoFocus
                                             required/>
-                                        <label class="form-check-label" htmlFor="reserve2">No</label>
+                                        <label className="form-check-label" htmlFor="reserve2">No</label>
                                     </div>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
@@ -132,7 +132,7 @@ const ModifyCompany = () => {
                                             onChange={e => setHomeSale(e.target.value)}
                                             autoFocus
                                             required/>
-                                        <label class="form-check-label" htmlFor="homeSale">Yes</label>
+                                        <label className="form-check-label" htmlFor="homeSale">Yes</label>
                                     </div>
                                     <div className="form-check-inline">
                                         <input type="radio" id="homeSale2" name="homeSale" className="form-check-input" 
@@ -140,7 +140,7 @@ const ModifyCompany = () => {
                                             onChange={e => setHomeSale(e.target.value)}
                                             autoFocus
                                             required/>
-                                        <label class="form-check-label" htmlFor="homeSale2">No</label>
+                                        <label className="form-check-label" htmlFor="homeSale2">No</label>
                                     </div>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>

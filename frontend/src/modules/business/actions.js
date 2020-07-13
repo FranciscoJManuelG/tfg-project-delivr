@@ -117,7 +117,7 @@ const companyAddressDeleted = addressId => ({
 export const deleteCompanyAddress = (addressId, onSuccess, 
     onErrors) => dispatch => 
     backend.businessService.deleteCompanyAddress(addressId,
-        companyAddress => {
+        () => {
             dispatch(companyAddressDeleted(addressId));
             onSuccess();
         },

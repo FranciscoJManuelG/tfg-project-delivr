@@ -40,6 +40,8 @@ export default {
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contrasinal',
     'project.users.SignUp.title': 'Rexistrarse',
     'project.users.UpdateProfile.title': 'Actualizar perfil',
+    'project.users.FindFavouriteAddressesResult.noFavouriteAddresses': 'Non hai engadida ningunha dirección favorita',
+    'project.users.FindFavouriteAddresses.title': 'Direccións favoritas',
 
     'project.business.BusinessSettings.title': 'Axustes de empresa',
     'project.business.AddCompany.title': 'Engadir empresa',

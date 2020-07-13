@@ -16,7 +16,7 @@ const AddCompany = () => {
     const [reserve, setReserve] = useState(true);
     const [homeSale, setHomeSale] = useState(true);
     const [reservePercentage, setReservePercentage] = useState(0);
-    const [companyCategoryId, setCompanyCategoryId]  = useState('');
+    const [companyCategoryId, setCompanyCategoryId]  = useState(0);
     const [backendErrors, setBackendErrors] = useState(null);
     let form;
 
@@ -43,7 +43,7 @@ const AddCompany = () => {
     const toNumber = value => value.length > 0 ? Number(value) : null;
 
     return (
-        <div class="container">
+        <div className="container">
             <div className="row justify-content-center" >
                 <aside className="col-sm-6">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
@@ -102,7 +102,7 @@ const AddCompany = () => {
                                             autoFocus
                                             checked
                                             required/>
-                                        <label class="form-check-label" htmlFor="reserve">Yes</label>
+                                        <label className="form-check-label" htmlFor="reserve">Yes</label>
                                     </div>
                                     <div className="form-check-inline">
                                         <input type="radio" id="reserve2" name="reserve" className="form-check-input" 
@@ -110,7 +110,7 @@ const AddCompany = () => {
                                             onChange={e => setReserve(e.target.value)}
                                             autoFocus
                                             required/>
-                                        <label class="form-check-label" htmlFor="reserve2">No</label>
+                                        <label className="form-check-label" htmlFor="reserve2">No</label>
                                     </div>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
@@ -125,7 +125,7 @@ const AddCompany = () => {
                                             autoFocus
                                             checked
                                             required/>
-                                        <label class="form-check-label" htmlFor="homeSale">Yes</label>
+                                        <label className="form-check-label" htmlFor="homeSale">Yes</label>
                                     </div>
                                     <div className="form-check-inline">
                                         <input type="radio" id="homeSale2" name="homeSale" className="form-check-input" 
@@ -133,7 +133,7 @@ const AddCompany = () => {
                                             onChange={e => setHomeSale(e.target.value)}
                                             autoFocus
                                             required/>
-                                        <label class="form-check-label" htmlFor="homeSale2">No</label>
+                                        <label className="form-check-label" htmlFor="homeSale2">No</label>
                                     </div>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>

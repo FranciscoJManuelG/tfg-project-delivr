@@ -86,3 +86,54 @@ export const updateProfile = (user, onSuccess, onErrors) => dispatch =>
 export const changePassword = (id, oldPassword, newPassword, onSuccess, onErrors) => dispatch =>
     backend.userService.changePassword(id, oldPassword, newPassword, onSuccess, onErrors);
 
+const addedFavouriteAddressCompleted = address => ({
+    type: actionTypes.ADDED_FAVOURITE_ADDRESS_COMPLETED,
+    address
+});
+
+export const addFavouriteAddress = (street, cp, cityId, onSuccess, onErrors) => dispatch =>
+    backend.userService.addFavouriteAddress(street, cp, cityId, 
+        address => {
+            dispatch(addedFavouriteAddressCompleted(address));
+            onSuccess();
+        },
+        onErrors);
+
+const findFavouriteAddressesCompleted = favouriteAddressSearch => ({
+    type: actionTypes.FIND_FAVOURITE_ADDRESSES_COMPLETED,
+    favouriteAddressSearch
+});
+
+const clearFavouriteAddressSearch = () => ({
+    type: actionTypes.CLEAR_FAVOURITE_ADDRESS_SEARCH
+});
+
+
+export const findFavouriteAddresses = (criteria) => dispatch => {
+
+    dispatch(clearFavouriteAddressSearch());
+    backend.userService.findFavouriteAddresses(criteria, 
+        result => dispatch(findFavouriteAddressesCompleted({criteria, result})));
+
+}
+
+export const previousFindFavouriteAddressesResultPage = (criteria) => 
+    findFavouriteAddresses({page: criteria.page-1});
+
+export const nextFindFavouriteAddressesResultPage = (criteria) => 
+    findFavouriteAddresses({page: criteria.page+1});
+
+const favouriteAddressDeleted = addressId => ({
+    type: actionTypes.FAVOURITE_ADDRESS_DELETED,
+    addressId
+});
+
+export const deleteFavouriteAddress = (addressId, onSuccess, 
+    onErrors) => dispatch => 
+    backend.userService.deleteFavouriteAddress(addressId,
+        () => {
+            dispatch(favouriteAddressDeleted(addressId));
+            onSuccess();
+        },
+        onErrors);
+

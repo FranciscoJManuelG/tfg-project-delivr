@@ -41,6 +41,8 @@ export default {
     'project.users.SignUpCompany.title': 'Únete a Delivr',
     'project.users.SignUpClient.title': 'Registrarse',
     'project.users.UpdateProfile.title': 'Actualizar perfil',
+    'project.users.FindFavouriteAddressesResult.noFavouriteAddresses': 'No hay añadida ninguna dirección favorita',
+    'project.users.FindFavouriteAddresses.title': 'Direcciones favoritas',
 
     'project.business.BusinessSettings.title': 'Ajustes de empresa',
     'project.business.AddCompany.title': 'Añadir empresa',

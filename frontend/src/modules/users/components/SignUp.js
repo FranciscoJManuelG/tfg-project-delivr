@@ -78,24 +78,24 @@ const SignUp = () => {
     }
 
     return (
-        <div class="container">
-            <div class="row justify-content-center">
-                <aside class="col-sm-6">
+        <div className="container">
+            <div className="row justify-content-center">
+                <aside className="col-sm-6">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
-                    <p class="text-center">
+                    <p className="text-center">
                         <Link to="/users/signup-businessman">
                             <FormattedMessage id="project.users.SignUpCompany.title"/>
                         </Link>
                     </p>
-                    <div class="card">
-                        <article class="card-body">
-                	        <a href="/users/login" class="float-right btn btn-outline-primary">Inicia sesión</a>
-                	        <h4 class="card-title mb-4 mt-1">Regístrate</h4>
+                    <div className="card">
+                        <article className="card-body">
+                	        <a href="/users/login" className="float-right btn btn-outline-primary">Inicia sesión</a>
+                	        <h4 className="card-title mb-4 mt-1">Regístrate</h4>
                 	        <br/>
-                            <form ref={node => form = node} class="needs-validation" 
+                            <form ref={node => form = node} className="needs-validation" 
                                 noValidate onSubmit={e => handleSubmit(e)}>
-                                <div class="form-group">
-                                    <input type="text" id="userName" class="form-control" 
+                                <div className="form-group">
+                                    <input type="text" id="userName" className="form-control" 
                                         placeholder="Username"
                                         value={userName}
                                         onChange={e => setUserName(e.target.value)}
@@ -105,8 +105,8 @@ const SignUp = () => {
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>
                                 </div> 
-                                <div class="form-group">
-                                    <input type="password" id="password" class="form-control" 
+                                <div className="form-group">
+                                    <input type="password" id="password" className="form-control" 
                                         placeholder="Contraseña"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
@@ -115,7 +115,7 @@ const SignUp = () => {
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input ref={node => confirmPasswordInput = node}
                                         type="password" id="confirmPassword" className="form-control"
                                         placeholder="Repita la contraseña"
@@ -128,18 +128,18 @@ const SignUp = () => {
                                             <FormattedMessage id='project.global.validator.required'/>}
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div className="form-group">
                                     <input type="text" id="firstName" className="form-control"
                                         placeholder="Nombre completo"
                                         value={firstName}
                                         onChange={e => setFirstName(e.target.value)}
                                         required/>
-                                    <div class="invalid-feedback">
+                                    <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <input type="text" id="lastName" class="form-control"
+                                <div className="form-group">
+                                    <input type="text" id="lastName" className="form-control"
                                         placeholder="Apellidos"
                                         value={lastName}
                                         onChange={e => setLastName(e.target.value)}
@@ -148,8 +148,8 @@ const SignUp = () => {
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <input type="email" id="email" class="form-control"
+                                <div className="form-group">
+                                    <input type="email" id="email" className="form-control"
                                         placeholder="Email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
@@ -158,8 +158,8 @@ const SignUp = () => {
                                         <FormattedMessage id='project.global.validator.email'/>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <input type="text" id="phone" class="form-control"
+                                <div className="form-group">
+                                    <input type="text" id="phone" className="form-control"
                                         placeholder="Teléfono"
                                         value={phone}
                                         onChange={e => setPhone(e.target.value)}
@@ -169,10 +169,10 @@ const SignUp = () => {
                                     </div>
                                 </div>     
                                 <br/>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary btn-block">Regístrate</button>
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="form-group">
+                                            <button type="submit" className="btn btn-primary btn-block">Regístrate</button>
                                         </div> 
                                     </div>
                                 </div>                                                              

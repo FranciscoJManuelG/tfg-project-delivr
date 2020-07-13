@@ -12,5 +12,9 @@ export const getUserName = state =>
 export const getRole = state => 
     isLoggedIn(state) ? getUser(state).role : null;
 
+export const getFavouriteAddressSearch = state =>
+    getModuleState(state).favouriteAddressSearch;
+
+
 
 

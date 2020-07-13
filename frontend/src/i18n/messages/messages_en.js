@@ -40,6 +40,8 @@ export default {
     'project.users.SignUp.fields.confirmPassword': 'Confirm password',
     'project.users.SignUp.title': 'Sign up',
     'project.users.UpdateProfile.title': 'Update profile',
+    'project.users.FindFavouriteAddressesResult.noFavouriteAddresses': 'No favourite addresses found',
+    'project.users.FindFavouriteAddresses.title': 'Favourite addresses',
 
     'project.business.BusinessSettings.title': 'Business settings',
     'project.business.AddCompany.title': 'Add company',

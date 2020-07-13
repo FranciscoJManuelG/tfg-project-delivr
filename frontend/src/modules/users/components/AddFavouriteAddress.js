@@ -1,16 +1,14 @@
 import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {FormattedMessage} from 'react-intl';
 import {useHistory} from 'react-router-dom';
 
-import * as selectors from '../selectors';
 import {Errors} from '../../common';
 import * as actions from '../actions';
-import CitySelector from './CitySelector';
+import CitySelector from '../../business/components/CitySelector';
 
-const AddCompanyAddress = () => {
+const AddFavouriteAddress = () => {
 
-    const company = useSelector(selectors.getCompany);
     const dispatch = useDispatch();
     const history = useHistory();
     const [street, setStreet] = useState('');
@@ -25,9 +23,9 @@ const AddCompanyAddress = () => {
 
         if (form.checkValidity()) {
             
-            dispatch(actions.addCompanyAddress(street.trim(),
-                cp.trim(), toNumber(cityId), company.id,
-                () => history.push('/business/find-company-addresses'),
+            dispatch(actions.addFavouriteAddress(street.trim(),
+                cp.trim(), toNumber(cityId),
+                () => history.push('/users/find-favourite-addresses'),
                 errors => setBackendErrors(errors)));
 
         } else {
@@ -99,4 +97,4 @@ const AddCompanyAddress = () => {
 
 }
 
-export default AddCompanyAddress;
+export default AddFavouriteAddress;
