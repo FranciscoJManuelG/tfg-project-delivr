@@ -1,5 +1,7 @@
 package es.udc.tfgproject.backend.rest.controllers;
 
+import static es.udc.tfgproject.backend.rest.dtos.FavouriteAddressConversor.toFavouriteAddressDto;
+import static es.udc.tfgproject.backend.rest.dtos.FavouriteAddressConversor.toFavouriteAddressSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.UserConversor.toAuthenticatedUserDto;
 import static es.udc.tfgproject.backend.rest.dtos.UserConversor.toUser;
 import static es.udc.tfgproject.backend.rest.dtos.UserConversor.toUserDto;
@@ -12,30 +14,39 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectLoginException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectPasswordException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.UserService;
 import es.udc.tfgproject.backend.rest.common.ErrorsDto;
 import es.udc.tfgproject.backend.rest.common.JwtGenerator;
 import es.udc.tfgproject.backend.rest.common.JwtInfo;
+import es.udc.tfgproject.backend.rest.dtos.AddFavouriteAddressParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AuthenticatedUserDto;
+import es.udc.tfgproject.backend.rest.dtos.BlockDto;
 import es.udc.tfgproject.backend.rest.dtos.ChangePasswordParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.FavouriteAddressDto;
+import es.udc.tfgproject.backend.rest.dtos.FavouriteAddressSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.LoginParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.UserDto;
 
@@ -155,6 +166,34 @@ public class UserController {
 		}
 
 		userService.changePassword(id, params.getOldPassword(), params.getNewPassword());
+
+	}
+
+	@PostMapping("/favouriteAddresses")
+	public FavouriteAddressDto addFavouriteAddress(@RequestAttribute Long userId,
+			@Validated @RequestBody AddFavouriteAddressParamsDto params) throws InstanceNotFoundException {
+
+		return toFavouriteAddressDto(
+				userService.addFavouriteAddress(params.getStreet(), params.getCp(), params.getCityId(), userId));
+
+	}
+
+	@DeleteMapping("/favouriteAddresses/{addressId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteCompanyAddress(@RequestAttribute Long userId, @PathVariable Long addressId)
+			throws InstanceNotFoundException, PermissionException {
+
+		userService.deleteFavouriteAddress(userId, addressId);
+
+	}
+
+	@GetMapping("/favouriteAddresses")
+	public BlockDto<FavouriteAddressSummaryDto> findFavouriteAddresses(@RequestAttribute Long userId,
+			@RequestParam(defaultValue = "0") int page) {
+
+		Block<FavouriteAddress> addressBlock = userService.findFavouriteAddresses(userId, page, 10);
+
+		return new BlockDto<>(toFavouriteAddressSummaryDtos(addressBlock.getItems()), addressBlock.getExistMoreItems());
 
 	}
 
