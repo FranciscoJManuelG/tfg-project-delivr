@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
-public class CustomizedCompanyDaoImpl implements CustomizedCompanyDao {
+public class CustomizedCompanyAddressDaoImpl implements CustomizedCompanyAddressDao {
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -27,18 +27,18 @@ public class CustomizedCompanyDaoImpl implements CustomizedCompanyDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Slice<Company> find(Long companyCategoryId, Long cityId, String street, String keywords, int page,
+	public Slice<CompanyAddress> find(Long companyCategoryId, Long cityId, String street, String keywords, int page,
 			int size) {
 		String[] tokens = getTokens(keywords);
 		String[] streetTokens = getTokens(street);
-		String queryString = "SELECT c FROM Company c";
+		String queryString = "SELECT ca FROM CompanyAddress ca";
 
-		if (companyCategoryId != null || cityId != null || street.length() > 0 || tokens.length > 0) {
+		if (companyCategoryId != null || cityId != null || streetTokens.length > 0 || tokens.length > 0) {
 			queryString += " WHERE ";
 		}
 
 		if (companyCategoryId != null) {
-			queryString += "c.companyCategory.id = :companyCategoryId";
+			queryString += "ca.company.companyCategory.id = :companyCategoryId";
 		}
 
 		if (cityId != null) {
@@ -47,7 +47,7 @@ public class CustomizedCompanyDaoImpl implements CustomizedCompanyDao {
 				queryString += " AND ";
 			}
 
-			queryString += "c.addresses.city.id = :cityId";
+			queryString += "ca.city.id = :cityId";
 		}
 
 		if (streetTokens.length != 0) {
@@ -57,10 +57,10 @@ public class CustomizedCompanyDaoImpl implements CustomizedCompanyDao {
 			}
 
 			for (int i = 0; i < streetTokens.length - 1; i++) {
-				queryString += "LOWER(c.street) LIKE LOWER(:streetToken" + i + ") AND ";
+				queryString += "LOWER(ca.street) LIKE LOWER(:streetToken" + i + ") AND ";
 			}
 
-			queryString += "LOWER(c.street) LIKE LOWER(:streetToken" + (streetTokens.length - 1) + ")";
+			queryString += "LOWER(ca.street) LIKE LOWER(:streetToken" + (streetTokens.length - 1) + ")";
 
 		}
 
@@ -71,14 +71,14 @@ public class CustomizedCompanyDaoImpl implements CustomizedCompanyDao {
 			}
 
 			for (int i = 0; i < tokens.length - 1; i++) {
-				queryString += "LOWER(c.name) LIKE LOWER(:token" + i + ") AND ";
+				queryString += "LOWER(ca.company.name) LIKE LOWER(:token" + i + ") AND ";
 			}
 
-			queryString += "LOWER(c.name) LIKE LOWER(:token" + (tokens.length - 1) + ")";
+			queryString += "LOWER(ca.company.name) LIKE LOWER(:token" + (tokens.length - 1) + ")";
 
 		}
 
-		queryString += " ORDER BY c.name";
+		queryString += " ORDER BY ca.company.name";
 
 		Query query = entityManager.createQuery(queryString).setFirstResult(page * size).setMaxResults(size + 1);
 
@@ -103,14 +103,14 @@ public class CustomizedCompanyDaoImpl implements CustomizedCompanyDao {
 
 		}
 
-		List<Company> companies = query.getResultList();
-		boolean hasNext = companies.size() == (size + 1);
+		List<CompanyAddress> companiesAddresses = query.getResultList();
+		boolean hasNext = companiesAddresses.size() == (size + 1);
 
 		if (hasNext) {
-			companies.remove(companies.size() - 1);
+			companiesAddresses.remove(companiesAddresses.size() - 1);
 		}
 
-		return new SliceImpl<>(companies, PageRequest.of(page, size), hasNext);
+		return new SliceImpl<>(companiesAddresses, PageRequest.of(page, size), hasNext);
 
 	}
 

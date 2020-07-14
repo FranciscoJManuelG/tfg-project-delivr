@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface CompanyAddressDao extends PagingAndSortingRepository<CompanyAddress, Long> {
+public interface CompanyAddressDao
+		extends PagingAndSortingRepository<CompanyAddress, Long>, CustomizedCompanyAddressDao {
 
 	List<CompanyAddress> findByCompanyId(Long companyId);
 

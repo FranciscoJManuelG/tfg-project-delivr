@@ -1,18 +1,16 @@
 package es.udc.tfgproject.backend.test.model.services;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
 import javax.transaction.Transactional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
@@ -28,7 +26,6 @@ import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.UserService;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -201,12 +198,13 @@ public class UserServiceTest {
 
 	}
 
-	@Test(expected = InstanceNotFoundException.class)
+	@Test
 	public void testNonExistingCity() throws InstanceNotFoundException {
 
 		User user = createUser("user");
 
-		userService.addFavouriteAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, user.getId());
+		assertThrows(InstanceNotFoundException.class,
+				() -> userService.addFavouriteAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, user.getId()));
 	}
 
 	@Test

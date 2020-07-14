@@ -1,10 +1,10 @@
 package es.udc.tfgproject.backend.model.services;
 
-import es.udc.tfgproject.backend.model.entities.Company;
+import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 
 public interface BusinessCatalogService {
 
-	Block<Company> findCompanies(Long companyCategoryId, Long cityId, String street, String keywords, int page,
+	Block<CompanyAddress> findCompanies(Long companyCategoryId, Long cityId, String street, String keywords, int page,
 			int size);
 
 }

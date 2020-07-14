@@ -1,19 +1,18 @@
 package es.udc.tfgproject.backend.test.model.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
 import javax.transaction.Transactional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
@@ -31,7 +30,6 @@ import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -97,7 +95,7 @@ public class BusinessServiceTest {
 		assertEquals(expectedCompany.getCompanyCategory().getId(), category.getId());
 	}
 
-	@Test(expected = InstanceNotFoundException.class)
+	@Test
 	public void testAddToNonExistingCompanyCategory() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
@@ -105,8 +103,8 @@ public class BusinessServiceTest {
 		City city = new City("Lugo");
 		cityDao.save(city);
 
-		businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID);
-
+		assertThrows(InstanceNotFoundException.class, () -> businessService.addCompany(user.getId(), "Delivr", 27, true,
+				true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID));
 	}
 
 	@Test
@@ -192,7 +190,7 @@ public class BusinessServiceTest {
 
 	}
 
-	@Test(expected = InstanceNotFoundException.class)
+	@Test
 	public void testNonExistingCompany() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
@@ -205,12 +203,12 @@ public class BusinessServiceTest {
 
 		businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
-		businessService.modifyCompany(user.getId(), NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false, 15,
-				category.getId());
+		assertThrows(InstanceNotFoundException.class, () -> businessService.modifyCompany(user.getId(),
+				NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false, 15, category.getId()));
 
 	}
 
-	@Test(expected = PermissionException.class)
+	@Test
 	public void testWrongUser() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
@@ -224,8 +222,8 @@ public class BusinessServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
-		businessService.modifyCompany(wrongUser.getId(), company.getId(), "GreenFood", 40, true, false, 15,
-				category.getId());
+		assertThrows(PermissionException.class, () -> businessService.modifyCompany(wrongUser.getId(), company.getId(),
+				"GreenFood", 40, true, false, 15, category.getId()));
 
 	}
 
@@ -282,7 +280,7 @@ public class BusinessServiceTest {
 
 	}
 
-	@Test(expected = InstanceNotFoundException.class)
+	@Test
 	public void testNonExistingCity() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
@@ -291,7 +289,8 @@ public class BusinessServiceTest {
 		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category);
 		companyDao.save(company);
 
-		businessService.addCompanyAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId());
+		assertThrows(InstanceNotFoundException.class,
+				() -> businessService.addCompanyAddress("Rosalia 18", "15700", NON_EXISTENT_CITY_ID, company.getId()));
 	}
 
 	@Test
@@ -308,12 +307,10 @@ public class BusinessServiceTest {
 				company.getId());
 		businessService.addCompanyAddress("Magan 23", "13456", city.getId(), company.getId());
 
-		long numberOfAddresses = companyAddressDao.count();
 		long numberOfCompanyAddresses = companyAddressDao.count();
 
 		businessService.deleteCompanyAddress(user.getId(), address1.getAddressId());
 
-		assertEquals(numberOfAddresses - 1, 1);
 		assertEquals(numberOfCompanyAddresses - 1, 1);
 
 	}
