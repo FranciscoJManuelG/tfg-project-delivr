@@ -319,4 +319,39 @@ public class BusinessCatalogServiceTest {
 
 	}
 
+	@Test
+	public void testFindNoCompaniesBlocked() throws InstanceNotFoundException {
+
+		User user = signUpUser("user");
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		CompanyCategory category2 = new CompanyCategory("Vegano");
+		Company company1 = createCompany(user, "Company1", category1);
+		Company company2 = createCompany(user, "Company2", category2);
+
+		companyCategoryDao.save(category1);
+		companyCategoryDao.save(category2);
+		companyDao.save(company1);
+		companyDao.save(company2);
+
+		businessService.addCompanyAddress("Rosalia 28", "15700", city.getId(), company1.getId());
+		CompanyAddress ca = businessService.addCompanyAddress("Jorge 21", "15700", city.getId(), company2.getId());
+
+		businessService.blockCompany(user.getId(), company1.getId());
+
+		List<CompanyAddress> list = new ArrayList<>();
+		list.add(ca);
+
+		Block<CompanyAddress> actualBlock = businessCatalogService.findCompanies(null, city.getId(), null, null, 0, 1);
+		assertEquals(list, actualBlock.getItems());
+
+		List<CompanyAddress> list2 = new ArrayList<>();
+
+		actualBlock = businessCatalogService.findCompanies(null, null, null, "company1", 0, 1);
+		assertEquals(list2, actualBlock.getItems());
+
+	}
+
 }

@@ -31,50 +31,34 @@ public class CustomizedCompanyAddressDaoImpl implements CustomizedCompanyAddress
 			int size) {
 		String[] tokens = getTokens(keywords);
 		String[] streetTokens = getTokens(street);
-		String queryString = "SELECT ca FROM CompanyAddress ca";
-
-		if (companyCategoryId != null || cityId != null || streetTokens.length > 0 || tokens.length > 0) {
-			queryString += " WHERE ";
-		}
+		String queryString = "SELECT ca FROM CompanyAddress ca WHERE ca.company.block = false";
 
 		if (companyCategoryId != null) {
-			queryString += "ca.company.companyCategory.id = :companyCategoryId";
+			queryString += " AND ca.company.companyCategory.id = :companyCategoryId";
 		}
 
 		if (cityId != null) {
 
-			if (companyCategoryId != null) {
-				queryString += " AND ";
-			}
-
-			queryString += "ca.city.id = :cityId";
+			queryString += " AND ca.city.id = :cityId";
 		}
 
 		if (streetTokens.length != 0) {
 
-			if (companyCategoryId != null || cityId != null) {
-				queryString += " AND ";
-			}
-
 			for (int i = 0; i < streetTokens.length - 1; i++) {
-				queryString += "LOWER(ca.street) LIKE LOWER(:streetToken" + i + ") AND ";
+				queryString += " AND LOWER(ca.street) LIKE LOWER(:streetToken" + i + ")";
 			}
 
-			queryString += "LOWER(ca.street) LIKE LOWER(:streetToken" + (streetTokens.length - 1) + ")";
+			queryString += " AND LOWER(ca.street) LIKE LOWER(:streetToken" + (streetTokens.length - 1) + ")";
 
 		}
 
 		if (tokens.length != 0) {
 
-			if (companyCategoryId != null || cityId != null || streetTokens.length != 0) {
-				queryString += " AND ";
-			}
-
 			for (int i = 0; i < tokens.length - 1; i++) {
-				queryString += "LOWER(ca.company.name) LIKE LOWER(:token" + i + ") AND ";
+				queryString += " AND LOWER(ca.company.name) LIKE LOWER(:token" + i + ")";
 			}
 
-			queryString += "LOWER(ca.company.name) LIKE LOWER(:token" + (tokens.length - 1) + ")";
+			queryString += " AND LOWER(ca.company.name) LIKE LOWER(:token" + (tokens.length - 1) + ")";
 
 		}
 
