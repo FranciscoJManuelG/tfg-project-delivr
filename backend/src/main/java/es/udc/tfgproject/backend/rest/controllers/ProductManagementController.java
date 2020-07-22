@@ -2,6 +2,7 @@ package es.udc.tfgproject.backend.rest.controllers;
 
 import static es.udc.tfgproject.backend.rest.dtos.ProductCategoryConversor.toProductCategoryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.ProductConversor.toProductDto;
+import static es.udc.tfgproject.backend.rest.dtos.ProductConversor.toProductSummaryDtos;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import es.udc.tfgproject.backend.rest.dtos.AddProductParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.EditProductParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ProductCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.ProductDto;
+import es.udc.tfgproject.backend.rest.dtos.ProductSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.StateProductParamsDto;
 
 @RestController
@@ -72,6 +74,11 @@ public class ProductManagementController {
 	@GetMapping("/products/categories")
 	public List<ProductCategoryDto> findAllCompanyCategories() {
 		return toProductCategoryDtos(productManagementService.findAllProductCategories());
+	}
+
+	@GetMapping("/products/{companyId}")
+	public List<ProductSummaryDto> findAllCompanyProducts(@PathVariable Long companyId) {
+		return toProductSummaryDtos(productManagementService.findAllCompanyProducts(companyId));
 	}
 
 }
