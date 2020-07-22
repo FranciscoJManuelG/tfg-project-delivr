@@ -1,0 +1,45 @@
+package es.udc.tfgproject.backend.rest.controllers;
+
+import static es.udc.tfgproject.backend.rest.dtos.ProductCategoryConversor.toProductCategoryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.ProductConversor.toProductSummaryDtos;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import es.udc.tfgproject.backend.model.entities.Product;
+import es.udc.tfgproject.backend.model.services.Block;
+import es.udc.tfgproject.backend.model.services.ProductCatalogService;
+import es.udc.tfgproject.backend.rest.dtos.BlockDto;
+import es.udc.tfgproject.backend.rest.dtos.ProductCategoryDto;
+import es.udc.tfgproject.backend.rest.dtos.ProductSummaryDto;
+
+@RestController
+@RequestMapping("/productCatalog")
+public class ProductCatalogController {
+
+	@Autowired
+	private ProductCatalogService productCatalogService;
+
+	@GetMapping("/products")
+	public BlockDto<ProductSummaryDto> findProducts(@RequestParam(required = false) Long productCategoryId,
+			@RequestParam(required = false) String keywords, @RequestParam(defaultValue = "0") int page) {
+
+		Block<Product> productBlock = productCatalogService.findProducts(productCategoryId,
+				keywords != null ? keywords.trim() : null, page, 10);
+
+		return new BlockDto<>(toProductSummaryDtos(productBlock.getItems()), productBlock.getExistMoreItems());
+
+	}
+
+	@GetMapping("/products/{companyId}/categories")
+	public List<ProductCategoryDto> findCompanyProductCategories(@PathVariable Long companyId) {
+		return toProductCategoryDtos(productCatalogService.findCompanyProductCategories(companyId));
+	}
+
+}
