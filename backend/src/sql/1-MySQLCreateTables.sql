@@ -1,5 +1,8 @@
 -- Indexes for primary keys have been explicitly created.
 
+DROP TABLE Product;
+DROP TABLE Image;
+DROP TABLE ProductCategory;
 DROP TABLE FavouriteAddress;
 DROP TABLE CompanyAddress;
 DROP TABLE Company;
@@ -96,4 +99,45 @@ CREATE TABLE FavouriteAddress(
         REFERENCES Address (id)
     
 ) ENGINE = InnoDB;
+
+CREATE TABLE ProductCategory (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(60) NOT NULL,
+    CONSTRAINT ProductCategoryPK PRIMARY KEY (id),
+    CONSTRAINT ProductCategoryNameUniqueKey UNIQUE (name)
+) ENGINE = InnoDB;
+
+CREATE INDEX ProductCategoryIndexByName ON ProductCategory (name);
+
+CREATE TABLE Image(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    path VARCHAR(200) COLLATE latin1_bin NOT NULL,
+    
+    CONSTRAINT ImagePK PRIMARY KEY (id),
+    CONSTRAINT ImagePathUniqueKey UNIQUE (path)
+) ENGINE = InnoDB;
+
+CREATE INDEX ImageIndexByPath ON Image (path);
+
+CREATE TABLE Product(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(60) COLLATE latin1_bin NOT NULL,
+    description VARCHAR(200) COLLATE latin1_bin,
+    price DECIMAL(11, 2) NOT NULL,
+    block BOOLEAN NOT NULL,
+    companyId BIGINT NOT NULL,
+    productCategoryId BIGINT NOT NULL,
+    imageId BIGINT NOT NULL,
+    CONSTRAINT ProductIdPK PRIMARY KEY (id),
+    CONSTRAINT ProductCompanyIdFK FOREIGN KEY(companyId)
+        REFERENCES Company (id),
+    CONSTRAINT ProductCategoryIdFK FOREIGN KEY(productCategoryId)
+        REFERENCES ProductCategory (id),
+    CONSTRAINT ProductImageIdFK FOREIGN KEY(imageId)
+    	REFERENCES Image (id)
+    
+    
+) ENGINE = InnoDB;
+
+CREATE INDEX ProductIndexByName ON Product (name);
 

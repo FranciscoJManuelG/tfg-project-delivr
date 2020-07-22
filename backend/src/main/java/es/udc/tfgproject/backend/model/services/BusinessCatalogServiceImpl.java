@@ -9,7 +9,7 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class BusinessCatalogServiceImpl implements BusinessCatalogService {
 
 	@Autowired

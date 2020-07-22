@@ -119,15 +119,17 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Company findCompany(Long userId) throws InstanceNotFoundException {
 		User user = permissionChecker.checkUser(userId);
 
-		Company company = companyDao.findByUserId(user.getId()).get();
+		Company company = companyDao.findByUserId(user.getId());
 
 		return company;
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<CompanyCategory> findAllCompanyCategories() {
 
 		Iterable<CompanyCategory> categories = companyCategoryDao.findAll();
@@ -169,6 +171,7 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Block<CompanyAddress> findCompanyAddresses(Long companyId, int page, int size) {
 
 		Slice<CompanyAddress> slice = companyAddressDao.findByCompanyId(companyId, PageRequest.of(page, size));
@@ -178,6 +181,7 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<City> findAllCities() {
 
 		Iterable<City> cities = cityDao.findAll();

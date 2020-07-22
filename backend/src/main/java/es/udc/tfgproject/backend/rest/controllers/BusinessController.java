@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -93,7 +94,14 @@ public class BusinessController {
 
 	@GetMapping("/companies/company")
 	public CompanyDto findCompany(@RequestAttribute Long userId) throws InstanceNotFoundException {
-		return toCompanyDto(businessService.findCompany(userId));
+		Company company = businessService.findCompany(userId);
+
+		if (company != null) {
+			return toCompanyDto(company);
+		} else {
+			return null;
+		}
+
 	}
 
 	@GetMapping("/companies/categories")

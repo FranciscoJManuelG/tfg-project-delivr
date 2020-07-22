@@ -10,6 +10,8 @@ import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.Product;
+import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.entities.UserDao;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -27,6 +29,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private CompanyAddressDao companyAddressDao;
+
+	@Autowired
+	private ProductDao productDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -83,6 +88,24 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return companyAddress.get();
+
+	}
+
+	@Override
+	public Product checkProductExistsAndBelongsTo(Long productId, Long companyId)
+			throws PermissionException, InstanceNotFoundException {
+
+		Optional<Product> product = productDao.findById(productId);
+
+		if (!product.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.product", productId);
+		}
+
+		if (!product.get().getCompany().getId().equals(companyId)) {
+			throw new PermissionException();
+		}
+
+		return product.get();
 
 	}
 
