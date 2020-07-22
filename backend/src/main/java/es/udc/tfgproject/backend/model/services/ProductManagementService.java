@@ -27,4 +27,6 @@ public interface ProductManagementService {
 
 	List<ProductCategory> findAllProductCategories();
 
+	List<Product> findAllCompanyProducts(Long companyId);
+
 }

@@ -136,8 +136,9 @@ public class ProductManagementServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
 
-		assertThrows(PermissionException.class, () -> productManagementService.addProduct(userWrong.getId(), company.getId(),
-				"Bocadillo de tortilla", "Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId()));
+		assertThrows(PermissionException.class,
+				() -> productManagementService.addProduct(userWrong.getId(), company.getId(), "Bocadillo de tortilla",
+						"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId()));
 	}
 
 	@Test
@@ -153,8 +154,9 @@ public class ProductManagementServiceTest {
 		productCategoryDao.save(pCategory);
 
 		assertThrows(InstanceNotFoundException.class,
-				() -> productManagementService.addProduct(user.getId(), NON_EXISTENT_COMPANY_ID, "Bocadillo de tortilla",
-						"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId()));
+				() -> productManagementService.addProduct(user.getId(), NON_EXISTENT_COMPANY_ID,
+						"Bocadillo de tortilla", "Tortilla con cebolla", new BigDecimal(3.50), "path",
+						pCategory.getId()));
 	}
 
 	@Test
@@ -239,7 +241,8 @@ public class ProductManagementServiceTest {
 		assertTrue(blockedProduct.getBlock());
 		assertEquals(blockedProduct.getId(), product.getId());
 
-		Product unlockedProduct = productManagementService.unlockProduct(user.getId(), company.getId(), product.getId());
+		Product unlockedProduct = productManagementService.unlockProduct(user.getId(), company.getId(),
+				product.getId());
 
 		assertFalse(unlockedProduct.getBlock());
 
@@ -255,6 +258,34 @@ public class ProductManagementServiceTest {
 		productCategoryDao.save(category1);
 
 		assertEquals(Arrays.asList(category1, category2), productManagementService.findAllProductCategories());
+
+	}
+
+	@Test
+	public void testFindAllCompanyProducts() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user");
+
+		CompanyCategory category1 = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
+		productCategoryDao.save(pCategory2);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product1 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Ensalada césar",
+				"Tomate, lechuga, cebolla, espárragos", new BigDecimal(4.75), "newPath", pCategory2.getId());
+
+		assertEquals(Arrays.asList(product1, product2),
+				productManagementService.findAllCompanyProducts(company.getId()));
 
 	}
 

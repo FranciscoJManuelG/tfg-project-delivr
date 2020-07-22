@@ -126,6 +126,12 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 		return categoriesList;
 	}
 
+	@Override
+	public List<Product> findAllCompanyProducts(Long companyId) {
+
+		return productDao.findByCompanyId(companyId);
+	}
+
 	/*
 	 * Método privado que comprueba que la categoría está registrada en el sistema
 	 */

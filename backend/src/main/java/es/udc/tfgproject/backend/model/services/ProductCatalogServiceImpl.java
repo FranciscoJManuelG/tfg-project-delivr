@@ -29,7 +29,7 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
 
 	@Override
 	public List<ProductCategory> findCompanyProductCategories(Long companyId) {
-		Iterable<Product> products = productDao.findByCompanyId(companyId);
+		List<Product> products = productDao.findByCompanyId(companyId);
 		List<ProductCategory> categoriesList = new ArrayList<>();
 
 		for (Product product : products) {
