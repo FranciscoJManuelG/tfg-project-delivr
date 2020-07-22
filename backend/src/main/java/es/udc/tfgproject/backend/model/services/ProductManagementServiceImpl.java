@@ -21,7 +21,7 @@ import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 @Service
 @Transactional
-public class ProductServiceImpl implements ProductService {
+public class ProductManagementServiceImpl implements ProductManagementService {
 
 	@Autowired
 	private PermissionChecker permissionChecker;

@@ -29,13 +29,13 @@ import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.BusinessService;
-import es.udc.tfgproject.backend.model.services.ProductService;
+import es.udc.tfgproject.backend.model.services.ProductManagementService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class ProductServiceTest {
+public class ProductManagementServiceTest {
 
 	private final long NON_EXISTENT_PRODUCT_CATEGORY_ID = new Long(-1);
 	private final long NON_EXISTENT_COMPANY_ID = new Long(-1);
@@ -44,7 +44,7 @@ public class ProductServiceTest {
 	private UserService userService;
 
 	@Autowired
-	private ProductService productService;
+	private ProductManagementService productManagementService;
 
 	@Autowired
 	private BusinessService businessService;
@@ -90,7 +90,7 @@ public class ProductServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
 
-		Product product = productService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		Product expectedProduct = productDao.findById(product.getId()).get();
@@ -117,7 +117,7 @@ public class ProductServiceTest {
 		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
 
 		assertThrows(InstanceNotFoundException.class,
-				() -> productService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				() -> productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 						"Tortilla con cebolla", new BigDecimal(3.50), "path", NON_EXISTENT_PRODUCT_CATEGORY_ID));
 	}
 
@@ -136,7 +136,7 @@ public class ProductServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
 
-		assertThrows(PermissionException.class, () -> productService.addProduct(userWrong.getId(), company.getId(),
+		assertThrows(PermissionException.class, () -> productManagementService.addProduct(userWrong.getId(), company.getId(),
 				"Bocadillo de tortilla", "Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId()));
 	}
 
@@ -153,7 +153,7 @@ public class ProductServiceTest {
 		productCategoryDao.save(pCategory);
 
 		assertThrows(InstanceNotFoundException.class,
-				() -> productService.addProduct(user.getId(), NON_EXISTENT_COMPANY_ID, "Bocadillo de tortilla",
+				() -> productManagementService.addProduct(user.getId(), NON_EXISTENT_COMPANY_ID, "Bocadillo de tortilla",
 						"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId()));
 	}
 
@@ -174,10 +174,10 @@ public class ProductServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
-		Product product = productService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		Product editedProduct = productService.editProduct(user.getId(), company.getId(), product.getId(),
+		Product editedProduct = productManagementService.editProduct(user.getId(), company.getId(), product.getId(),
 				"Ensalada césar", "Tomate, lechuga, cebolla, espárragos", new BigDecimal(4.75), "newPath",
 				pCategory2.getId());
 
@@ -205,12 +205,12 @@ public class ProductServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
-		Product product = productService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		long numberOfProducts = productDao.count();
 
-		productService.removeProduct(user.getId(), company.getId(), product.getId());
+		productManagementService.removeProduct(user.getId(), company.getId(), product.getId());
 
 		/* Comprobamos que hay una fila menos en Product */
 		assertEquals(numberOfProducts - 1, 0);
@@ -231,15 +231,15 @@ public class ProductServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
-		Product product = productService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		Product blockedProduct = productService.blockProduct(user.getId(), company.getId(), product.getId());
+		Product blockedProduct = productManagementService.blockProduct(user.getId(), company.getId(), product.getId());
 
 		assertTrue(blockedProduct.getBlock());
 		assertEquals(blockedProduct.getId(), product.getId());
 
-		Product unlockedProduct = productService.unlockProduct(user.getId(), company.getId(), product.getId());
+		Product unlockedProduct = productManagementService.unlockProduct(user.getId(), company.getId(), product.getId());
 
 		assertFalse(unlockedProduct.getBlock());
 
@@ -254,7 +254,7 @@ public class ProductServiceTest {
 		productCategoryDao.save(category2);
 		productCategoryDao.save(category1);
 
-		assertEquals(Arrays.asList(category1, category2), productService.findAllProductCategories());
+		assertEquals(Arrays.asList(category1, category2), productManagementService.findAllProductCategories());
 
 	}
 

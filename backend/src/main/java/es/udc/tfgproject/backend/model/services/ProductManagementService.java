@@ -8,7 +8,7 @@ import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
-public interface ProductService {
+public interface ProductManagementService {
 
 	Product addProduct(Long userId, Long companyId, String name, String description, BigDecimal price, String path,
 			Long productCategoryId) throws InstanceNotFoundException, PermissionException;

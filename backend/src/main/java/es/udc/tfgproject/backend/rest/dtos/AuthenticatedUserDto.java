@@ -3,18 +3,18 @@ package es.udc.tfgproject.backend.rest.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AuthenticatedUserDto {
-	
+
 	private String serviceToken;
 	private UserDto userDto;
-	//private List<CompanyDto> companyDto;
 
-	public AuthenticatedUserDto() {}
-	
+	public AuthenticatedUserDto() {
+	}
+
 	public AuthenticatedUserDto(String serviceToken, UserDto userDto) {
-		
+
 		this.serviceToken = serviceToken;
 		this.userDto = userDto;
-		
+
 	}
 
 	public String getServiceToken() {
