@@ -24,7 +24,7 @@ public class ProductConversor {
 	private final static ProductSummaryDto toProductSummaryDto(Product product) {
 
 		return new ProductSummaryDto(product.getId(), product.getName(), product.getDescription(), product.getPrice(),
-				product.getImage().getPath(), product.getProductCategory().getId());
+				product.getBlock(), product.getImage().getPath(), product.getProductCategory().getId());
 
 	}
 

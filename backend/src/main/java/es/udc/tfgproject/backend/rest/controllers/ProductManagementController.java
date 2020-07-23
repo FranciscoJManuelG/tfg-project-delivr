@@ -72,7 +72,7 @@ public class ProductManagementController {
 	}
 
 	@GetMapping("/products/categories")
-	public List<ProductCategoryDto> findAllCompanyCategories() {
+	public List<ProductCategoryDto> findAllProductCategories() {
 		return toProductCategoryDtos(productManagementService.findAllProductCategories());
 	}
 

@@ -1,9 +1,9 @@
 package es.udc.tfgproject.backend.model.entities;
 
-import org.springframework.data.domain.Slice;
+import java.util.List;
 
 public interface CustomizedProductDao {
 
-	Slice<Product> find(Long productCategoryId, String keywords, int page, int size);
+	List<Product> find(Long companyId, Long productCategoryId, String keywords);
 
 }

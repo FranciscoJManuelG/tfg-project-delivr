@@ -32,6 +32,13 @@ INSERT INTO CompanyAddress (companyId, addressId)
 INSERT INTO CompanyAddress (companyId, addressId)
 	VALUES (1, 2);
 
+INSERT INTO ProductCategory (name) VALUES ("Bocadillos");
+
+INSERT INTO Image (path) VALUES ("../../../img/burger");
+
+INSERT INTO Product (name, description, price, block, companyId, productCategoryId, imageId)
+	Values("Bocadillo de tortilla", "Tortilla con cebolla", 2.50, false, 1, 1, 1);
+
 	
 
 

@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.tfgproject.backend.model.entities.Product;
-import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.ProductCatalogService;
-import es.udc.tfgproject.backend.rest.dtos.BlockDto;
 import es.udc.tfgproject.backend.rest.dtos.ProductCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.ProductSummaryDto;
 
@@ -26,14 +24,14 @@ public class ProductCatalogController {
 	@Autowired
 	private ProductCatalogService productCatalogService;
 
-	@GetMapping("/products")
-	public BlockDto<ProductSummaryDto> findProducts(@RequestParam(required = false) Long productCategoryId,
-			@RequestParam(required = false) String keywords, @RequestParam(defaultValue = "0") int page) {
+	@GetMapping("/products/{companyId}")
+	public List<ProductSummaryDto> findProducts(@PathVariable Long companyId,
+			@RequestParam(required = false) Long productCategoryId, @RequestParam(required = false) String keywords) {
 
-		Block<Product> productBlock = productCatalogService.findProducts(productCategoryId,
-				keywords != null ? keywords.trim() : null, page, 10);
+		List<Product> productList = productCatalogService.findProducts(companyId, productCategoryId,
+				keywords != null ? keywords.trim() : null);
 
-		return new BlockDto<>(toProductSummaryDtos(productBlock.getItems()), productBlock.getExistMoreItems());
+		return toProductSummaryDtos(productList);
 
 	}
 

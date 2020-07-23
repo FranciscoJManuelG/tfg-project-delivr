@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +19,10 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
 	private ProductDao productDao;
 
 	@Override
-	public Block<Product> findProducts(Long productCategoryId, String keywords, int page, int size) {
+	public List<Product> findProducts(Long companyId, Long productCategoryId, String keywords) {
 
-		Slice<Product> slice = productDao.find(productCategoryId, keywords, page, size);
+		return productDao.find(companyId, productCategoryId, keywords);
 
-		return new Block<>(slice.getContent(), slice.hasNext());
 	}
 
 	@Override

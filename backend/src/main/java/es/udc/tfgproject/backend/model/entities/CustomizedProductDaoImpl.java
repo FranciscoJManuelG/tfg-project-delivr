@@ -6,10 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
-
 public class CustomizedProductDaoImpl implements CustomizedProductDao {
 
 	@PersistenceContext
@@ -27,9 +23,9 @@ public class CustomizedProductDaoImpl implements CustomizedProductDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Slice<Product> find(Long productCategoryId, String keywords, int page, int size) {
+	public List<Product> find(Long companyId, Long productCategoryId, String keywords) {
 		String[] tokens = getTokens(keywords);
-		String queryString = "SELECT p FROM Product p WHERE p.block = false";
+		String queryString = "SELECT p FROM Product p WHERE p.block = false AND p.company.id = :companyId";
 
 		if (productCategoryId != null) {
 			queryString += " AND p.productCategory.id = :productCategoryId";
@@ -47,7 +43,9 @@ public class CustomizedProductDaoImpl implements CustomizedProductDao {
 
 		queryString += " ORDER BY p.productCategory.id";
 
-		Query query = entityManager.createQuery(queryString).setFirstResult(page * size).setMaxResults(size + 1);
+		Query query = entityManager.createQuery(queryString);
+
+		query.setParameter("companyId", companyId);
 
 		if (productCategoryId != null) {
 			query.setParameter("productCategoryId", productCategoryId);
@@ -61,13 +59,8 @@ public class CustomizedProductDaoImpl implements CustomizedProductDao {
 		}
 
 		List<Product> products = query.getResultList();
-		boolean hasNext = products.size() == (size + 1);
 
-		if (hasNext) {
-			products.remove(products.size() - 1);
-		}
-
-		return new SliceImpl<>(products, PageRequest.of(page, size), hasNext);
+		return products;
 
 	}
 

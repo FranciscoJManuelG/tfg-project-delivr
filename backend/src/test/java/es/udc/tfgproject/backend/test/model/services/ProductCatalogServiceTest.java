@@ -29,7 +29,6 @@ import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.ProductCatalogService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
@@ -111,12 +110,12 @@ public class ProductCatalogServiceTest {
 		productDao.save(product1);
 		productDao.save(product2);
 
-		Block<Product> actualBlock = productCatalogService.findProducts(pCategory2.getId(), null, 0, 1);
+		List<Product> actualList = productCatalogService.findProducts(company1.getId(), pCategory2.getId(), null);
 
 		List<Product> list = new ArrayList<>();
 		list.add(product2);
 
-		assertEquals(list, actualBlock.getItems());
+		assertEquals(list, actualList);
 
 	}
 
@@ -147,12 +146,12 @@ public class ProductCatalogServiceTest {
 		productDao.save(product1);
 		productDao.save(product2);
 
-		Block<Product> actualBlock = productCatalogService.findProducts(null, "bocaDiLLo", 0, 1);
+		List<Product> actualList = productCatalogService.findProducts(company1.getId(), null, "bocaDiLLo");
 
 		List<Product> list = new ArrayList<>();
 		list.add(product1);
 
-		assertEquals(list, actualBlock.getItems());
+		assertEquals(list, actualList);
 
 	}
 
@@ -183,12 +182,12 @@ public class ProductCatalogServiceTest {
 		productDao.save(product1);
 		productDao.save(product2);
 
-		Block<Product> actualBlock = productCatalogService.findProducts(pCategory1.getId(), "BacOn", 0, 1);
+		List<Product> actualList = productCatalogService.findProducts(company1.getId(), pCategory1.getId(), "BacOn");
 
 		List<Product> list = new ArrayList<>();
 		list.add(product1);
 
-		assertEquals(list, actualBlock.getItems());
+		assertEquals(list, actualList);
 
 	}
 
@@ -201,9 +200,11 @@ public class ProductCatalogServiceTest {
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		Company company1 = createCompany(user, "Company1", category1);
+		Company company2 = createCompany(user, "Company2", category1);
 
 		companyCategoryDao.save(category1);
 		companyDao.save(company1);
+		companyDao.save(company2);
 
 		Image image1 = new Image("path1");
 		Image image2 = new Image("path2");
@@ -211,6 +212,7 @@ public class ProductCatalogServiceTest {
 		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
 		Product product1 = createProduct("Bocadillo de bacon", pCategory1, company1, image1);
 		Product product2 = createProduct("Ensalada césar", pCategory2, company1, image2);
+		Product product3 = createProduct("Ensalada mixta", pCategory2, company2, image2);
 
 		productCategoryDao.save(pCategory1);
 		productCategoryDao.save(pCategory2);
@@ -218,18 +220,19 @@ public class ProductCatalogServiceTest {
 		imageDao.save(image2);
 		productDao.save(product1);
 		productDao.save(product2);
+		productDao.save(product3);
 
-		Block<Product> actualBlock = productCatalogService.findProducts(null, null, 0, 2);
+		List<Product> actualList = productCatalogService.findProducts(company1.getId(), null, null);
 
 		List<Product> list = new ArrayList<>();
 		list.add(product1);
 		list.add(product2);
 
-		assertEquals(list, actualBlock.getItems());
+		assertEquals(list, actualList);
 
-		actualBlock = productCatalogService.findProducts(null, "", 0, 2);
+		actualList = productCatalogService.findProducts(company1.getId(), null, "");
 
-		assertEquals(list, actualBlock.getItems());
+		assertEquals(list, actualList);
 
 	}
 

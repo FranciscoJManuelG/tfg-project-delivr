@@ -8,19 +8,21 @@ public class ProductSummaryDto {
 	private String name;
 	private String description;
 	private BigDecimal price;
+	private Boolean block;
 	private String path;
 	private Long productCategoryId;
 
 	public ProductSummaryDto() {
 	}
 
-	public ProductSummaryDto(Long id, String name, String description, BigDecimal price, String path,
+	public ProductSummaryDto(Long id, String name, String description, BigDecimal price, Boolean block, String path,
 			Long productCategoryId) {
 
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
+		this.block = block;
 		this.path = path;
 		this.productCategoryId = productCategoryId;
 	}
@@ -55,6 +57,14 @@ public class ProductSummaryDto {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public Boolean getBlock() {
+		return block;
+	}
+
+	public void setBlock(Boolean block) {
+		this.block = block;
 	}
 
 	public String getPath() {

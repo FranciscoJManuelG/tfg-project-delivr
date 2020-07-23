@@ -7,7 +7,7 @@ import es.udc.tfgproject.backend.model.entities.ProductCategory;
 
 public interface ProductCatalogService {
 
-	Block<Product> findProducts(Long productCategoryId, String keywords, int page, int size);
+	List<Product> findProducts(Long companyId, Long productCategoryId, String keywords);
 
 	List<ProductCategory> findCompanyProductCategories(Long companyId);
 }
