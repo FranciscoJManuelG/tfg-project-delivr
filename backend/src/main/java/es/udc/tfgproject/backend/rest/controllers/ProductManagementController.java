@@ -7,7 +7,9 @@ import static es.udc.tfgproject.backend.rest.dtos.ProductConversor.toProductSumm
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -26,6 +29,7 @@ import es.udc.tfgproject.backend.rest.dtos.ProductCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.ProductDto;
 import es.udc.tfgproject.backend.rest.dtos.ProductSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.StateProductParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.RemoveProductParamsDto;
 
 @RestController
 @RequestMapping("/management")
@@ -50,6 +54,16 @@ public class ProductManagementController {
 		return toProductDto(productManagementService.editProduct(userId, params.getCompanyId(), productId,
 				params.getName(), params.getDescription(), params.getPrice(), params.getNewPath(),
 				params.getProductCategoryId()));
+
+	}
+
+	@DeleteMapping("/products/{productId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeProduct(@RequestAttribute Long userId, @PathVariable Long productId,
+		@Validated @RequestBody RemoveProductParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+
+		productManagementService.removeProduct(userId, params.getCompanyId(), productId);
 
 	}
 
