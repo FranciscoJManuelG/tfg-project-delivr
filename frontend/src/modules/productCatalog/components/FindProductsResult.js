@@ -34,7 +34,7 @@ const FindProductsResult = () => {
         return null;
     }
 
-    if (productSearch.result.items.length === 0) {
+    if (productSearch.result.length === 0) {
         return (
             <div>
                 <FindProducts/>
@@ -49,7 +49,7 @@ const FindProductsResult = () => {
 
         <div>
             <FindProducts/>
-            <Products products={productSearch.result.items} productCategories={productCategories}/>
+            <Products products={productSearch.result} productCategories={productCategories}/>
         </div>
 
     );

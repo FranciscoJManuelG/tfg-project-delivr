@@ -26,8 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/users/signUp").permitAll().antMatchers("/users/login").permitAll()
 				.antMatchers("/users/loginFromServiceToken").permitAll().antMatchers("/users/signUpBusinessman")
 				.permitAll().antMatchers("/business/companies/categories").permitAll().antMatchers("/business/cities").permitAll()
-				.antMatchers("/businessCatalog/companies").permitAll().antMatchers("productCatalog/products/{companyId}/categories").permitAll()
-				.antMatchers("management/products/categories").permitAll().antMatchers("management/products/{companyId}").permitAll()
+				.antMatchers("/businessCatalog/companies").permitAll().antMatchers("/productCatalog/products/{companyId}/categories").permitAll()
+				.antMatchers("/productCatalog/products/*").permitAll()
+				.antMatchers("/management/products/categories").permitAll().antMatchers("/management/products/{companyId}").permitAll()
 				.anyRequest().hasAnyRole("CLIENT", "BUSINESSMAN", "ADMIN");
 
 	}

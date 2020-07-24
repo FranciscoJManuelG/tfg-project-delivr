@@ -1,6 +1,6 @@
 import {config, appFetch} from './appFetch';
 
-export const findProducts = ({companyId, productCategoryId, keywords}, 
+export const findProducts = (companyId, {productCategoryId, keywords}, 
     onSuccess) => {
 
     let path = `/productCatalog/products/${companyId}`;
