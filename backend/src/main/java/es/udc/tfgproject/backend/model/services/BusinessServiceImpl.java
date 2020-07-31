@@ -61,7 +61,7 @@ public class BusinessServiceImpl implements BusinessService {
 			Boolean homeSale, int reservePercentage, Long companyCategoryId)
 			throws InstanceNotFoundException, PermissionException {
 
-		Company company = permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
@@ -76,11 +76,16 @@ public class BusinessServiceImpl implements BusinessService {
 
 	}
 
+	/*
+	 * TODO: Revisar si otro usuario, como el admin, puede bloquear o desbloquear
+	 * una compañía
+	 */
+
 	@Override
-	public Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException {
+	public Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException {
 
 		permissionChecker.checkUser(userId);
-		Company company = checkCompany(companyId);
+		Company company = permissionChecker.checkCompanyExistsAndUserOrAdminCanModify(userId, companyId);
 
 		company.setBlock(true);
 
@@ -89,10 +94,10 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
-	public Company unlockCompany(Long userId, Long companyId) throws InstanceNotFoundException {
+	public Company unlockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException {
 
 		permissionChecker.checkUser(userId);
-		Company company = checkCompany(companyId);
+		Company company = permissionChecker.checkCompanyExistsAndUserOrAdminCanModify(userId, companyId);
 
 		company.setBlock(false);
 
@@ -101,9 +106,9 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
-	public void deregister(Long userId, Long companyId) throws InstanceNotFoundException {
+	public void deregister(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException {
 
-		permissionChecker.checkUser(userId);
+		permissionChecker.checkCompanyExistsAndOnlyAdminCanModify(userId, companyId);
 		List<CompanyAddress> companyAddresses = companyAddressDao.findByCompanyId(companyId);
 
 		/*
@@ -164,7 +169,7 @@ public class BusinessServiceImpl implements BusinessService {
 	public void deleteCompanyAddress(Long userId, Long addressId)
 			throws InstanceNotFoundException, PermissionException {
 
-		permissionChecker.checkCompanyAddressExistsAndBelongsTo(addressId, userId);
+		permissionChecker.checkCompanyAddressExistsAndBelongsToUser(addressId, userId);
 
 		companyAddressDao.delete(companyAddressDao.findByAddressId(addressId).get());
 
@@ -172,9 +177,12 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Block<CompanyAddress> findCompanyAddresses(Long companyId, int page, int size) {
+	public Block<CompanyAddress> findCompanyAddresses(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException {
 
-		Slice<CompanyAddress> slice = companyAddressDao.findByCompanyId(companyId, PageRequest.of(page, size));
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+
+		Slice<CompanyAddress> slice = companyAddressDao.findByCompanyId(company.getId(), PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 

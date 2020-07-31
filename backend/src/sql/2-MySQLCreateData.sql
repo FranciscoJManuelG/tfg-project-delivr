@@ -33,11 +33,20 @@ INSERT INTO CompanyAddress (companyId, addressId)
 	VALUES (1, 2);
 
 INSERT INTO ProductCategory (name) VALUES ("Bocadillos");
+INSERT INTO ProductCategory (name) VALUES ("Hamburguesas");
+INSERT INTO ProductCategory (name) VALUES ("Ensaladas");
+INSERT INTO ProductCategory (name) VALUES ("Kebab");
+INSERT INTO ProductCategory (name) VALUES ("Sushi");
+INSERT INTO ProductCategory (name) VALUES ("Menú");
 
-INSERT INTO Image (path) VALUES ("../../../img/burger");
+INSERT INTO Image (path) VALUES ('/img/bocataTortilla.jpg');
+INSERT INTO Image (path) VALUES ('/img/burger.jpg');
 
 INSERT INTO Product (name, description, price, block, companyId, productCategoryId, imageId)
 	Values("Bocadillo de tortilla", "Tortilla con cebolla", 2.50, false, 1, 1, 1);
+
+INSERT INTO Product (name, description, price, block, companyId, productCategoryId, imageId)
+	Values("Hamburguesa completa", "carne de ternera, lechuga, tomate y cebolla", 4.60, false, 1, 2, 2);
 
 	
 

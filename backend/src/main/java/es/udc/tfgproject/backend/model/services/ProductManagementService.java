@@ -25,8 +25,11 @@ public interface ProductManagementService {
 	Product unlockProduct(Long userId, Long companyId, Long productId)
 			throws InstanceNotFoundException, PermissionException;
 
+	Product findProduct(Long userId, Long productId) throws InstanceNotFoundException, PermissionException;
+
 	List<ProductCategory> findAllProductCategories();
 
-	List<Product> findAllCompanyProducts(Long companyId);
+	List<Product> findAllCompanyProducts(Long userId, Long companyId)
+			throws InstanceNotFoundException, PermissionException;
 
 }

@@ -37,8 +37,7 @@ import es.udc.tfgproject.backend.model.services.UserService;
 @Transactional
 public class ProductManagementServiceTest {
 
-	private final long NON_EXISTENT_PRODUCT_CATEGORY_ID = new Long(-1);
-	private final long NON_EXISTENT_COMPANY_ID = new Long(-1);
+	private final long NON_EXISTENT_ID = new Long(-1);
 
 	@Autowired
 	private UserService userService;
@@ -101,7 +100,7 @@ public class ProductManagementServiceTest {
 		assertEquals(expectedProduct.getPrice(), new BigDecimal(3.50));
 		assertEquals(expectedProduct.getCompany(), company);
 		assertEquals(expectedProduct.getProductCategory(), pCategory);
-		assertEquals(expectedProduct.getImage().getPath(), "path");
+		assertEquals(expectedProduct.getImage().getPath(), "/img/path");
 	}
 
 	@Test
@@ -118,7 +117,7 @@ public class ProductManagementServiceTest {
 
 		assertThrows(InstanceNotFoundException.class,
 				() -> productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
-						"Tortilla con cebolla", new BigDecimal(3.50), "path", NON_EXISTENT_PRODUCT_CATEGORY_ID));
+						"Tortilla con cebolla", new BigDecimal(3.50), "path", NON_EXISTENT_ID));
 	}
 
 	@Test
@@ -154,9 +153,8 @@ public class ProductManagementServiceTest {
 		productCategoryDao.save(pCategory);
 
 		assertThrows(InstanceNotFoundException.class,
-				() -> productManagementService.addProduct(user.getId(), NON_EXISTENT_COMPANY_ID,
-						"Bocadillo de tortilla", "Tortilla con cebolla", new BigDecimal(3.50), "path",
-						pCategory.getId()));
+				() -> productManagementService.addProduct(user.getId(), NON_EXISTENT_ID, "Bocadillo de tortilla",
+						"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId()));
 	}
 
 	@Test
@@ -208,7 +206,7 @@ public class ProductManagementServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
-				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+				"Tortilla con cebolla", new BigDecimal(3.50), "burger.jpg", pCategory.getId());
 
 		long numberOfProducts = productDao.count();
 
@@ -249,6 +247,94 @@ public class ProductManagementServiceTest {
 	}
 
 	@Test
+	public void testFindProduct() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user1");
+
+		CompanyCategory category = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		Product foundProduct = productManagementService.findProduct(user.getId(), product.getId());
+
+		assertEquals(product, foundProduct);
+		assertEquals(company, foundProduct.getCompany());
+		assertEquals(user, foundProduct.getCompany().getUser());
+		assertEquals("Bocadillo de tortilla", foundProduct.getName());
+		assertEquals("Tortilla con cebolla", foundProduct.getDescription());
+		assertEquals(new BigDecimal(3.50), foundProduct.getPrice());
+		assertEquals("/img/path", foundProduct.getImage().getPath());
+		assertEquals(pCategory, foundProduct.getProductCategory());
+
+	}
+
+	@Test
+	public void testFindNonExistentProduct() {
+
+		User user = signUpUser("user");
+
+		assertThrows(InstanceNotFoundException.class,
+				() -> productManagementService.findProduct(user.getId(), NON_EXISTENT_ID));
+
+	}
+
+	@Test
+	public void testFindProductOfAnotherUser() throws InstanceNotFoundException, PermissionException {
+
+		User user1 = signUpUser("user1");
+		User user2 = signUpUser("user2");
+
+		CompanyCategory category = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category.getId());
+
+		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		assertThrows(PermissionException.class,
+				() -> productManagementService.findProduct(user2.getId(), product.getId()));
+
+	}
+
+	@Test
+	public void testFindProductWithNonExistingUserId() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user1");
+
+		CompanyCategory category = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		assertThrows(PermissionException.class,
+				() -> productManagementService.findProduct(NON_EXISTENT_ID, product.getId()));
+
+	}
+
+	@Test
 	public void testFindAllProductCategories() {
 
 		ProductCategory category1 = new ProductCategory("category1");
@@ -285,7 +371,69 @@ public class ProductManagementServiceTest {
 				"Tomate, lechuga, cebolla, espárragos", new BigDecimal(4.75), "newPath", pCategory2.getId());
 
 		assertEquals(Arrays.asList(product1, product2),
-				productManagementService.findAllCompanyProducts(company.getId()));
+				productManagementService.findAllCompanyProducts(user.getId(), company.getId()));
+
+	}
+
+	@Test
+	public void testFindNonExistingCompany() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user");
+
+		assertThrows(InstanceNotFoundException.class,
+				() -> productManagementService.findAllCompanyProducts(user.getId(), NON_EXISTENT_ID));
+
+	}
+
+	@Test
+	public void testFindAllCompanyProductsOfAnotherUser() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user");
+		User user2 = signUpUser("user2");
+
+		CompanyCategory category1 = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
+		productCategoryDao.save(pCategory2);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		assertThrows(PermissionException.class,
+				() -> productManagementService.findAllCompanyProducts(user2.getId(), company.getId()));
+
+	}
+
+	@Test
+	public void testFindAllCompanyProductsWithNoExistingUserId() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user");
+		User user2 = signUpUser("user2");
+
+		CompanyCategory category1 = new CompanyCategory("Vegetariano");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
+		productCategoryDao.save(pCategory2);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		assertThrows(PermissionException.class,
+				() -> productManagementService.findAllCompanyProducts(NON_EXISTENT_ID, company.getId()));
 
 	}
 

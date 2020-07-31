@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +23,8 @@ public class ProductCatalogController {
 	@Autowired
 	private ProductCatalogService productCatalogService;
 
-	@GetMapping("/products/{companyId}")
-	public List<ProductSummaryDto> findProducts(@PathVariable Long companyId,
+	@GetMapping("/products")
+	public List<ProductSummaryDto> findProducts(@RequestParam Long companyId,
 			@RequestParam(required = false) Long productCategoryId, @RequestParam(required = false) String keywords) {
 
 		List<Product> productList = productCatalogService.findProducts(companyId, productCategoryId,
@@ -35,8 +34,8 @@ public class ProductCatalogController {
 
 	}
 
-	@GetMapping("/products/{companyId}/categories")
-	public List<ProductCategoryDto> findCompanyProductCategories(@PathVariable Long companyId) {
+	@GetMapping("/products/categories")
+	public List<ProductCategoryDto> findCompanyProductCategories(@RequestParam Long companyId) {
 		return toProductCategoryDtos(productCatalogService.findCompanyProductCategories(companyId));
 	}
 

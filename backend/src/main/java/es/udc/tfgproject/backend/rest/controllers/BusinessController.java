@@ -69,7 +69,7 @@ public class BusinessController {
 
 	@PostMapping("/companies/{companyId}/block")
 	public CompanyDto blockCompany(@RequestAttribute Long userId, @PathVariable Long companyId)
-			throws InstanceNotFoundException {
+			throws InstanceNotFoundException, PermissionException {
 
 		return toCompanyDto(businessService.blockCompany(userId, companyId));
 
@@ -77,7 +77,7 @@ public class BusinessController {
 
 	@PostMapping("/companies/{companyId}/unlock")
 	public CompanyDto unlockCompany(@RequestAttribute Long userId, @PathVariable Long companyId)
-			throws InstanceNotFoundException {
+			throws InstanceNotFoundException, PermissionException {
 
 		return toCompanyDto(businessService.unlockCompany(userId, companyId));
 
@@ -86,7 +86,7 @@ public class BusinessController {
 	@DeleteMapping("/companies/{companyId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deregister(@RequestAttribute Long userId, @PathVariable Long companyId)
-			throws InstanceNotFoundException {
+			throws InstanceNotFoundException, PermissionException {
 
 		businessService.deregister(userId, companyId);
 
@@ -118,7 +118,6 @@ public class BusinessController {
 
 	}
 
-	// TODO: Mirar mensaje de error cuando no existe el addressId
 	@DeleteMapping("/companyAddresses/{addressId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCompanyAddress(@RequestAttribute Long userId, @PathVariable Long addressId)
@@ -128,11 +127,12 @@ public class BusinessController {
 
 	}
 
-	@GetMapping("/companyAddresses/{companyId}/find")
-	public BlockDto<CompanyAddressSummaryDto> findCompanyAddresses(@PathVariable Long companyId,
-			@RequestParam(defaultValue = "0") int page) {
+	@GetMapping("/companyAddresses")
+	public BlockDto<CompanyAddressSummaryDto> findCompanyAddresses(@RequestAttribute Long userId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam Long companyId)
+			throws InstanceNotFoundException, PermissionException {
 
-		Block<CompanyAddress> addressBlock = businessService.findCompanyAddresses(companyId, page, 10);
+		Block<CompanyAddress> addressBlock = businessService.findCompanyAddresses(userId, companyId, page, 10);
 
 		return new BlockDto<>(toCompanyAddressSummaryDtos(addressBlock.getItems()), addressBlock.getExistMoreItems());
 

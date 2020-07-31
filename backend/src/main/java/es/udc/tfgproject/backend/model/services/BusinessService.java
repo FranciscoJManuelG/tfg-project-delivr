@@ -17,11 +17,11 @@ public interface BusinessService {
 	Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve, Boolean homeSale,
 			int reservePercentage, Long companyCategoryId) throws InstanceNotFoundException, PermissionException;
 
-	Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException;
+	Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
 
-	Company unlockCompany(Long userId, Long companyId) throws InstanceNotFoundException;
+	Company unlockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
 
-	void deregister(Long userId, Long companyId) throws InstanceNotFoundException;
+	void deregister(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
 
 	Company findCompany(Long userId) throws InstanceNotFoundException;
 
@@ -32,7 +32,8 @@ public interface BusinessService {
 
 	void deleteCompanyAddress(Long userId, Long addressId) throws InstanceNotFoundException, PermissionException;
 
-	Block<CompanyAddress> findCompanyAddresses(Long companyId, int page, int size);
+	Block<CompanyAddress> findCompanyAddresses(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException;
 
 	List<City> findAllCities();
 

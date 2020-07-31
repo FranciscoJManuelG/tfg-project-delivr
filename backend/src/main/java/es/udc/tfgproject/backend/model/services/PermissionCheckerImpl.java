@@ -13,6 +13,7 @@ import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.entities.User.RoleType;
 import es.udc.tfgproject.backend.model.entities.UserDao;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -56,7 +57,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 	}
 
 	@Override
-	public Company checkCompanyExistsAndBelongsTo(Long companyId, Long userId)
+	public Company checkCompanyExistsAndBelongsToUser(Long companyId, Long userId)
 			throws PermissionException, InstanceNotFoundException {
 
 		Optional<Company> company = companyDao.findById(companyId);
@@ -74,7 +75,45 @@ public class PermissionCheckerImpl implements PermissionChecker {
 	}
 
 	@Override
-	public CompanyAddress checkCompanyAddressExistsAndBelongsTo(Long addressId, Long userId)
+	public Company checkCompanyExistsAndUserOrAdminCanModify(Long userId, Long companyId)
+			throws PermissionException, InstanceNotFoundException {
+
+		Optional<Company> company = companyDao.findById(companyId);
+		Optional<User> user = userDao.findById(userId);
+
+		if (!company.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.company", companyId);
+		}
+
+		if (!company.get().getUser().getId().equals(userId) && !user.get().getRole().equals(RoleType.ADMIN)) {
+			throw new PermissionException();
+		}
+
+		return company.get();
+
+	}
+
+	@Override
+	public Company checkCompanyExistsAndOnlyAdminCanModify(Long userId, Long companyId)
+			throws PermissionException, InstanceNotFoundException {
+
+		Optional<Company> company = companyDao.findById(companyId);
+		Optional<User> user = userDao.findById(userId);
+
+		if (!company.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.company", companyId);
+		}
+
+		if (!user.get().getRole().equals(RoleType.ADMIN)) {
+			throw new PermissionException();
+		}
+
+		return company.get();
+
+	}
+
+	@Override
+	public CompanyAddress checkCompanyAddressExistsAndBelongsToUser(Long addressId, Long userId)
 			throws PermissionException, InstanceNotFoundException {
 
 		Optional<CompanyAddress> companyAddress = companyAddressDao.findByAddressId(addressId);
@@ -92,7 +131,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 	}
 
 	@Override
-	public Product checkProductExistsAndBelongsTo(Long productId, Long companyId)
+	public Product checkProductExistsAndBelongsToCompany(Long productId, Long companyId)
 			throws PermissionException, InstanceNotFoundException {
 
 		Optional<Product> product = productDao.findById(productId);
@@ -102,6 +141,24 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		if (!product.get().getCompany().getId().equals(companyId)) {
+			throw new PermissionException();
+		}
+
+		return product.get();
+
+	}
+
+	@Override
+	public Product checkProductExistsAndBelongsToUser(Long productId, Long userId)
+			throws PermissionException, InstanceNotFoundException {
+
+		Optional<Product> product = productDao.findById(productId);
+
+		if (!product.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.product", productId);
+		}
+
+		if (!product.get().getCompany().getUser().getId().equals(userId)) {
 			throw new PermissionException();
 		}
 

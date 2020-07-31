@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,8 @@ import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.entities.User.RoleType;
+import es.udc.tfgproject.backend.model.entities.UserDao;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -57,6 +60,9 @@ public class BusinessServiceTest {
 	@Autowired
 	private CompanyAddressDao companyAddressDao;
 
+	@Autowired
+	private UserDao userDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -67,6 +73,14 @@ public class BusinessServiceTest {
 			throw new RuntimeException(e);
 		}
 
+		return user;
+
+	}
+
+	private User createUser(String userName, RoleType role) {
+
+		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
+		user.setRole(role);
 		return user;
 
 	}
@@ -135,7 +149,7 @@ public class BusinessServiceTest {
 	}
 
 	@Test
-	public void testBlockAndUnlockCompany() throws InstanceNotFoundException {
+	public void testBlockAndUnlockCompany() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
 
@@ -160,9 +174,10 @@ public class BusinessServiceTest {
 	}
 
 	@Test
-	public void testDeregisterCompany() throws InstanceNotFoundException {
+	public void testDeregisterCompany() throws InstanceNotFoundException, PermissionException {
 
-		User user = signUpUser("user");
+		User user = createUser("user", RoleType.ADMIN);
+		userDao.save(user);
 
 		CompanyCategory category = new CompanyCategory("Vegetariano");
 		companyCategoryDao.save(category);
@@ -316,7 +331,7 @@ public class BusinessServiceTest {
 	}
 
 	@Test
-	public void testFindCompanyAddresses() throws InstanceNotFoundException {
+	public void testFindCompanyAddresses() throws InstanceNotFoundException, PermissionException {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
@@ -334,14 +349,14 @@ public class BusinessServiceTest {
 		businessService.addCompanyAddress("Juan 48", "14900", city.getId(), company2.getId());
 
 		Block<CompanyAddress> expectedBlock = new Block<>(Arrays.asList(address1, address2), false);
-		Block<CompanyAddress> actual = businessService.findCompanyAddresses(company1.getId(), 0, 10);
+		Block<CompanyAddress> actual = businessService.findCompanyAddresses(user.getId(), company1.getId(), 0, 10);
 
 		assertEquals(expectedBlock, actual);
 
 	}
 
 	@Test
-	public void testFindAllCities() {
+	public void testFindAllCities() throws IOException {
 
 		City city1 = new City("Barcelona");
 		City city2 = new City("Madrid");

@@ -13,13 +13,22 @@ public interface PermissionChecker {
 
 	public User checkUser(Long userId) throws InstanceNotFoundException;
 
-	public Company checkCompanyExistsAndBelongsTo(Long companyId, Long userId)
+	public Company checkCompanyExistsAndBelongsToUser(Long companyId, Long userId)
 			throws PermissionException, InstanceNotFoundException;
 
-	public CompanyAddress checkCompanyAddressExistsAndBelongsTo(Long addressId, Long userId)
+	public Company checkCompanyExistsAndUserOrAdminCanModify(Long userId, Long companyId)
 			throws PermissionException, InstanceNotFoundException;
 
-	public Product checkProductExistsAndBelongsTo(Long productId, Long companyId)
+	public Company checkCompanyExistsAndOnlyAdminCanModify(Long userId, Long companyId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public CompanyAddress checkCompanyAddressExistsAndBelongsToUser(Long addressId, Long userId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public Product checkProductExistsAndBelongsToCompany(Long productId, Long companyId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public Product checkProductExistsAndBelongsToUser(Long productId, Long userId)
 			throws PermissionException, InstanceNotFoundException;
 
 }

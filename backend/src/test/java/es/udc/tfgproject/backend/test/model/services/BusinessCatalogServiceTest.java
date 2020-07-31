@@ -22,6 +22,7 @@ import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
+import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessCatalogService;
 import es.udc.tfgproject.backend.model.services.BusinessService;
@@ -320,7 +321,7 @@ public class BusinessCatalogServiceTest {
 	}
 
 	@Test
-	public void testFindNoCompaniesBlocked() throws InstanceNotFoundException {
+	public void testFindNoCompaniesBlocked() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
 		City city = new City("Lugo");

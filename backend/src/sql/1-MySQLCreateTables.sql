@@ -127,7 +127,7 @@ CREATE TABLE Product(
     block BOOLEAN NOT NULL,
     companyId BIGINT NOT NULL,
     productCategoryId BIGINT NOT NULL,
-    imageId BIGINT NOT NULL,
+    imageId BIGINT,
     CONSTRAINT ProductIdPK PRIMARY KEY (id),
     CONSTRAINT ProductCompanyIdFK FOREIGN KEY(companyId)
         REFERENCES Company (id),

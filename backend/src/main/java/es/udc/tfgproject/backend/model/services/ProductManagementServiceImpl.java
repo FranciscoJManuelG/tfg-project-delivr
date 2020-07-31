@@ -1,5 +1,6 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +40,23 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 	public Product addProduct(Long userId, Long companyId, String name, String description, BigDecimal price,
 			String path, Long productCategoryId) throws InstanceNotFoundException, PermissionException {
 
-		Company company = permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 
 		ProductCategory productCategory = checkProductCategory(productCategoryId);
 
-		Image image = new Image(path);
-		imageDao.save(image);
+		if (path != null) {
+			Image image = new Image();
 
-		Product product = new Product(name, description, price, false, productCategory, company, image);
-		productDao.save(product);
-
-		return product;
+			image.setPath(File.separator + "img" + File.separator + path);
+			imageDao.save(image);
+			Product product = new Product(name, description, price, false, productCategory, company, image);
+			productDao.save(product);
+			return product;
+		} else {
+			Product product = new Product(name, description, price, false, productCategory, company, null);
+			productDao.save(product);
+			return product;
+		}
 	}
 
 	@Override
@@ -57,23 +64,29 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 			BigDecimal price, String newPath, Long productCategoryId)
 			throws InstanceNotFoundException, PermissionException {
 
-		permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
-		Product product = permissionChecker.checkProductExistsAndBelongsTo(productId, companyId);
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Product product = permissionChecker.checkProductExistsAndBelongsToCompany(productId, companyId);
 
 		ProductCategory productCategory = checkProductCategory(productCategoryId);
 
 		/* Antes de añadir la nueva foto, hay que eliminar del sistema la anterior */
 
-		Image imageToRemove = imageDao.findByPath(product.getImage().getPath()).get();
-		imageDao.delete(imageToRemove);
-		Image image = new Image(newPath);
-		imageDao.save(image);
+		if (product.getImage() != null) {
+			Image imageToRemove = imageDao.findByPath(product.getImage().getPath()).get();
+			// deleteFile(imageToRemove.getPath());
+			imageDao.delete(imageToRemove);
+		}
+
+		if (newPath != null) {
+			Image image = new Image(newPath);
+			imageDao.save(image);
+			product.setImage(image);
+		}
 
 		product.setName(name);
 		product.setDescription(description);
 		product.setPrice(price);
 		product.setProductCategory(productCategory);
-		product.setImage(image);
 
 		return product;
 	}
@@ -81,23 +94,28 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 	@Override
 	public void removeProduct(Long userId, Long companyId, Long productId)
 			throws InstanceNotFoundException, PermissionException {
-		permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
-		Product product = permissionChecker.checkProductExistsAndBelongsTo(productId, companyId);
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Product product = permissionChecker.checkProductExistsAndBelongsToCompany(productId, companyId);
 
 		/*
 		 * Cuando eliminamos un producto, también eliminamos la imagen asociada a éste
 		 */
-		Image imageToRemove = imageDao.findByPath(product.getImage().getPath()).get();
-		imageDao.delete(imageToRemove);
-		productDao.delete(product);
+		if (product.getImage() != null) {
+			Image imageToRemove = imageDao.findByPath(product.getImage().getPath()).get();
+			productDao.delete(product);
+			// deleteFile(imageToRemove.getPath());
+			imageDao.delete(imageToRemove);
+		} else {
+			productDao.delete(product);
+		}
 	}
 
 	@Override
 	public Product blockProduct(Long userId, Long companyId, Long productId)
 			throws InstanceNotFoundException, PermissionException {
 
-		permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
-		Product product = permissionChecker.checkProductExistsAndBelongsTo(productId, companyId);
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Product product = permissionChecker.checkProductExistsAndBelongsToCompany(productId, companyId);
 
 		product.setBlock(true);
 
@@ -107,12 +125,23 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 	@Override
 	public Product unlockProduct(Long userId, Long companyId, Long productId)
 			throws InstanceNotFoundException, PermissionException {
-		permissionChecker.checkCompanyExistsAndBelongsTo(companyId, userId);
-		Product product = permissionChecker.checkProductExistsAndBelongsTo(productId, companyId);
+		/*
+		 * TODO: revisar si esto es mejor hacerlo solo con el
+		 * checkProductExistsAndBelongsToUserproductId, userId)
+		 */
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Product product = permissionChecker.checkProductExistsAndBelongsToCompany(productId, companyId);
 
 		product.setBlock(false);
 
 		return product;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Product findProduct(Long userId, Long productId) throws InstanceNotFoundException, PermissionException {
+
+		return permissionChecker.checkProductExistsAndBelongsToUser(productId, userId);
 	}
 
 	@Override
@@ -127,7 +156,10 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 	}
 
 	@Override
-	public List<Product> findAllCompanyProducts(Long companyId) {
+	public List<Product> findAllCompanyProducts(Long userId, Long companyId)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 
 		return productDao.findByCompanyId(companyId);
 	}
@@ -147,5 +179,13 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 		return productCategory;
 
 	}
+
+	/*
+	 * private void deleteFile(String filename) { try { Path path =
+	 * Paths.get(File.separator + "img" + File.separator + filename);
+	 * 
+	 * Files.delete(path); } catch (Exception e) { throw new
+	 * RuntimeException("Internal error"); } }
+	 */
 
 }

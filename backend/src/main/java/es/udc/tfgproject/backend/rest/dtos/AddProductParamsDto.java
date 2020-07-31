@@ -5,12 +5,13 @@ import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class AddProductParamsDto {
 
 	private String name;
 	private String description;
 	private BigDecimal price;
-	private String path;
 	private Long companyId;
 	private Long productCategoryId;
 
@@ -41,16 +42,6 @@ public class AddProductParamsDto {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
-	}
-
-	@NotNull
-	@Size(min = 1, max = 200)
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	@NotNull

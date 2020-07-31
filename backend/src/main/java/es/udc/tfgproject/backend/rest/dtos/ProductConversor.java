@@ -13,7 +13,7 @@ public class ProductConversor {
 	public final static ProductDto toProductDto(Product product) {
 
 		return new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getPrice(),
-				product.getBlock(), product.getImage().getPath(), product.getCompany().getId(),
+				product.getBlock(), product.getImage() != null ? product.getImage().getPath() : null, product.getCompany().getId(),
 				product.getProductCategory().getId());
 	}
 
@@ -24,7 +24,7 @@ public class ProductConversor {
 	private final static ProductSummaryDto toProductSummaryDto(Product product) {
 
 		return new ProductSummaryDto(product.getId(), product.getName(), product.getDescription(), product.getPrice(),
-				product.getBlock(), product.getImage().getPath(), product.getProductCategory().getId());
+				product.getBlock(), product.getImage() != null ? product.getImage().getPath() : null, product.getProductCategory().getId());
 
 	}
 
