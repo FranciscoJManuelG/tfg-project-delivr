@@ -415,7 +415,6 @@ public class ProductManagementServiceTest {
 	public void testFindAllCompanyProductsWithNoExistingUserId() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
-		User user2 = signUpUser("user2");
 
 		CompanyCategory category1 = new CompanyCategory("Vegetariano");
 		companyCategoryDao.save(category1);

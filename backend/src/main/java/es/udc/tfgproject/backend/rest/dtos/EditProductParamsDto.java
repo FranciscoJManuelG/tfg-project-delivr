@@ -10,7 +10,6 @@ public class EditProductParamsDto {
 	private String name;
 	private String description;
 	private BigDecimal price;
-	private String newPath;
 	private Long companyId;
 	private Long productCategoryId;
 
@@ -41,16 +40,6 @@ public class EditProductParamsDto {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
-	}
-
-	@NotNull
-	@Size(min = 1, max = 200)
-	public String getNewPath() {
-		return newPath;
-	}
-
-	public void setNewPath(String newPath) {
-		this.newPath = newPath;
 	}
 
 	@NotNull

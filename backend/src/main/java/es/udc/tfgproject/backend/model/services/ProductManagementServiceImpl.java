@@ -71,7 +71,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
 		/* Antes de añadir la nueva foto, hay que eliminar del sistema la anterior */
 
-		if (product.getImage() != null) {
+		if (product.getImage() != null && newPath != null) {
 			Image imageToRemove = imageDao.findByPath(product.getImage().getPath()).get();
 			// deleteFile(imageToRemove.getPath());
 			imageDao.delete(imageToRemove);
