@@ -48,9 +48,16 @@ const Header = () => {
 
                             {role === "BUSINESSMAN" && existsCompany &&
                                 <div>
-                                    <Link className="dropdown-item" to="/business/modify-company">
-                                        <FormattedMessage id="project.business.BusinessSettings.title"/>
-                                    </Link>
+                                    <div>
+                                        <Link className="dropdown-item" to="/business/modify-company">
+                                            <FormattedMessage id="project.business.BusinessSettings.title"/>
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <Link className="dropdown-item" to="/management/find-products">
+                                            <FormattedMessage id="project.business.Products.title"/>
+                                        </Link>
+                                    </div>
                                 </div>
                             }
                             {role === "BUSINESSMAN" && !existsCompany &&     

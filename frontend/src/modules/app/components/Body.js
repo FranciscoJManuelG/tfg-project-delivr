@@ -6,7 +6,8 @@ import AppGlobalComponents from './AppGlobalComponents';
 import {Login, SignUp, UpdateProfile, ChangePassword, Logout, SignUpBusinessman, AddFavouriteAddress, FindFavouriteAddresses, FindFavouriteAddressesResult} from '../../users';
 import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany} from '../../business';
 import {FindCompaniesByAddress, FindCompaniesResult} from '../../businessCatalog';
-import {FindProductsResult} from '../../productCatalog';
+import {FindProductsByCompanyResult} from '../../productCatalog';
+import {FindProductsResult, FindProducts, AddProduct, EditProduct, FindProductToEdit} from '../../productManagement'
 import users from '../../users';
 
 const Body = () => {
@@ -22,7 +23,12 @@ const Body = () => {
                 <Route exact path="/"><FindCompaniesByAddress/></Route>
                 {<Route exact path="/businessCatalog/find-companies-by-address"><FindCompaniesByAddress/></Route>}
                 {<Route exact path="/businessCatalog/find-companies-result"><FindCompaniesResult/></Route>}
-                {<Route exact path="/productCatalog/find-products-result/:id"><FindProductsResult/></Route>}
+                {<Route exact path="/productCatalog/find-products-by-company-result/:id"><FindProductsByCompanyResult/></Route>}
+                {loggedIn && <Route exact path="/management/find-products"><FindProducts/></Route>}
+                {loggedIn && <Route exact path="/management/add-product"><AddProduct/></Route>}
+                {loggedIn && <Route exact path="/management/find-product-to-edit/:id"><FindProductToEdit/></Route>}
+                {loggedIn && <Route exact path="/management/edit-product"><EditProduct/></Route>}
+                {loggedIn && <Route exact path="/management/find-products-result"><FindProductsResult/></Route>}
                 {loggedIn && <Route exact path="/users/update-profile"><UpdateProfile/></Route>}
                 {loggedIn && <Route exact path="/users/change-password"><ChangePassword/></Route>}
                 {loggedIn && <Route exact path="/users/logout"><Logout/></Route>}

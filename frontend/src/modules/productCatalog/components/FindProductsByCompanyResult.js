@@ -5,8 +5,8 @@ import {useParams} from 'react-router-dom';
 
 import * as selectors from '../selectors';
 import * as actions from '../actions';
-import Products from './Products';
-import FindProducts from './FindProducts';
+import CompanyProducts from './CompanyProducts';
+import FindProductsByCompany from './FindProductsByCompany';
 
 const FindProductsResult = () => {
 
@@ -37,7 +37,7 @@ const FindProductsResult = () => {
     if (productSearch.result.length === 0) {
         return (
             <div>
-                <FindProducts/>
+                <FindProductsByCompany/>
                 <div className="alert alert-info" role="alert">
                     <FormattedMessage id='project.business.FindCompaniesResult.noCompanies'/>
                 </div>
@@ -48,8 +48,8 @@ const FindProductsResult = () => {
     return (
 
         <div>
-            <FindProducts/>
-            <Products products={productSearch.result} productCategories={productCategories}/>
+            <FindProductsByCompany/>
+            <CompanyProducts products={productSearch.result} productCategories={productCategories}/>
         </div>
 
     );

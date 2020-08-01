@@ -1,22 +1,22 @@
 import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {FormattedMessage} from 'react-intl';
+import {useParams} from 'react-router-dom';
 
 import CompanyProductCategorySelector from '../components/CompanyProductCategorySelector'
 import * as actions from '../actions';
-import * as businessSelectors from '../../business/selectors'
 
 const FindProducts = () => {
 
-    const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
-    const [productCategoryId, setProductCategoryId] = useState('');
+    const [productCategoryId, setProductCategoryId] = useState(0);
     const [keywords, setKeywords] = useState('');
+    const {id} = useParams();
 
     const handleSubmit = event => {
         event.preventDefault();
         
-        dispatch(actions.findProducts(company.id,
+        dispatch(actions.findProducts(id,
             {
                 productCategoryId : toNumber(productCategoryId),
                 keywords: keywords.trim()
@@ -33,7 +33,7 @@ const FindProducts = () => {
                 <article className="card-body">
                     <CompanyProductCategorySelector id="productCategoryId" className="custom-select my-1 mr-sm-2"
                         value={productCategoryId} onChange={e => setProductCategoryId(e.target.value)}/>
-                    <input id="keywords" placeholder="Nombre del restaurante" type="text" className="form-control mr-sm-2"
+                    <input id="keywords" placeholder="Producto" type="text" className="form-control mr-sm-2"
                         value={keywords} onChange={e => setKeywords(e.target.value)}/>
                     <button type="submit" className="btn btn-primary my-2 my-sm-0">
                         <FormattedMessage id='project.global.buttons.search'/>

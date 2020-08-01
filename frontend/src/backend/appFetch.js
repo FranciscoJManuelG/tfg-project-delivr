@@ -102,6 +102,7 @@ export const config = (method, body) => {
             config.body = body;
         } else  {
             config.headers = {'Content-Type': 'application/json'};
+            //config.headers = {'Content-Type': 'multipart/form-data; boundary=----------287032381131322'};
             config.body = JSON.stringify(body);
         }
     }

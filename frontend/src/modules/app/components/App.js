@@ -7,6 +7,7 @@ import Body from './Body';
 import Footer from './Footer';
 import users from '../../users';
 import business from '../../business';
+import management from '../../productManagement';
 
 const App = () => {
 
@@ -20,6 +21,8 @@ const App = () => {
         dispatch(business.actions.findAllCompanyCategories());
 
         dispatch(business.actions.findAllCities());
+
+        dispatch(management.actions.findAllProductCategories());
     
     });
 

@@ -40,7 +40,7 @@ export const deleteCompanyAddress = (addressId, onSuccess, onErrors) =>
         config('DELETE'), onSuccess, onErrors);
 
 export const findCompanyAddresses = (companyId, {page}, onSuccess) => 
-    appFetch(`/business/companyAddresses/${companyId}/find?page=${page}`, 
+    appFetch(`/business/companyAddresses?companyId=${companyId}&page=${page}`, 
         config('GET'), onSuccess);
 
 export const findAllCities = (onSuccess) => 

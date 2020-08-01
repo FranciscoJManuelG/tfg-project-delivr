@@ -1,0 +1,10 @@
+export const CLEAR_PRODUCT_SEARCH = 'project/productManagement/clearProductSearch';
+export const FIND_PRODUCTS_COMPLETED = 'project/productManagement/findProductsCompleted';
+export const FIND_ALL_PRODUCT_CATEGORIES_COMPLETED = 'project/productManagement/findAllProductCategoriesCompleted';
+export const ADDED_PRODUCT_COMPLETED = 'project/productManagement/addedProductCompleted';
+export const PRODUCT_DELETED = 'project/productManagement/productDeleted';
+export const UNLOCK_PRODUCT_COMPLETED = 'project/productManagement/unlockProductCompleted';
+export const BLOCK_PRODUCT_COMPLETED = 'project/productManagement/blockProductCompleted';
+export const EDIT_PRODUCT_COMPLETED = 'project/productManagement/editProductCompleted';
+export const CLEAR_PRODUCT = 'project/productManagement/clearProduct';
+export const FIND_PRODUCT_COMPLETED = 'project/productManagement/findProductCompleted';
