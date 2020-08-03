@@ -12,6 +12,8 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
+import es.udc.tfgproject.backend.model.entities.ShoppingCart;
+import es.udc.tfgproject.backend.model.entities.ShoppingCartDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.entities.User.RoleType;
 import es.udc.tfgproject.backend.model.entities.UserDao;
@@ -33,6 +35,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private ProductDao productDao;
+
+	@Autowired
+	private ShoppingCartDao shoppingCartDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -163,6 +168,23 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return product.get();
+
+	}
+
+	@Override
+	public ShoppingCart checkShoppingCartExistsAndBelongsToUser(Long shoppingCartId, Long userId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<ShoppingCart> shoppingCart = shoppingCartDao.findById(shoppingCartId);
+
+		if (!shoppingCart.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.shoppingCart", shoppingCartId);
+		}
+
+		if (!shoppingCart.get().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return shoppingCart.get();
 
 	}
 

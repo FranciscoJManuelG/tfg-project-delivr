@@ -3,6 +3,7 @@ package es.udc.tfgproject.backend.model.services;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.Product;
+import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -29,6 +30,9 @@ public interface PermissionChecker {
 			throws PermissionException, InstanceNotFoundException;
 
 	public Product checkProductExistsAndBelongsToUser(Long productId, Long userId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public ShoppingCart checkShoppingCartExistsAndBelongsToUser(Long shoppingCartId, Long userId)
 			throws PermissionException, InstanceNotFoundException;
 
 }
