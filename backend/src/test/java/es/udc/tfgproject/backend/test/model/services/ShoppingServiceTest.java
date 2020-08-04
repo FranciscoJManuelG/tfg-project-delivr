@@ -100,7 +100,8 @@ public class ShoppingServiceTest {
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(), quantity);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity);
 
 		ShoppingCart shoppingCart = user.getShoppingCart();
 		Optional<ShoppingCartItem> item = shoppingCart.getItem(product.getId());
@@ -135,8 +136,10 @@ public class ShoppingServiceTest {
 		int quantity1 = 1;
 		int quantity2 = 2;
 
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product1.getId(), quantity1);
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(), quantity2);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product1.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
 
 		ShoppingCart shoppingCart = user.getShoppingCart();
 
@@ -174,8 +177,10 @@ public class ShoppingServiceTest {
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(), quantity1);
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(), quantity2);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity2);
 
 		ShoppingCart shoppingCart = user.getShoppingCart();
 		Optional<ShoppingCartItem> item = shoppingCart.getItem(product.getId());
@@ -205,18 +210,25 @@ public class ShoppingServiceTest {
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		assertThrows(InstanceNotFoundException.class,
-				() -> shoppingService.addToShoppingCart(user.getId(), NON_EXISTENT_ID, product.getId(), 1));
+		assertThrows(InstanceNotFoundException.class, () -> shoppingService.addToShoppingCart(user.getId(),
+				NON_EXISTENT_ID, product.getId(), company.getId(), 1));
 
 	}
 
 	@Test
-	public void testAddNonExistingProductToShoppingCart() {
+	public void testAddNonExistingProductToShoppingCart() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(InstanceNotFoundException.class, () -> shoppingService.addToShoppingCart(user.getId(),
-				user.getShoppingCart().getId(), NON_EXISTENT_ID, 1));
+				user.getShoppingCart().getId(), NON_EXISTENT_ID, company.getId(), 1));
 
 	}
 
@@ -241,7 +253,7 @@ public class ShoppingServiceTest {
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.addToShoppingCart(user1.getId(),
-				user2.getShoppingCart().getId(), product.getId(), 1));
+				user2.getShoppingCart().getId(), product.getId(), company.getId(), 1));
 
 	}
 
@@ -265,7 +277,7 @@ public class ShoppingServiceTest {
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.addToShoppingCart(NON_EXISTENT_ID,
-				user.getShoppingCart().getId(), product.getId(), 1));
+				user.getShoppingCart().getId(), product.getId(), company.getId(), 1));
 
 	}
 
@@ -291,9 +303,10 @@ public class ShoppingServiceTest {
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
 		shoppingService.updateShoppingCartItemQuantity(user.getId(), user.getShoppingCart().getId(), product.getId(),
-				quantity2);
+				company.getId(), quantity2);
 
 		Optional<ShoppingCartItem> item = user.getShoppingCart().getItem(product.getId());
 
@@ -322,17 +335,24 @@ public class ShoppingServiceTest {
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		assertThrows(InstanceNotFoundException.class, () -> shoppingService.updateShoppingCartItemQuantity(user.getId(),
-				NON_EXISTENT_ID, product.getId(), 2));
+				NON_EXISTENT_ID, product.getId(), company.getId(), 2));
 
 	}
 
 	@Test
-	public void testUpdateShoppingCartItemQuantityWithNonExistentProductId() {
+	public void testUpdateShoppingCartItemQuantityWithNonExistentProductId() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(InstanceNotFoundException.class, () -> shoppingService.updateShoppingCartItemQuantity(user.getId(),
-				user.getShoppingCart().getId(), NON_EXISTENT_ID, 1));
+				user.getShoppingCart().getId(), NON_EXISTENT_ID, company.getId(), 1));
 
 	}
 
@@ -357,7 +377,7 @@ public class ShoppingServiceTest {
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.updateShoppingCartItemQuantity(NON_EXISTENT_ID,
-				user.getShoppingCart().getId(), product.getId(), 1));
+				user.getShoppingCart().getId(), product.getId(), company.getId(), 1));
 
 	}
 
@@ -382,10 +402,11 @@ public class ShoppingServiceTest {
 		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
-		shoppingService.addToShoppingCart(user2.getId(), user2.getShoppingCart().getId(), product.getId(), 1);
+		shoppingService.addToShoppingCart(user2.getId(), user2.getShoppingCart().getId(), product.getId(),
+				company.getId(), 1);
 
 		assertThrows(PermissionException.class, () -> shoppingService.updateShoppingCartItemQuantity(user1.getId(),
-				user2.getShoppingCart().getId(), product.getId(), 2));
+				user2.getShoppingCart().getId(), product.getId(), company.getId(), 2));
 
 	}
 
@@ -410,9 +431,12 @@ public class ShoppingServiceTest {
 		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Hamburguesa con bacon",
 				"Carne de ternera, bacon y queso", new BigDecimal(6.50), "otherpath", pCategory.getId());
 
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product1.getId(), 1);
-		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(), 1);
-		shoppingService.removeShoppingCartItem(user.getId(), user.getShoppingCart().getId(), product1.getId());
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product1.getId(),
+				company.getId(), 1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), 1);
+		shoppingService.removeShoppingCartItem(user.getId(), user.getShoppingCart().getId(), product1.getId(),
+				company.getId());
 
 		ShoppingCart shoppingCart = user.getShoppingCart();
 
@@ -423,12 +447,19 @@ public class ShoppingServiceTest {
 	}
 
 	@Test
-	public void removeNonExistentShoppingCartItem() {
+	public void removeNonExistentShoppingCartItem() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(InstanceNotFoundException.class, () -> shoppingService.removeShoppingCartItem(user.getId(),
-				user.getShoppingCart().getId(), NON_EXISTENT_ID));
+				user.getShoppingCart().getId(), NON_EXISTENT_ID, company.getId()));
 
 	}
 
@@ -453,7 +484,7 @@ public class ShoppingServiceTest {
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.removeShoppingCartItem(NON_EXISTENT_ID,
-				user.getShoppingCart().getId(), product.getId()));
+				user.getShoppingCart().getId(), product.getId(), company.getId()));
 
 	}
 
@@ -478,7 +509,7 @@ public class ShoppingServiceTest {
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.removeShoppingCartItem(user1.getId(),
-				user2.getShoppingCart().getId(), product.getId()));
+				user2.getShoppingCart().getId(), product.getId(), company.getId()));
 
 	}
 
@@ -512,11 +543,12 @@ public class ShoppingServiceTest {
 		Product product3 = productManagementService.addProduct(user2.getId(), company2.getId(), "Hamburguesa simple",
 				"Carne de ternera y queso", new BigDecimal(3.50), "othernewpath", pCategory.getId());
 
-		shoppingService.addToShoppingCart(client.getId(), client.getShoppingCart().getId(), product1.getId(), quantity);
+		shoppingService.addToShoppingCart(client.getId(), client.getShoppingCart().getId(), product1.getId(),
+				company1.getId(), quantity);
 		shoppingService.addToShoppingCart(client.getId(), client.getShoppingCart().getId(), product2.getId(),
-				quantity - 1);
+				company2.getId(), quantity - 1);
 		shoppingService.addToShoppingCart(client.getId(), client.getShoppingCart().getId(), product3.getId(),
-				quantity + 1);
+				company2.getId(), quantity + 1);
 
 		ShoppingCart cart = shoppingService.findShoppingCartProducts(client.getId(), client.getShoppingCart().getId(),
 				company2.getId());

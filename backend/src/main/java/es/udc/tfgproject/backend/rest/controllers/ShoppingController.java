@@ -33,8 +33,8 @@ public class ShoppingController {
 			@Validated @RequestBody AddToShoppingCartParamsDto params)
 			throws InstanceNotFoundException, PermissionException {
 
-		return toShoppingCartDto(
-				shoppingService.addToShoppingCart(userId, shoppingCartId, params.getProductId(), params.getQuantity()));
+		return toShoppingCartDto(shoppingService.addToShoppingCart(userId, shoppingCartId, params.getProductId(),
+				params.getCompanyId(), params.getQuantity()));
 
 	}
 
@@ -44,7 +44,7 @@ public class ShoppingController {
 			throws InstanceNotFoundException, PermissionException {
 
 		return toShoppingCartDto(shoppingService.updateShoppingCartItemQuantity(userId, shoppingCartId,
-				params.getProductId(), params.getQuantity()));
+				params.getProductId(), params.getCompanyId(), params.getQuantity()));
 
 	}
 
@@ -52,7 +52,8 @@ public class ShoppingController {
 	public ShoppingCartDto removeShoppingCartItem(@RequestAttribute Long userId, @PathVariable Long shoppingCartId,
 			@RequestBody RemoveShoppingCartItemParamsDto params) throws InstanceNotFoundException, PermissionException {
 
-		return toShoppingCartDto(shoppingService.removeShoppingCartItem(userId, shoppingCartId, params.getProductId()));
+		return toShoppingCartDto(shoppingService.removeShoppingCartItem(userId, shoppingCartId, params.getProductId(),
+				params.getCompanyId()));
 
 	}
 

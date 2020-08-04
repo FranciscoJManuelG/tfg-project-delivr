@@ -30,8 +30,8 @@ public class ShoppingServiceImpl implements ShoppingService {
 	private ShoppingCartItemDao shoppingCartItemDao;
 
 	@Override
-	public ShoppingCart addToShoppingCart(Long userId, Long shoppingCartId, Long productId, int quantity)
-			throws InstanceNotFoundException, PermissionException {
+	public ShoppingCart addToShoppingCart(Long userId, Long shoppingCartId, Long productId, Long companyId,
+			int quantity) throws InstanceNotFoundException, PermissionException {
 
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
 		Optional<Product> product = productDao.findById(productId);
@@ -50,13 +50,13 @@ public class ShoppingServiceImpl implements ShoppingService {
 			shoppingCartItemDao.save(newCartItem);
 		}
 
-		return shoppingCart;
+		return filterShoppingCart(shoppingCart, companyId);
 
 	}
 
 	@Override
-	public ShoppingCart updateShoppingCartItemQuantity(Long userId, Long shoppingCartId, Long productId, int quantity)
-			throws InstanceNotFoundException, PermissionException {
+	public ShoppingCart updateShoppingCartItemQuantity(Long userId, Long shoppingCartId, Long productId, Long companyId,
+			int quantity) throws InstanceNotFoundException, PermissionException {
 
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
 
@@ -68,12 +68,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 		existingCartItem.get().setQuantity(quantity);
 
-		return shoppingCart;
+		return filterShoppingCart(shoppingCart, companyId);
 
 	}
 
 	@Override
-	public ShoppingCart removeShoppingCartItem(Long userId, Long shoppingCartId, Long productId)
+	public ShoppingCart removeShoppingCartItem(Long userId, Long shoppingCartId, Long productId, Long companyId)
 			throws InstanceNotFoundException, PermissionException {
 
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
@@ -87,7 +87,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 		shoppingCart.removeItem(existingCartItem.get());
 		shoppingCartItemDao.delete(existingCartItem.get());
 
-		return shoppingCart;
+		return filterShoppingCart(shoppingCart, companyId);
 
 	}
 
@@ -97,12 +97,16 @@ public class ShoppingServiceImpl implements ShoppingService {
 			throws InstanceNotFoundException, PermissionException {
 
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
+		return filterShoppingCart(shoppingCart, companyId);
+
+	}
+
+	private ShoppingCart filterShoppingCart(ShoppingCart cart, Long companyId) {
 		Set<ShoppingCartItem> items = new HashSet<>();
 		items.addAll(shoppingCartItemDao.findByProductCompanyId(companyId));
-		shoppingCart.setItems(items);
+		cart.setItems(items);
 
-		return shoppingCart;
-
+		return cart;
 	}
 
 }

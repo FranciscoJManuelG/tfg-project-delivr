@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 public class UpdateShoppingCartItemQuantityParamsDto {
 
 	private Long productId;
+	private Long companyId;
 	private int quantity;
 
 	@NotNull
@@ -15,6 +16,15 @@ public class UpdateShoppingCartItemQuantityParamsDto {
 
 	public void setProductId(Long productId) {
 		this.productId = productId;
+	}
+
+	@NotNull
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
 	}
 
 	@Min(value = 1)
