@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -483,7 +482,7 @@ public class ShoppingServiceTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testFindShoppingCartProducts() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
@@ -519,13 +518,17 @@ public class ShoppingServiceTest {
 		shoppingService.addToShoppingCart(client.getId(), client.getShoppingCart().getId(), product3.getId(),
 				quantity + 1);
 
-		List<ShoppingCartItem> items = shoppingService.findShoppingCartProducts(client.getId(),
-				client.getShoppingCart().getId(), company2.getId());
+		ShoppingCart cart = shoppingService.findShoppingCartProducts(client.getId(), client.getShoppingCart().getId(),
+				company2.getId());
 
-		assertEquals(2, items.size());
-		assertEquals(product2, items.get(0).getProduct());
-		assertEquals(product3, items.get(1).getProduct());
+		assertEquals(2, cart.getItems().size());
+		assertEquals(4, cart.getTotalQuantity());
 
+		cart = shoppingService.findShoppingCartProducts(client.getId(), client.getShoppingCart().getId(),
+				company1.getId());
+
+		assertEquals(1, cart.getItems().size());
+		assertEquals(quantity, cart.getTotalQuantity());
 	}
 
 }

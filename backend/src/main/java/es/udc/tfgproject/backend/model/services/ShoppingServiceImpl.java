@@ -1,7 +1,8 @@
 package es.udc.tfgproject.backend.model.services;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,12 +92,16 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	@Override
-	public List<ShoppingCartItem> findShoppingCartProducts(Long userId, Long shoppingCartId, Long companyId)
+	@Transactional(readOnly = true)
+	public ShoppingCart findShoppingCartProducts(Long userId, Long shoppingCartId, Long companyId)
 			throws InstanceNotFoundException, PermissionException {
 
-		permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
+		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
+		Set<ShoppingCartItem> items = new HashSet<>();
+		items.addAll(shoppingCartItemDao.findByProductCompanyId(companyId));
+		shoppingCart.setItems(items);
 
-		return shoppingCartItemDao.findByProductCompanyId(companyId);
+		return shoppingCart;
 
 	}
 
