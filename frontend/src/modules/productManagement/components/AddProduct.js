@@ -17,7 +17,7 @@ const AddProduct = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
-    const [file, setFile] = useState('');
+    const [file, setFile] = useState(null);
     const [productCategoryId, setProductCategoryId]  = useState(1);
     const [backendErrors, setBackendErrors] = useState(null);
     let form;
@@ -30,7 +30,7 @@ const AddProduct = () => {
             
             dispatch(actions.addProduct(company.id,
                 name.trim(), description.trim(),
-                price, file, toNumber(productCategoryId),
+                price, file, productCategoryId,
                 () => history.push('/user/login'),
                 errors => setBackendErrors(errors)));
 
@@ -95,8 +95,7 @@ const AddProduct = () => {
                                 <div className="form-group">
                                     <label htmlFor="file">Adjunta una imagen: </label>
                                     <input type="file" id="file" className="form-control" accept="image/*"
-                                        value={file}
-                                        onChange={e => setFile(e.target.value)}/>
+                                        onChange={e => setFile(e.target.files[0])}/>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>

@@ -5,9 +5,11 @@ export const addProduct = (companyId, name, description, price, file, productCat
 
         let path = `/management/products`;
 
-        path += file ? `?file=${file}` : "";
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('data', new Blob([JSON.stringify({ name, description, price, companyId, productCategoryId})], {type: "application/json"} ));
 
-        appFetch(path, config('POST', {companyId, name, description, price, productCategoryId}),
+        appFetch(path, config('POST', formData),
             onSuccess, onErrors);
 
     }

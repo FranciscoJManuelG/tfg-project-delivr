@@ -16,18 +16,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -42,7 +31,6 @@ import es.udc.tfgproject.backend.rest.dtos.StateProductParamsDto;
 
 @RestController
 @RequestMapping("/management")
-@CrossOrigin
 public class ProductManagementController {
 
 	@Autowired
@@ -51,22 +39,26 @@ public class ProductManagementController {
 	// private static final Logger logger =
 	// Logger.getLogger(ProductManagementController.class.getName());
 
-	@PostMapping(value = "/products"/* , produces = { MediaType.IMAGE_PNG_VALUE, "application/json" } */)
-	public ProductDto addProduct(@RequestAttribute Long userId, @RequestParam(required = false) MultipartFile file,
-			@Validated @RequestBody AddProductParamsDto params)
+	@CrossOrigin
+	@PostMapping(value = "/products", consumes = {"multipart/form-data"} )
+	public ProductDto addProduct(@RequestAttribute Long userId,
+                                 @RequestPart(value="file", required=false) MultipartFile file,
+                                 @RequestPart("data") /*@Validated*/ AddProductParamsDto params)
 			throws InstanceNotFoundException, PermissionException, IOException {
 
-		/*
-		 * if (file == null) { throw new RuntimeException("Selecciona una imagen"); }
-		 * logger.info("inputStream: " + file.getInputStream());
-		 * logger.info("originalName: " + file.getOriginalFilename());
-		 * logger.info("name: " + file.getName()); logger.info("contentType: " +
-		 * file.getContentType()); logger.info("size: " + file.getSize());
-		 */
-		return toProductDto(productManagementService.addProduct(userId, params.getCompanyId(), params.getName(),
-				params.getDescription(), params.getPrice(), file != null ? createFile(file) : null,
-				params.getProductCategoryId()));
+        if (file == null) {
+            throw new RuntimeException("Selecciona una imagen");
+        } else {
+            System.out.println("inputStream: " + file.getInputStream());
+            System.out.println("originalName: " + file.getOriginalFilename());
+            System.out.println("name: " + file.getName());
+            System.out.println("content-type: " + file.getContentType());
+            System.out.println("size: " + file.getSize());
+        }
 
+		return toProductDto(productManagementService.addProduct(userId, params.getCompanyId(), params.getName(),
+				params.getDescription(), params.getPrice(), file != null ? file.getName() : null ,
+				params.getProductCategoryId()));
 	}
 
 	@PutMapping("/products/{productId}")
