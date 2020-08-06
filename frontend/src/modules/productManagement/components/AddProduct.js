@@ -30,8 +30,8 @@ const AddProduct = () => {
             
             dispatch(actions.addProduct(company.id,
                 name.trim(), description.trim(),
-                price, file, productCategoryId,
-                () => history.push('/user/login'),
+                price, file, toNumber(productCategoryId),
+                () => history.push('/management/find-products'),
                 errors => setBackendErrors(errors)));
 
         } else {

@@ -96,8 +96,9 @@ const editProductCompleted = product => ({
     product
 })
 
-export const editProduct = (product, file, onSuccess, onErrors) => dispatch =>
-    backend.productManagementService.editProduct(product, file,
+export const editProduct = (productId, companyId, name, description, price, file, productCategoryId, 
+    onSuccess, onErrors) => dispatch =>
+    backend.productManagementService.editProduct(productId, companyId, name, description, price, file, productCategoryId,
         product => {
             dispatch(editProductCompleted(product));
             onSuccess();

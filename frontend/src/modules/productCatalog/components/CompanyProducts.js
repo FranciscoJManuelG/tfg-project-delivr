@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import * as selectors from '../selectors';
+import AddToShoppingCart from '../../shopping/components/AddToShoppingCart';
 
 const CompanyProducts = ({products, productCategories}) => (
 
@@ -21,6 +22,7 @@ const CompanyProducts = ({products, productCategories}) => (
                     </div>
                 </div>
         )}
+        <AddToShoppingCart/>
     </div>
 
 );

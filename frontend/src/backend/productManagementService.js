@@ -14,13 +14,15 @@ export const addProduct = (companyId, name, description, price, file, productCat
 
     }
 
-export const editProduct = (product, file, onSuccess, onErrors) =>{
+export const editProduct = (productId, companyId, name, description, price, file, productCategoryId, onSuccess, onErrors) =>{
 
-    let path = `/management/products/${product.id}`;
+    let path = `/management/products/${productId}`;
 
-    path += file ? `?file=${file}` : "";
+    const formData = new FormData();
+        formData.append('file', file);
+        formData.append('data', new Blob([JSON.stringify({ name, description, price, companyId, productCategoryId})], {type: "application/json"} ));
 
-    appFetch(path, config('PUT', product),
+    appFetch(path, config('PUT', formData),
         onSuccess, onErrors);
 }
 

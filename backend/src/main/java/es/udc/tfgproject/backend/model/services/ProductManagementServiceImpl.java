@@ -78,7 +78,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 		}
 
 		if (newPath != null) {
-			Image image = new Image(newPath);
+			Image image = new Image(File.separator + "img" + File.separator + newPath);
 			imageDao.save(image);
 			product.setImage(image);
 		}

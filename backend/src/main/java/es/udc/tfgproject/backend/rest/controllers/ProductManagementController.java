@@ -6,9 +6,11 @@ import static es.udc.tfgproject.backend.rest.dtos.ProductConversor.toProductSumm
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,27 +45,19 @@ public class ProductManagementController {
 	@PostMapping(value = "/products", consumes = {"multipart/form-data"} )
 	public ProductDto addProduct(@RequestAttribute Long userId,
                                  @RequestPart(value="file", required=false) MultipartFile file,
-                                 @RequestPart("data") /*@Validated*/ AddProductParamsDto params)
+                                 @RequestPart("data") AddProductParamsDto params)
 			throws InstanceNotFoundException, PermissionException, IOException {
 
-        if (file == null) {
-            throw new RuntimeException("Selecciona una imagen");
-        } else {
-            System.out.println("inputStream: " + file.getInputStream());
-            System.out.println("originalName: " + file.getOriginalFilename());
-            System.out.println("name: " + file.getName());
-            System.out.println("content-type: " + file.getContentType());
-            System.out.println("size: " + file.getSize());
-        }
-
 		return toProductDto(productManagementService.addProduct(userId, params.getCompanyId(), params.getName(),
-				params.getDescription(), params.getPrice(), file != null ? file.getName() : null ,
+				params.getDescription(), params.getPrice(), file != null ? createFile(file) : null ,
 				params.getProductCategoryId()));
 	}
 
-	@PutMapping("/products/{productId}")
+	@CrossOrigin
+	@PutMapping(value = "/products/{productId}" , consumes = {"multipart/form-data"})
 	public ProductDto editProduct(@RequestAttribute Long userId, @PathVariable Long productId,
-			@RequestParam(required = false) MultipartFile file, @Validated @RequestBody EditProductParamsDto params)
+								  @RequestPart(value="file", required=false) MultipartFile file, 
+								  @RequestPart("data") EditProductParamsDto params)
 			throws InstanceNotFoundException, PermissionException, IOException {
 
 		return toProductDto(productManagementService.editProduct(userId, params.getCompanyId(), productId,
@@ -117,17 +111,21 @@ public class ProductManagementController {
 	}
 
 	private String createFile(MultipartFile file) throws IOException {
-		Path path = null;
+		Path path = Paths
+		.get(File.separator + "home" + File.separator + "fran" + File.separator + "software" + File.separator + "tfg-project"
+		+ File.separator + "frontend" + File.separator + "public" + File.separator + "img" + File.separator + getTodayDate() + "_" + file.getOriginalFilename());
+
 		try {
-			path = Paths
-					.get(File.separator + "img" + File.separator + getTodayDate() + "_" + file.getOriginalFilename());
+			
 			byte[] bytes = file.getBytes();
 			Files.write(path, bytes);
 
 			return path.getFileName().toString();
 		} catch (IOException ex) {
+
 			throw new RuntimeException("Internal error img");
 		}
+		
 	}
 
 	private String getTodayDate() {
