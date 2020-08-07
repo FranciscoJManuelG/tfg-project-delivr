@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
 const CompanyLink = ({id, name}) => {
-    
+
     return (
-        <Link to={`/productCatalog/find-products-by-company-result/${id}`}>
+        <Link to={`/shopping/find-shopping-cart-products/${id}`}>
             {name}
         </Link>
     );

@@ -6,14 +6,16 @@ public class AuthenticatedUserDto {
 
 	private String serviceToken;
 	private UserDto userDto;
+	private ShoppingCartDto shoppingCartDto;
 
 	public AuthenticatedUserDto() {
 	}
 
-	public AuthenticatedUserDto(String serviceToken, UserDto userDto) {
+	public AuthenticatedUserDto(String serviceToken, UserDto userDto, ShoppingCartDto shoppingCartDto) {
 
 		this.serviceToken = serviceToken;
 		this.userDto = userDto;
+		this.shoppingCartDto = shoppingCartDto;
 
 	}
 
@@ -33,5 +35,15 @@ public class AuthenticatedUserDto {
 	public void setUserDto(UserDto userDto) {
 		this.userDto = userDto;
 	}
+
+	@JsonProperty("shoppingCart")
+	public ShoppingCartDto getShoppingCartDto() {
+		return shoppingCartDto;
+	}
+
+	public void setShoppingCartDto(ShoppingCartDto shoppingCartDto) {
+		this.shoppingCartDto = shoppingCartDto;
+	}
+
 
 }

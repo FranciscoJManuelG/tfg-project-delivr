@@ -7,6 +7,7 @@ import * as selectors from '../selectors';
 import * as actions from '../actions';
 import CompanyProducts from './CompanyProducts';
 import FindProductsByCompany from './FindProductsByCompany';
+import ShoppingCart from '../../shopping/components/ShoppingCart';
 
 const FindProductsResult = () => {
 
@@ -25,7 +26,8 @@ const FindProductsResult = () => {
                 {
                     productCategoryId: null,
                     keywords : ""
-                }));
+                }));   
+                
         }
     }, [id, dispatch]);
 
@@ -49,7 +51,8 @@ const FindProductsResult = () => {
 
         <div>
             <FindProductsByCompany/>
-            <CompanyProducts products={productSearch.result} productCategories={productCategories}/>
+            <CompanyProducts products={productSearch.result} productCategories={productCategories} companyId={id}/>
+            <ShoppingCart companyId={id}/>
         </div>
 
     );

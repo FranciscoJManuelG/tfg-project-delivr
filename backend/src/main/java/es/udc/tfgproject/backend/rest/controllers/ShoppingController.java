@@ -4,14 +4,7 @@ import static es.udc.tfgproject.backend.rest.dtos.ShoppingCartConversor.toShoppi
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -57,6 +50,7 @@ public class ShoppingController {
 
 	}
 
+	@CrossOrigin
 	@GetMapping("/shoppingCarts/{shoppingCartId}")
 	public ShoppingCartDto findShoppingCartProducts(@RequestAttribute Long userId, @PathVariable Long shoppingCartId,
 			@RequestParam Long companyId) throws InstanceNotFoundException, PermissionException {

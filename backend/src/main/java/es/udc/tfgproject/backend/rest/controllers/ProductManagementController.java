@@ -6,11 +6,9 @@ import static es.udc.tfgproject.backend.rest.dtos.ProductConversor.toProductSumm
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -37,9 +35,6 @@ public class ProductManagementController {
 
 	@Autowired
 	private ProductManagementService productManagementService;
-
-	// private static final Logger logger =
-	// Logger.getLogger(ProductManagementController.class.getName());
 
 	@CrossOrigin
 	@PostMapping(value = "/products", consumes = {"multipart/form-data"} )
