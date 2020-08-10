@@ -10,6 +10,8 @@ import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.Order;
+import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
@@ -38,6 +40,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private ShoppingCartDao shoppingCartDao;
+
+	@Autowired
+	private OrderDao orderDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -185,6 +190,23 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return shoppingCart.get();
+
+	}
+
+	@Override
+	public Order checkOrderExistsAndBelongsToUser(Long orderId, Long userId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<Order> order = orderDao.findById(orderId);
+
+		if (!order.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.order", orderId);
+		}
+
+		if (!order.get().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return order.get();
 
 	}
 

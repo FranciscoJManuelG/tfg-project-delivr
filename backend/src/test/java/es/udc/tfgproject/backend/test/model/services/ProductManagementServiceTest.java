@@ -185,7 +185,7 @@ public class ProductManagementServiceTest {
 		assertEquals(editedProduct.getDescription(), "Tomate, lechuga, cebolla, espárragos");
 		assertEquals(editedProduct.getPrice(), new BigDecimal(4.75));
 		assertEquals(editedProduct.getProductCategory(), pCategory2);
-		assertEquals(editedProduct.getImage().getPath(), "newPath");
+		assertEquals(editedProduct.getImage().getPath(), "/img/newPath");
 	}
 
 	@Test
