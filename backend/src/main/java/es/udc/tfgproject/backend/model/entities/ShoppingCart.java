@@ -20,6 +20,7 @@ public class ShoppingCart {
 
 	private Long id;
 	private Set<ShoppingCartItem> items = new HashSet<>();
+	private Boolean homeSale;
 	private User user;
 
 	public ShoppingCart() {
@@ -27,6 +28,7 @@ public class ShoppingCart {
 
 	public ShoppingCart(User user) {
 		this.user = user;
+		this.homeSale = false;
 	}
 
 	@Id
@@ -56,6 +58,14 @@ public class ShoppingCart {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Boolean getHomeSale() {
+		return homeSale;
+	}
+
+	public void setHomeSale(Boolean homeSale) {
+		this.homeSale = homeSale;
 	}
 
 	@Transient

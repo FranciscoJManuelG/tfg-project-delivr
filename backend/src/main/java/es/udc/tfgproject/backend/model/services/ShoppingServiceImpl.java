@@ -137,6 +137,16 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	@Override
+	public ShoppingCart changeShoppingCartHomeSale(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale)
+			throws InstanceNotFoundException, PermissionException {
+
+		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
+		shoppingCart.setHomeSale(homeSale);
+
+		return filterShoppingCart(shoppingCart, companyId);
+	}
+
+	@Override
 	public Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp,
 			Long cityId, Boolean saveAsFavAddress)
 			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {

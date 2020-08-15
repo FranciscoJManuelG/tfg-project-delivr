@@ -33,6 +33,7 @@ import es.udc.tfgproject.backend.rest.common.ErrorsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddToShoppingCartParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.BlockDto;
 import es.udc.tfgproject.backend.rest.dtos.BuyParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.ChangeShoppingCartHomeSaleParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.IdDto;
 import es.udc.tfgproject.backend.rest.dtos.OrderDto;
 import es.udc.tfgproject.backend.rest.dtos.OrderSummaryDto;
@@ -102,7 +103,17 @@ public class ShoppingController {
 
 	}
 
-	@PostMapping("/shoppingcarts/{shoppingCartId}/buy")
+	@PostMapping("/shoppingCarts/{shoppingCartId}/changeShoppingCartHomeSale")
+	public ShoppingCartDto changeShoppingCartHomeSale(@RequestAttribute Long userId, @PathVariable Long shoppingCartId,
+			@RequestBody ChangeShoppingCartHomeSaleParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+
+		return toShoppingCartDto(shoppingService.changeShoppingCartHomeSale(userId, shoppingCartId,
+				params.getCompanyId(), params.getHomeSale()));
+
+	}
+
+	@PostMapping("/shoppingCarts/{shoppingCartId}/buy")
 	public IdDto buy(@RequestAttribute Long userId, @PathVariable Long shoppingCartId,
 			@Validated @RequestBody BuyParamsDto params)
 			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {

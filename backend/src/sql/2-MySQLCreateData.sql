@@ -48,10 +48,10 @@ INSERT INTO Product (name, description, price, block, companyId, productCategory
 INSERT INTO Product (name, description, price, block, companyId, productCategoryId, imageId)
 	Values("Hamburguesa completa", "carne de ternera, lechuga, tomate y cebolla", 4.60, false, 1, 2, 2);
 	
-INSERT INTO ShoppingCart(userId)
-	VALUES (1);
-INSERT INTO ShoppingCart(userId)
-	VALUES (2);
+INSERT INTO ShoppingCart(userId, homeSale)
+	VALUES (1, false);
+INSERT INTO ShoppingCart(userId, homeSale)
+	VALUES (2, false);
 
 	
 

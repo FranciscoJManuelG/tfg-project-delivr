@@ -566,6 +566,40 @@ public class ShoppingServiceTest {
 	}
 
 	@Test
+	public void testChangeShoppingCartHomeSale() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user");
+		int quantity = 2;
+
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		Company company1 = businessService.addCompany(user.getId(), "TradFood", 36, true, true, 10, category1.getId());
+
+		Product product1 = productManagementService.addProduct(user.getId(), company1.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product1.getId(),
+				company1.getId(), quantity);
+
+		ShoppingCart cart = shoppingService.changeShoppingCartHomeSale(user.getId(), user.getShoppingCart().getId(),
+				company1.getId(), true);
+
+		assertEquals(cart.getHomeSale(), true);
+
+		cart = shoppingService.changeShoppingCartHomeSale(user.getId(), user.getShoppingCart().getId(),
+				company1.getId(), false);
+
+		assertEquals(cart.getHomeSale(), false);
+
+	}
+
+	@Test
 	public void testBuyAndFindOrder()
 			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
 

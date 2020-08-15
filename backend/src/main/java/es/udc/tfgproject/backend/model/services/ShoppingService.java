@@ -20,6 +20,9 @@ public interface ShoppingService {
 	ShoppingCart findShoppingCartProducts(Long userId, Long shoppingCartId, Long companyId)
 			throws InstanceNotFoundException, PermissionException;
 
+	ShoppingCart changeShoppingCartHomeSale(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale)
+			throws InstanceNotFoundException, PermissionException;
+
 	Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp, Long cityId,
 			Boolean saveAsFavAddress) throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException;
 

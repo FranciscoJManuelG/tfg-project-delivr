@@ -147,6 +147,7 @@ CREATE INDEX ProductIndexByName ON Product (name);
 
 CREATE TABLE ShoppingCart (
     id BIGINT NOT NULL AUTO_INCREMENT,
+    homeSale BOOLEAN NOT NULL,
     userId BIGINT NOT NULL,
     CONSTRAINT ShoppingCartPK PRIMARY KEY (id),
     CONSTRAINT ShoppingCartUserIdFK FOREIGN KEY(userId)
