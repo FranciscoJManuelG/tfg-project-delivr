@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
 	public void deleteFavouriteAddress(Long userId, Long addressId)
 			throws InstanceNotFoundException, PermissionException {
 
-		permissionChecker.checkUser(userId);
+		permissionChecker.checkFavouriteAddressExistsAndBelongsToUser(addressId, userId);
 
 		favouriteAddressDao.delete(favouriteAddressDao.findByAddressId(addressId).get());
 
@@ -169,6 +169,12 @@ public class UserServiceImpl implements UserService {
 		Slice<FavouriteAddress> slice = favouriteAddressDao.findByUserId(userId, PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
+	}
+
+	@Override
+	public FavouriteAddress findFavAddress(Long userId, Long addressId)
+			throws InstanceNotFoundException, PermissionException {
+		return permissionChecker.checkFavouriteAddressExistsAndBelongsToUser(addressId, userId);
 	}
 
 	/*

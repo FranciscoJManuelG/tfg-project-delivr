@@ -228,7 +228,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void testFindCompanyAddresses() throws InstanceNotFoundException, DuplicateInstanceException {
+	public void testFindFavouriteAddresses() throws InstanceNotFoundException, DuplicateInstanceException {
 		User user = createUser("user");
 		User user2 = createUser("other");
 		City city = new City("Lugo");
@@ -245,6 +245,26 @@ public class UserServiceTest {
 		Block<FavouriteAddress> actual = userService.findFavouriteAddresses(user.getId(), 0, 10);
 
 		assertEquals(expectedBlock, actual);
+
+	}
+
+	@Test
+	public void testFindFavAddress() throws InstanceNotFoundException, DuplicateInstanceException, PermissionException {
+		User user = createUser("user");
+		City city = new City("Lugo");
+		cityDao.save(city);
+
+		userService.signUp(user);
+
+		FavouriteAddress address1 = userService.addFavouriteAddress("Rosalia 18", "15700", city.getId(), user.getId());
+
+		FavouriteAddress favAddress = userService.findFavAddress(user.getId(), address1.getAddressId());
+
+		assertEquals(favAddress, address1);
+		assertEquals(favAddress.getAddressId(), address1.getAddressId());
+		assertEquals(favAddress.getCity().getId(), address1.getCity().getId());
+		assertEquals(favAddress.getCp(), address1.getCp());
+		assertEquals(favAddress.getStreet(), address1.getStreet());
 
 	}
 

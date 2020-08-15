@@ -2,6 +2,7 @@ package es.udc.tfgproject.backend.model.services;
 
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
@@ -25,6 +26,9 @@ public interface PermissionChecker {
 			throws PermissionException, InstanceNotFoundException;
 
 	public CompanyAddress checkCompanyAddressExistsAndBelongsToUser(Long addressId, Long userId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public FavouriteAddress checkFavouriteAddressExistsAndBelongsToUser(Long addressId, Long userId)
 			throws PermissionException, InstanceNotFoundException;
 
 	public Product checkProductExistsAndBelongsToCompany(Long productId, Long companyId)

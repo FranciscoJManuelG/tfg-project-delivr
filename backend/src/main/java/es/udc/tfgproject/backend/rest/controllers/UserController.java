@@ -197,6 +197,13 @@ public class UserController {
 
 	}
 
+	@GetMapping("/favouriteAddress/{addressId}")
+	public FavouriteAddressDto findFavAddress(@RequestAttribute Long userId, @PathVariable Long addressId)
+			throws InstanceNotFoundException, PermissionException {
+
+		return toFavouriteAddressDto(userService.findFavAddress(userId, addressId));
+	}
+
 	private String generateServiceToken(User user) {
 
 		JwtInfo jwtInfo = new JwtInfo(user.getId(), user.getUserName(), user.getRole().toString());

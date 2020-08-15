@@ -10,6 +10,8 @@ import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
+import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.Product;
@@ -34,6 +36,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private CompanyAddressDao companyAddressDao;
+
+	@Autowired
+	private FavouriteAddressDao favouriteAddressDao;
 
 	@Autowired
 	private ProductDao productDao;
@@ -137,6 +142,24 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return companyAddress.get();
+
+	}
+
+	@Override
+	public FavouriteAddress checkFavouriteAddressExistsAndBelongsToUser(Long addressId, Long userId)
+			throws PermissionException, InstanceNotFoundException {
+
+		Optional<FavouriteAddress> favouriteAddress = favouriteAddressDao.findByAddressId(addressId);
+
+		if (!favouriteAddress.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.favouriteAddress", addressId);
+		}
+
+		if (!favouriteAddress.get().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return favouriteAddress.get();
 
 	}
 

@@ -19,7 +19,7 @@ public class ShoppingCartConversor {
 
 		items.sort(Comparator.comparing(ShoppingCartItemDto::getProductName));
 
-		return new ShoppingCartDto(cart.getId(), items, cart.getTotalQuantity(), cart.getTotalPrice());
+		return new ShoppingCartDto(cart.getId(), items, cart.getHomeSale(), cart.getTotalQuantity(), cart.getTotalPrice());
 
 	}
 

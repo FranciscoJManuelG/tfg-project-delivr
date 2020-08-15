@@ -31,4 +31,6 @@ public interface UserService {
 
 	Block<FavouriteAddress> findFavouriteAddresses(Long userId, int page, int size);
 
+	FavouriteAddress findFavAddress(Long userId, Long addressId) throws InstanceNotFoundException, PermissionException;
+
 }

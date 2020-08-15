@@ -7,17 +7,19 @@ public class ShoppingCartDto {
 
 	private Long id;
 	private List<ShoppingCartItemDto> items;
+	private Boolean homeSale;
 	private int totalQuantity;
 	private BigDecimal totalPrice;
 
 	public ShoppingCartDto() {
 	}
 
-	public ShoppingCartDto(Long shoppingCartId, List<ShoppingCartItemDto> items, int totalQuantity,
+	public ShoppingCartDto(Long shoppingCartId, List<ShoppingCartItemDto> items, Boolean homeSale, int totalQuantity,
 			BigDecimal totalPrice) {
 
 		this.id = shoppingCartId;
 		this.items = items;
+		this.homeSale = homeSale;
 		this.totalQuantity = totalQuantity;
 		this.totalPrice = totalPrice;
 
@@ -37,6 +39,14 @@ public class ShoppingCartDto {
 
 	public void setItems(List<ShoppingCartItemDto> items) {
 		this.items = items;
+	}
+
+	public Boolean getHomeSale() {
+		return homeSale;
+	}
+
+	public void setHomeSale(Boolean homeSale) {
+		this.homeSale = homeSale;
 	}
 
 	public int getTotalQuantity() {
