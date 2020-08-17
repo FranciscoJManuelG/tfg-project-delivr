@@ -11,13 +11,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.udc.tfgproject.backend.model.entities.Address;
 import es.udc.tfgproject.backend.model.entities.AddressDao;
-import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
-import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
@@ -28,7 +25,6 @@ import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
-import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -147,29 +143,14 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	@Override
-	public Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp,
-			Long cityId, Boolean saveAsFavAddress)
+	public Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp)
 			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
 
-		User user = permissionChecker.checkUser(userId);
 		Company company = companyDao.findById(companyId).get();
-		City city = cityDao.findById(cityId).get();
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
 
 		if (shoppingCart.isEmpty()) {
 			throw new EmptyShoppingCartException();
-		}
-
-		if (saveAsFavAddress) {
-			Address address = new Address(street, cp, city);
-			addressDao.save(address);
-			FavouriteAddress favAddress = new FavouriteAddress(user);
-			favAddress.setUser(user);
-			favAddress.setCity(city);
-			favAddress.setCp(cp);
-			favAddress.setStreet(street);
-			favAddressDao.save(favAddress);
-
 		}
 
 		Order order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp);

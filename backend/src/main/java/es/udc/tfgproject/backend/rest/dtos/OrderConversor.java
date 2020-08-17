@@ -26,7 +26,9 @@ public class OrderConversor {
 		items.sort(Comparator.comparing(OrderItemDto::getProductName));
 
 		return new OrderDto(order.getId(), items, toMillis(order.getDate()), order.getTotalPrice(), order.getStreet(),
-				order.getCp(), order.getCompany().getName(), order.getHomeSale());
+				order.getCp(), order.getCompany().getName(), order.getUser().getFirstName(),
+				order.getUser().getLastName(), order.getUser().getPhone(), order.getUser().getEmail(),
+				order.getHomeSale());
 
 	}
 

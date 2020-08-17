@@ -62,9 +62,9 @@ const buyCompleted = (orderId) => ({
     orderId
 });
 
-export const buy = (shoppingCartId, companyId, homeSale, street, cp, cityId, saveAsFavAddress, 
+export const buy = (shoppingCartId, companyId, homeSale, street, cp, 
     onSuccess, onErrors) => dispatch =>
-    backend.shoppingService.buy(shoppingCartId, companyId, homeSale, street, cp, cityId, saveAsFavAddress, ({id}) => {
+    backend.shoppingService.buy(shoppingCartId, companyId, homeSale, street, cp, ({id}) => {
         dispatch(buyCompleted(id));
         onSuccess();
     },

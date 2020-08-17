@@ -630,7 +630,7 @@ public class ShoppingServiceTest {
 				company.getId(), quantity2);
 
 		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
-				postalAddress, postalCode, city.getId(), true);
+				postalAddress, postalCode);
 		Order foundOrder = shoppingService.findOrder(user.getId(), order.getId());
 
 		assertEquals(order, foundOrder);
@@ -664,7 +664,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(InstanceNotFoundException.class, () -> shoppingService.buy(user.getId(), NON_EXISTENT_ID,
-				company.getId(), true, "Postal Address", "12345", city.getId(), true));
+				company.getId(), true, "Postal Address", "12345"));
 
 	}
 
@@ -683,7 +683,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.buy(user1.getId(),
-				user2.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", city.getId(), true));
+				user2.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345"));
 
 	}
 
@@ -700,8 +700,8 @@ public class ShoppingServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
-		assertThrows(InstanceNotFoundException.class, () -> shoppingService.buy(NON_EXISTENT_ID,
-				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", city.getId(), true));
+		assertThrows(PermissionException.class, () -> shoppingService.buy(NON_EXISTENT_ID,
+				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345"));
 
 	}
 
@@ -718,7 +718,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(EmptyShoppingCartException.class, () -> shoppingService.buy(user.getId(),
-				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", city.getId(), true));
+				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345"));
 
 	}
 
@@ -754,7 +754,7 @@ public class ShoppingServiceTest {
 				company.getId(), 1);
 
 		Order order = shoppingService.buy(user1.getId(), user1.getShoppingCart().getId(), company.getId(), true,
-				"Postal Address", "12345", city.getId(), false);
+				"Postal Address", "12345");
 
 		assertThrows(PermissionException.class, () -> shoppingService.findOrder(user2.getId(), order.getId()));
 
@@ -782,7 +782,7 @@ public class ShoppingServiceTest {
 				company.getId(), 1);
 
 		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
-				"Postal Address", "12345", city.getId(), true);
+				"Postal Address", "12345");
 
 		assertThrows(PermissionException.class, () -> shoppingService.findOrder(NON_EXISTENT_ID, order.getId()));
 

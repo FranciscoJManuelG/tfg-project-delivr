@@ -23,8 +23,8 @@ public interface ShoppingService {
 	ShoppingCart changeShoppingCartHomeSale(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale)
 			throws InstanceNotFoundException, PermissionException;
 
-	Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp, Long cityId,
-			Boolean saveAsFavAddress) throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException;
+	Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp)
+			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException;
 
 	Order findOrder(Long userId, Long orderId) throws InstanceNotFoundException, PermissionException;
 

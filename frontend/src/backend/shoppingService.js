@@ -25,10 +25,10 @@ export const changeShoppingCartHomeSale = (shoppingCartId, companyId, homeSale,
         config('POST', {companyId, homeSale}), onSuccess, onErrors);
         
 
-export const buy = (shoppingCartId, companyId, homeSale, street, cp, cityId, saveAsFavAddress, 
+export const buy = (shoppingCartId, companyId, homeSale, street, cp,
     onSuccess, onErrors) =>
     appFetch(`/shopping/shoppingCarts/${shoppingCartId}/buy`, 
-        config('POST', {companyId, homeSale, street, cp, cityId, saveAsFavAddress}), onSuccess, onErrors);
+        config('POST', {companyId, homeSale, street, cp}), onSuccess, onErrors);
 
 export const findUserOrders = ({page}, onSuccess) => 
     appFetch(`/shopping/userOrders?page=${page}`, config('GET'), onSuccess);

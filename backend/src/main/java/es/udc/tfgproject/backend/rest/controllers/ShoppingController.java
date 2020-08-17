@@ -119,7 +119,7 @@ public class ShoppingController {
 			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
 
 		return new IdDto(shoppingService.buy(userId, shoppingCartId, params.getCompanyId(), params.getHomeSale(),
-				params.getStreet(), params.getCp(), params.getCityId(), params.getSaveAsFavAddress()).getId());
+				params.getStreet(), params.getCp()).getId());
 
 	}
 

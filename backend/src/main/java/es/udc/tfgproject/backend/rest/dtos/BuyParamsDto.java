@@ -9,8 +9,6 @@ public class BuyParamsDto {
 	private Boolean homeSale;
 	private String street;
 	private String cp;
-	private Long cityId;
-	private Boolean saveAsFavAddress;
 
 	@NotNull
 	public Long getCompanyId() {
@@ -48,24 +46,6 @@ public class BuyParamsDto {
 
 	public void setCp(String cp) {
 		this.cp = cp;
-	}
-
-	@NotNull
-	public Long getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Long cityId) {
-		this.cityId = cityId;
-	}
-
-	@NotNull
-	public Boolean getSaveAsFavAddress() {
-		return saveAsFavAddress;
-	}
-
-	public void setSaveAsFavAddress(Boolean saveAsFavAddress) {
-		this.saveAsFavAddress = saveAsFavAddress;
 	}
 
 }

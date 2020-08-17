@@ -33,8 +33,6 @@ const PurchaseDetails = () => {
                 cart.homeSale, 
                 lastAddress.street, 
                 lastAddress.cp, 
-                lastAddress.cityId, 
-                true, 
                 () => history.push('/shopping/purchase-completed'), 
                 errors => setBackendErrors(errors)));
         } else {
