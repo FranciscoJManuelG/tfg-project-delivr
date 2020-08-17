@@ -8,7 +8,7 @@ import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesRes
 import {FindCompaniesByAddress, FindCompaniesResult} from '../../businessCatalog';
 import {FindProductsByCompanyResult} from '../../productCatalog';
 import {FindProductsResult, FindProducts, AddProduct, EditProduct, FindProductToEdit} from '../../productManagement';
-import {AddToShoppingCart, FindShoppingCartProducts, PurchaseDetails, SetAddressToSendPurchase, ShowFavAddresses, PurchaseCompleted, OrderDetails} from '../../shopping';
+import {AddToShoppingCart, FindShoppingCartProducts, PurchaseDetails, SetAddressToSendPurchase, ShowFavAddresses, PurchaseCompleted, OrderDetails, FindUserOrdersResult, FindCompanyOrdersResult, FindCompanyOrders, FindUserOrders} from '../../shopping';
 import users from '../../users';
 
 const Body = () => {
@@ -49,6 +49,10 @@ const Body = () => {
                 {loggedIn && <Route exact path="/shopping/show-fav-addresses/:id"><ShowFavAddresses/></Route>}
                 {loggedIn && <Route exact path="/shopping/purchase-completed"><PurchaseCompleted/></Route>}
                 {loggedIn && <Route exact path="/shopping/order-details/:id"><OrderDetails/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-user-orders"><FindUserOrders/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-company-orders"><FindCompanyOrders/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-user-orders-result"><FindUserOrdersResult/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-company-orders-result"><FindCompanyOrdersResult/></Route>}
                 {!loggedIn && <Route exact path="/users/login"><Login/></Route>}
                 {!loggedIn && <Route exact path="/users/signup"><SignUp/></Route>}
                 {!loggedIn && <Route exact path="/users/signup-businessman"><SignUpBusinessman/></Route>}

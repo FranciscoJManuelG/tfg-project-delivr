@@ -10,6 +10,10 @@ export {default as SetAddressToSendPurchase} from './components/SetAddressToSend
 export {default as ShowFavAddresses} from './components/ShowFavAddresses';
 export {default as PurchaseCompleted} from './components/PurchaseCompleted';
 export {default as OrderDetails} from './components/OrderDetails';
+export {default as FindUserOrders} from './components/FindUserOrders';
+export {default as FindCompanyOrders} from './components/FindCompanyOrders';
+export {default as FindCompanyOrdersResult} from './components/FindCompanyOrdersResult';
+export {default as FindUserOrdersResult} from './components/FindUserOrdersResult';
 
 
 export default {actions, reducer, selectors};

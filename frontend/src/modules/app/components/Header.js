@@ -26,7 +26,20 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
 
                 <ul className="navbar-nav mr-auto">
-
+                    {role === "BUSINESSMAN" && existsCompany &&
+                        <div>
+                            <Link className="dropdown-item" to="/shopping/find-company-orders">
+                                Pedidos recibidos
+                            </Link>
+                        </div>
+                    }
+                    {userName &&
+                        <div>
+                            <Link className="dropdown-item" to="/shopping/find-user-orders">
+                                Pedidos realizados
+                            </Link>
+                        </div>
+                    }
                 </ul>
 
                 {userName ? 
