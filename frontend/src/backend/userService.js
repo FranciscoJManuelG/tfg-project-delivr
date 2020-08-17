@@ -75,3 +75,7 @@ export const deleteFavouriteAddress = (addressId, onSuccess, onErrors) =>
 export const findFavouriteAddresses = ({page}, onSuccess) => 
     appFetch(`/users/favouriteAddresses?page=${page}`, 
         config('GET'), onSuccess);
+
+export const findFavAddress = (addressId, onSuccess) => 
+    appFetch(`/users/favouriteAddress/${addressId}`, 
+        config('GET'), onSuccess);

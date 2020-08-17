@@ -34,10 +34,6 @@ export const removeShoppingCartItem = (shoppingCartId, productId, companyId,
         },
         onErrors);
 
-const clearShoppingCart = () => ({
-    type: actionTypes.CLEAR_SHOPPING_CART
-});
-
 const findShoppingCartProductsCompleted = shoppingCart => ({
     type: actionTypes.FIND_SHOPPING_CART_PRODUCTS_COMPLETED,
     shoppingCart
@@ -45,12 +41,86 @@ const findShoppingCartProductsCompleted = shoppingCart => ({
 
 export const findShoppingCartProducts = (shoppingCartId, companyId, 
     onSuccess) => dispatch => {
-        dispatch(clearShoppingCart());
         backend.shoppingService.findShoppingCartProducts(shoppingCartId, companyId,
             shoppingCart => {
                 dispatch(findShoppingCartProductsCompleted(shoppingCart));
                 onSuccess();
             });
     }
+
+export const changeShoppingCartHomeSale = (shoppingCartId, companyId, homeSale, 
+    onSuccess, onErrors) => dispatch => 
+    backend.shoppingService.changeShoppingCartHomeSale(shoppingCartId, companyId, homeSale,
+        shoppingCart => {
+            dispatch(shoppingCartUpdated(shoppingCart));
+            onSuccess();
+        },
+        onErrors);
+
+const buyCompleted = (orderId) => ({
+    type: actionTypes.BUY_COMPLETED,
+    orderId
+});
+
+export const buy = (shoppingCartId, companyId, homeSale, street, cp, cityId, saveAsFavAddress, 
+    onSuccess, onErrors) => dispatch =>
+    backend.shoppingService.buy(shoppingCartId, companyId, homeSale, street, cp, cityId, saveAsFavAddress, ({id}) => {
+        dispatch(buyCompleted(id));
+        onSuccess();
+    },
+    onErrors);
+
+const findOrdersCompleted = orderSearch => ({
+    type: actionTypes.FIND_ORDERS_COMPLETED,
+    orderSearch
+});
+
+const clearOrderSearch = () => ({
+    type: actionTypes.CLEAR_ORDER_SEARCH
+});
+
+export const findUserOrders = criteria => dispatch => {
+
+    dispatch(clearOrderSearch());
+    backend.shoppingService.findUserOrders(criteria, 
+        result => dispatch(findOrdersCompleted({criteria, result})));
+
+}    
+
+export const previousFindUserOrdersResultPage = criteria => 
+    findUserOrders({page: criteria.page-1});
+
+export const nextFindUserOrdersResultPage = criteria => 
+    findUserOrders({page: criteria.page+1});
+
+export const findCompanyOrders = (companyId, criteria) => dispatch => {
+
+    dispatch(clearOrderSearch());
+    backend.shoppingService.findCompanyOrders(companyId, criteria, 
+        result => dispatch(findOrdersCompleted({criteria, result})));
+
+}    
+
+export const previousFindCompanyOrdersResultPage = (companyId, criteria) => 
+    findCompanyOrders(companyId, {page: criteria.page-1});
+
+export const nextFindCompanyOrdersResultPage = (companyId, criteria) => 
+    findCompanyOrders(companyId, {page: criteria.page+1});
+
+const findOrderCompleted = order => ({
+    type: actionTypes.FIND_ORDER_COMPLETED,
+    order
+});
+
+export const clearOrder = () => ({
+    type: actionTypes.CLEAR_ORDER
+});
+
+export const findOrder = orderId => dispatch => {
+    backend.shoppingService.findOrder(orderId, order => {
+        dispatch(findOrderCompleted(order));
+    });
+}
+
 
 

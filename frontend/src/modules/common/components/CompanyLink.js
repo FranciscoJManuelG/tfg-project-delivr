@@ -15,6 +15,7 @@ const CompanyLink = ({id, name}) => {
 
 CompanyLink.propTypes = {
     id: PropTypes.number.isRequired,
+    homeSale: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,
 };
 

@@ -18,3 +18,24 @@ export const removeShoppingCartItem = (shoppingCartId, productId, companyId, onS
 export const findShoppingCartProducts = (shoppingCartId, companyId,  onSuccess) => 
     appFetch(`/shopping/shoppingCarts/${shoppingCartId}?companyId=${companyId}`, 
         config('GET'), onSuccess);
+
+export const changeShoppingCartHomeSale = (shoppingCartId, companyId, homeSale,
+    onSuccess, onErrors) =>
+    appFetch(`/shopping/shoppingCarts/${shoppingCartId}/changeShoppingCartHomeSale`, 
+        config('POST', {companyId, homeSale}), onSuccess, onErrors);
+        
+
+export const buy = (shoppingCartId, companyId, homeSale, street, cp, cityId, saveAsFavAddress, 
+    onSuccess, onErrors) =>
+    appFetch(`/shopping/shoppingCarts/${shoppingCartId}/buy`, 
+        config('POST', {companyId, homeSale, street, cp, cityId, saveAsFavAddress}), onSuccess, onErrors);
+
+export const findUserOrders = ({page}, onSuccess) => 
+    appFetch(`/shopping/userOrders?page=${page}`, config('GET'), onSuccess);
+
+export const findCompanyOrders = (companyId, {page}, onSuccess) => 
+    appFetch(`/shopping/companyOrders?companyId=${companyId}&page=${page}`, config('GET'), onSuccess);
+
+export const findOrder = (orderId, onSuccess) =>
+    appFetch(`/shopping/orders/${orderId}`, config('GET'), onSuccess);
+        

@@ -137,3 +137,18 @@ export const deleteFavouriteAddress = (addressId, onSuccess,
         },
         onErrors);
 
+const findFavAddressCompleted = address => ({
+    type: actionTypes.FIND_FAV_ADDRESS_COMPLETED,
+    address
+});
+
+export const findFavAddress = (addressId, onSuccess) => dispatch => {
+
+    backend.userService.findFavAddress(addressId,
+        address => {
+            dispatch(findFavAddressCompleted(address));
+            onSuccess();
+        });
+
+}
+
