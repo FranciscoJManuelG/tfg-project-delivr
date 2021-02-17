@@ -26,6 +26,8 @@ mysql -u root
 ## Run
 
 ```
+Execute the mysqld command first, to start the database
+
 cd backend
 mvn sql:execute (only first time to create tables)
 mvn spring-boot:run
