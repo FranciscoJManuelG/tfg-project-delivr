@@ -26,6 +26,8 @@ import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -61,6 +63,9 @@ public class ProductCatalogServiceTest {
 	@Autowired
 	private ImageDao imageDao;
 
+	@Autowired
+	private ProvinceDao provinceDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -87,7 +92,9 @@ public class ProductCatalogServiceTest {
 	public void testFindProductsByProductCategory() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -123,7 +130,9 @@ public class ProductCatalogServiceTest {
 	public void testFindProductsByKeywords() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -159,7 +168,9 @@ public class ProductCatalogServiceTest {
 	public void testFindProductsByAllCriteria() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -195,7 +206,9 @@ public class ProductCatalogServiceTest {
 	public void testFindAllProducts() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -240,7 +253,9 @@ public class ProductCatalogServiceTest {
 	public void testFindCompanyProductCategories() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");

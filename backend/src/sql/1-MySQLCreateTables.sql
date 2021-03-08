@@ -13,6 +13,7 @@ DROP TABLE Company;
 DROP TABLE CompanyCategory;
 DROP TABLE Address;
 DROP TABLE City;
+DROP TABLE Province;
 DROP TABLE User;
 
 CREATE TABLE User (
@@ -30,10 +31,23 @@ CREATE TABLE User (
 
 CREATE INDEX UserIndexByUserName ON User (userName);
 
+CREATE TABLE Province (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(60) COLLATE latin1_bin NOT NULL,
+    CONSTRAINT ProvincePK PRIMARY KEY (id)
+
+) ENGINE = InnoDB;
+
+CREATE INDEX ProvinceIndexByName ON Province (name);
+
 CREATE TABLE City (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(60) COLLATE latin1_bin NOT NULL,
-    CONSTRAINT CityPK PRIMARY KEY (id)
+    provinceId BIGINT NOT NULL,
+    
+    CONSTRAINT CityPK PRIMARY KEY (id),
+    CONSTRAINT CityProvinceIdFK FOREIGN KEY(provinceId)
+        REFERENCES Province (id)
 
 ) ENGINE = InnoDB;
 

@@ -1,27 +1,22 @@
 package es.udc.tfgproject.backend.model.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
-public class City {
+public class Province {
 
 	private Long id;
 	private String name;
-	private Province province;
 
-	public City() {
+	public Province() {
 
 	}
 
-	public City(String name, Province province) {
+	public Province(String name) {
 		this.name = name;
-		this.province = province;
 	}
 
 	@Id
@@ -40,16 +35,6 @@ public class City {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "provinceId")
-	public Province getProvince() {
-		return province;
-	}
-
-	public void setProvince(Province province) {
-		this.province = province;
 	}
 
 }

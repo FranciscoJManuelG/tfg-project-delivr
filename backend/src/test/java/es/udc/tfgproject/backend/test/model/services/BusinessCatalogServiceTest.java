@@ -19,6 +19,8 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -51,6 +53,9 @@ public class BusinessCatalogServiceTest {
 	@Autowired
 	private CityDao cityDao;
 
+	@Autowired
+	private ProvinceDao provinceDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -73,7 +78,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindCompaniesByCompanyCategory() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -108,9 +115,10 @@ public class BusinessCatalogServiceTest {
 	public void testFindCompaniesByStreet() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
-
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		CompanyCategory category2 = new CompanyCategory("Vegano");
 		Company company1 = createCompany(user, "Company1", category1);
@@ -133,7 +141,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindCompaniesByCity() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -160,7 +170,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindCompaniesByKeywords() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -190,7 +202,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindCompaniesByAllCriteria() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -220,7 +234,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindAllCompanies() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -252,7 +268,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindNoCompanies() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -281,7 +299,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindProductsByPages() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -324,7 +344,9 @@ public class BusinessCatalogServiceTest {
 	public void testFindNoCompaniesBlocked() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		CompanyCategory category1 = new CompanyCategory("Tradicional");

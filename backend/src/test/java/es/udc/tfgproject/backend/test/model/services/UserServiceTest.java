@@ -16,6 +16,8 @@ import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.entities.User.RoleType;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
@@ -42,6 +44,9 @@ public class UserServiceTest {
 
 	@Autowired
 	private FavouriteAddressDao favouriteAddressDao;
+
+	@Autowired
+	private ProvinceDao provinceDao;
 
 	private User createUser(String userName) {
 		return new User(userName, "password", "firstName", "lastName", userName + "@" + userName + ".com", "675123098");
@@ -182,7 +187,9 @@ public class UserServiceTest {
 	@Test
 	public void testAddFavouriteAddress() throws InstanceNotFoundException, DuplicateInstanceException {
 		User user = createUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		userService.signUp(user);
@@ -211,7 +218,9 @@ public class UserServiceTest {
 	public void testDeleteFavouriteAddress()
 			throws InstanceNotFoundException, PermissionException, DuplicateInstanceException {
 		User user = createUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		userService.signUp(user);
@@ -231,7 +240,9 @@ public class UserServiceTest {
 	public void testFindFavouriteAddresses() throws InstanceNotFoundException, DuplicateInstanceException {
 		User user = createUser("user");
 		User user2 = createUser("other");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		userService.signUp(user);
@@ -251,7 +262,9 @@ public class UserServiceTest {
 	@Test
 	public void testFindFavAddress() throws InstanceNotFoundException, DuplicateInstanceException, PermissionException {
 		User user = createUser("user");
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		userService.signUp(user);

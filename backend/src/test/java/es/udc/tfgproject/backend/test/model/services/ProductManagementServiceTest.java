@@ -24,6 +24,8 @@ import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -60,6 +62,9 @@ public class ProductManagementServiceTest {
 	@Autowired
 	private ProductDao productDao;
 
+	@Autowired
+	private ProvinceDao provinceDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -84,7 +89,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
@@ -108,7 +115,9 @@ public class ProductManagementServiceTest {
 
 		User user = signUpUser("user");
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
@@ -126,7 +135,9 @@ public class ProductManagementServiceTest {
 		User user = signUpUser("user");
 		User userWrong = signUpUser("userWrong");
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
@@ -145,7 +156,9 @@ public class ProductManagementServiceTest {
 
 		User user = signUpUser("user");
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
@@ -169,7 +182,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
 		productCategoryDao.save(pCategory2);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -200,7 +215,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
 		productCategoryDao.save(pCategory2);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
@@ -226,7 +243,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
@@ -256,7 +275,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
@@ -298,7 +319,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category.getId());
@@ -321,7 +344,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
@@ -359,9 +384,10 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
 		productCategoryDao.save(pCategory2);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
-
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		Product product1 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
@@ -398,7 +424,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
 		productCategoryDao.save(pCategory2);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -423,7 +451,9 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory2 = new ProductCategory("Ensaladas");
 		productCategoryDao.save(pCategory2);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());

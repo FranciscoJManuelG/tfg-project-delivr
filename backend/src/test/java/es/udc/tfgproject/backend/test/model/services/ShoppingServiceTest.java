@@ -29,6 +29,8 @@ import es.udc.tfgproject.backend.model.entities.OrderItemDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
@@ -80,6 +82,9 @@ public class ShoppingServiceTest {
 	@Autowired
 	private OrderItemDao orderItemDao;
 
+	@Autowired
+	private ProvinceDao provinceDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -120,7 +125,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -149,7 +156,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -193,9 +202,10 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
-
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
@@ -224,7 +234,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -244,7 +256,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -264,7 +278,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -286,7 +302,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -311,7 +329,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -340,7 +360,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -360,7 +382,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -380,7 +404,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -404,7 +430,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -429,7 +457,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -461,7 +491,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -481,7 +513,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -504,7 +538,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -532,7 +568,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company1 = businessService.addCompany(user.getId(), "TradFood", 36, true, true, 10, category1.getId());
@@ -576,7 +614,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company1 = businessService.addCompany(user.getId(), "TradFood", 36, true, true, 10, category1.getId());
@@ -609,7 +649,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -658,7 +700,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -677,7 +721,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -695,7 +741,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -712,7 +760,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -742,7 +792,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -770,7 +822,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -807,7 +861,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -834,7 +890,9 @@ public class ShoppingServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category1);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
@@ -854,7 +912,9 @@ public class ShoppingServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		City city = new City("Lugo");
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
