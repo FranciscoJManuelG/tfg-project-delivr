@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -29,6 +30,7 @@ public class Order {
 	private Boolean homeSale;
 	private String street;
 	private String cp;
+	private DiscountTicket discountTicket;
 
 	public Order() {
 	}
@@ -41,6 +43,19 @@ public class Order {
 		this.homeSale = homeSale;
 		this.street = street;
 		this.cp = cp;
+
+	}
+
+	public Order(User user, Company company, LocalDateTime date, Boolean homeSale, String street, String cp,
+			DiscountTicket discountTicket) {
+
+		this.user = user;
+		this.company = company;
+		this.date = date;
+		this.homeSale = homeSale;
+		this.street = street;
+		this.cp = cp;
+		this.discountTicket = discountTicket;
 
 	}
 
@@ -113,6 +128,15 @@ public class Order {
 
 	public void setCp(String cp) {
 		this.cp = cp;
+	}
+
+	@OneToOne(mappedBy = "order", optional = false, fetch = FetchType.LAZY)
+	public DiscountTicket getDiscountTicket() {
+		return discountTicket;
+	}
+
+	public void setDiscountTicket(DiscountTicket discountTicket) {
+		this.discountTicket = discountTicket;
 	}
 
 	@Transient

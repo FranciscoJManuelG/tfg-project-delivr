@@ -1,5 +1,8 @@
 -- Indexes for primary keys have been explicitly created.
 
+DROP TABLE DiscountTicket;
+DROP TABLE Goal;
+DROP TABLE GoalType;
 DROP TABLE OrderItem;
 DROP TABLE OrderTable;
 DROP TABLE ShoppingCartItem;
@@ -30,6 +33,7 @@ CREATE TABLE User (
 ) ENGINE = InnoDB;
 
 CREATE INDEX UserIndexByUserName ON User (userName);
+
 
 CREATE TABLE Province (
     id BIGINT NOT NULL AUTO_INCREMENT,
@@ -207,6 +211,49 @@ CREATE TABLE OrderItem (
     CONSTRAINT OrderItemOrderIdFK FOREIGN KEY(orderId)
         REFERENCES OrderTable (id)
 ) ENGINE = InnoDB;
+
+CREATE TABLE GoalType (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    goalName VARCHAR(60) NOT NULL,
+    CONSTRAINT GoalTypePK PRIMARY KEY (id),
+    CONSTRAINT GoalTypeGoalNameUniqueKey UNIQUE (goalName)
+) ENGINE = InnoDB;
+
+CREATE INDEX GoalTypeIndexByGoalName ON GoalType (goalName);
+
+CREATE TABLE Goal (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    discountCash DECIMAL(11, 2) NOT NULL,
+    discountPercentage SMALLINT NOT NULL,
+    goal SMALLINT NOT NULL, 
+    companyId BIGINT NOT NULL,
+    goalTypeId BIGINT NOT NULL,
+    CONSTRAINT GoalPK PRIMARY KEY (id),
+    CONSTRAINT GoalCompanyIdFK FOREIGN KEY(companyId)
+        REFERENCES Company (id),
+    CONSTRAINT DiscountTickeGoalTypeIdFK FOREIGN KEY(goalTypeId)
+        REFERENCES GoalType (id)
+) ENGINE = InnoDB;
+
+CREATE TABLE DiscountTicket (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    code VARCHAR(60) COLLATE latin1_bin NOT NULL,
+    expirationDate DATETIME NOT NULL, 
+    discountType TINYINT NOT NULL,
+    userId BIGINT NOT NULL, 
+    goalId BIGINT NOT NULL,
+    orderId BIGINT NOT NULL,
+    CONSTRAINT DiscountTicketPK PRIMARY KEY (id),
+    CONSTRAINT DiscountTicketCodeUniqueKey UNIQUE (code),
+    CONSTRAINT DiscountTicketUserIdFK FOREIGN KEY(userId)
+        REFERENCES User (id),
+    CONSTRAINT DiscountTickeGoalIdFK FOREIGN KEY(goalId)
+        REFERENCES Goal (id),
+    CONSTRAINT DiscountTicketOrderIdFK FOREIGN KEY(orderId)
+        REFERENCES OrderTable (id)
+) ENGINE = InnoDB;
+
+CREATE INDEX DiscountTicketIndexByCode ON DiscountTicket (code);
 
 
 
