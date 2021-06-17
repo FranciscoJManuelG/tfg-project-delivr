@@ -23,9 +23,16 @@ public class Goal {
 	public Goal() {
 	}
 
-	public Goal(BigDecimal discountCash, int discountPercentage, Company company, GoalType goalType, int goal) {
+	public Goal(BigDecimal discountCash, Company company, GoalType goalType, int goal) {
 
 		this.discountCash = discountCash;
+		this.company = company;
+		this.goalType = goalType;
+		this.goal = goal;
+	}
+
+	public Goal(int discountPercentage, Company company, GoalType goalType, int goal) {
+
 		this.discountPercentage = discountPercentage;
 		this.company = company;
 		this.goalType = goalType;

@@ -25,6 +25,7 @@ public class DiscountTicket {
 	private User user;
 	private Goal goal;
 	private Order order;
+	private Boolean used;
 
 	public DiscountTicket() {
 	}
@@ -37,6 +38,7 @@ public class DiscountTicket {
 		this.user = user;
 		this.goal = goal;
 		this.order = order;
+		this.used = false;
 	}
 
 	@Id
@@ -101,6 +103,14 @@ public class DiscountTicket {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public Boolean getUsed() {
+		return used;
+	}
+
+	public void setUsed(Boolean used) {
+		this.used = used;
 	}
 
 }

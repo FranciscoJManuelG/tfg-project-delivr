@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.tfgproject.backend.model.entities.Order;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
+import es.udc.tfgproject.backend.model.exceptions.IncorrectDiscountCodeException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
@@ -116,10 +119,11 @@ public class ShoppingController {
 	@PostMapping("/shoppingCarts/{shoppingCartId}/buy")
 	public IdDto buy(@RequestAttribute Long userId, @PathVariable Long shoppingCartId,
 			@Validated @RequestBody BuyParamsDto params)
-			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
+			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
 		return new IdDto(shoppingService.buy(userId, shoppingCartId, params.getCompanyId(), params.getHomeSale(),
-				params.getStreet(), params.getCp()).getId());
+				params.getStreet(), params.getCp(), params.getCodeDiscount()).getId());
 
 	}
 

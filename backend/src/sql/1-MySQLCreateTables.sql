@@ -192,6 +192,7 @@ CREATE TABLE OrderTable (
     homeSale BOOLEAN NOT NULL,
     street VARCHAR(200) NOT NULL,
     cp VARCHAR(20) NOT NULL,
+    totalPrice DECIMAL(11, 2) NOT NULL,
     CONSTRAINT OrderPK PRIMARY KEY (id),
     CONSTRAINT OrderUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
@@ -242,7 +243,8 @@ CREATE TABLE DiscountTicket (
     discountType TINYINT NOT NULL,
     userId BIGINT NOT NULL, 
     goalId BIGINT NOT NULL,
-    orderId BIGINT NOT NULL,
+    orderId BIGINT,
+    used BOOLEAN NOT NULL,
     CONSTRAINT DiscountTicketPK PRIMARY KEY (id),
     CONSTRAINT DiscountTicketCodeUniqueKey UNIQUE (code),
     CONSTRAINT DiscountTicketUserIdFK FOREIGN KEY(userId)

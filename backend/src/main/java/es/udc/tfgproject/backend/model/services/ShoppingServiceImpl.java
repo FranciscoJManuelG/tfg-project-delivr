@@ -1,5 +1,6 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -10,12 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import es.udc.tfgproject.backend.model.entities.AddressDao;
-import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
-import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket;
+import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
+import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.OrderItem;
@@ -25,7 +28,10 @@ import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
+import es.udc.tfgproject.backend.model.exceptions.IncorrectDiscountCodeException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
@@ -52,13 +58,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	private CompanyDao companyDao;
 
 	@Autowired
-	private CityDao cityDao;
-
-	@Autowired
-	private AddressDao addressDao;
-
-	@Autowired
-	private FavouriteAddressDao favAddressDao;
+	private DiscountTicketDao discountTicketDao;
 
 	@Override
 	public ShoppingCart addToShoppingCart(Long userId, Long shoppingCartId, Long productId, Long companyId,
@@ -143,17 +143,33 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	@Override
-	public Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp)
-			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
+	public Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp,
+			String codeDiscount) throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
 		Company company = companyDao.findById(companyId).get();
+		Order order = new Order();
+
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
 
 		if (shoppingCart.isEmpty()) {
 			throw new EmptyShoppingCartException();
 		}
 
-		Order order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp);
+		// Comprobamos si el codigo del ticket descuento introducido es el correcto o
+		// no, si se ha introducido algún código
+		if (!StringUtils.isEmpty(codeDiscount)) {
+			DiscountTicket discountTicket = checkDiscountTicket(userId, companyId, codeDiscount);
+			BigDecimal totalPrice = getDiscountedPrice(discountTicket, shoppingCart);
+			order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp,
+					discountTicket, totalPrice);
+			discountTicket.setUsed(true);
+			discountTicket.setOrder(order);
+
+		} else {
+			order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp,
+					shoppingCart.getTotalPrice());
+		}
 
 		orderDao.save(order);
 
@@ -209,6 +225,78 @@ public class ShoppingServiceImpl implements ShoppingService {
 		cart.setItems(items);
 
 		return cart;
+	}
+
+	private DiscountTicket checkDiscountTicket(Long userId, Long companyId, String code)
+			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
+			DiscountTicketHasExpiredException, DiscountTicketUsedException {
+		System.out.println("code" + code + "userId" + userId);
+		DiscountTicket discountTicket = permissionChecker.checkDiscountTicketExistsAndBelongsToUser(code, userId);
+		if (discountTicket.getUsed()) {
+			throw new DiscountTicketUsedException();
+		}
+		if (discountTicket.getExpirationDate().isAfter(LocalDateTime.now())) {
+			throw new DiscountTicketHasExpiredException();
+		}
+		if (!discountTicket.getCode().equals(code)) {
+			throw new IncorrectDiscountCodeException();
+		}
+
+		return discountTicket;
+
+	}
+
+	@Override
+	public BigDecimal redeemDiscountTicket(Long userId, Long companyId, Long shoppingCartId, String code)
+			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
+			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
+
+		DiscountTicket discountTicket = checkDiscountTicket(userId, companyId, code);
+
+		if (shoppingCart.isEmpty()) {
+			throw new EmptyShoppingCartException();
+		}
+
+		return getDiscountedPrice(discountTicket, shoppingCart);
+
+	}
+
+	private BigDecimal getDiscountedPrice(DiscountTicket discountTicket, ShoppingCart shoppingCart) {
+		BigDecimal discountedPrice = shoppingCart.getTotalPrice();
+
+		switch (discountTicket.getDiscountType()) {
+		case CASH:
+			discountedPrice = shoppingCart.getTotalPrice().subtract(discountTicket.getGoal().getDiscountCash());
+			break;
+
+		case PERCENTAGE:
+			discountedPrice = shoppingCart.getTotalPrice().subtract(calculatePriceFromPercentage(
+					discountTicket.getGoal().getDiscountPercentage(), shoppingCart.getTotalPrice()));
+			break;
+		}
+
+		return discountedPrice;
+	}
+
+	private BigDecimal calculatePriceFromPercentage(int discountPercentage, BigDecimal totalPrice) {
+		BigDecimal valorToDiscount = totalPrice.multiply(new BigDecimal(discountPercentage));
+		BigDecimal discountedPrice = totalPrice.subtract(valorToDiscount);
+
+		return discountedPrice;
+	}
+
+	@Override
+	public Block<DiscountTicket> findDiscountTickets(Long userId, Long companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Goal addGoal(Long companyId, BigDecimal discountCash, int discountPercentage, GoalType goalType, int goal) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

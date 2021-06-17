@@ -10,6 +10,8 @@ import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket;
+import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.Order;
@@ -48,6 +50,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private OrderDao orderDao;
+
+	@Autowired
+	private DiscountTicketDao discountTicketDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -230,6 +235,23 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return order.get();
+
+	}
+
+	@Override
+	public DiscountTicket checkDiscountTicketExistsAndBelongsToUser(String code, Long userId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<DiscountTicket> discountTicket = discountTicketDao.findByCode(code);
+
+		if (!discountTicket.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.discountTicket", code);
+		}
+
+		if (!discountTicket.get().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return discountTicket.get();
 
 	}
 

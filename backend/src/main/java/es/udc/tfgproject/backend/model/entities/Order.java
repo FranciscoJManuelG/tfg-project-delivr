@@ -31,11 +31,13 @@ public class Order {
 	private String street;
 	private String cp;
 	private DiscountTicket discountTicket;
+	private BigDecimal totalPrice;
 
 	public Order() {
 	}
 
-	public Order(User user, Company company, LocalDateTime date, Boolean homeSale, String street, String cp) {
+	public Order(User user, Company company, LocalDateTime date, Boolean homeSale, String street, String cp,
+			BigDecimal totalPrice) {
 
 		this.user = user;
 		this.company = company;
@@ -43,11 +45,12 @@ public class Order {
 		this.homeSale = homeSale;
 		this.street = street;
 		this.cp = cp;
+		this.totalPrice = totalPrice;
 
 	}
 
 	public Order(User user, Company company, LocalDateTime date, Boolean homeSale, String street, String cp,
-			DiscountTicket discountTicket) {
+			DiscountTicket discountTicket, BigDecimal totalPrice) {
 
 		this.user = user;
 		this.company = company;
@@ -56,6 +59,7 @@ public class Order {
 		this.street = street;
 		this.cp = cp;
 		this.discountTicket = discountTicket;
+		this.totalPrice = totalPrice;
 
 	}
 
@@ -130,6 +134,14 @@ public class Order {
 		this.cp = cp;
 	}
 
+	public BigDecimal getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(BigDecimal totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
 	@OneToOne(mappedBy = "order", optional = false, fetch = FetchType.LAZY)
 	public DiscountTicket getDiscountTicket() {
 		return discountTicket;
@@ -149,11 +161,6 @@ public class Order {
 		items.add(item);
 		item.setOrder(this);
 
-	}
-
-	@Transient
-	public BigDecimal getTotalPrice() {
-		return items.stream().map(i -> i.getTotalPrice()).reduce(new BigDecimal(0), (a, b) -> a.add(b));
 	}
 
 }

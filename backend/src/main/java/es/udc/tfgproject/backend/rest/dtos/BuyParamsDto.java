@@ -9,6 +9,7 @@ public class BuyParamsDto {
 	private Boolean homeSale;
 	private String street;
 	private String cp;
+	private String codeDiscount;
 
 	@NotNull
 	public Long getCompanyId() {
@@ -46,6 +47,15 @@ public class BuyParamsDto {
 
 	public void setCp(String cp) {
 		this.cp = cp;
+	}
+
+	@Size(min = 1, max = 60)
+	public String getCodeDiscount() {
+		return codeDiscount;
+	}
+
+	public void setCodeDiscount(String codeDiscount) {
+		this.codeDiscount = codeDiscount;
 	}
 
 }

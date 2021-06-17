@@ -22,6 +22,13 @@ import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
+import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
+import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.GoalDao;
+import es.udc.tfgproject.backend.model.entities.GoalType;
+import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.OrderItem;
@@ -35,8 +42,11 @@ import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
+import es.udc.tfgproject.backend.model.exceptions.IncorrectDiscountCodeException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
@@ -85,6 +95,15 @@ public class ShoppingServiceTest {
 	@Autowired
 	private ProvinceDao provinceDao;
 
+	@Autowired
+	private DiscountTicketDao discountTicketDao;
+
+	@Autowired
+	private GoalDao goalDao;
+
+	@Autowired
+	private GoalTypeDao goalTypeDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -103,7 +122,7 @@ public class ShoppingServiceTest {
 
 		String postalAddress = "Postal Address";
 		String postalCode = "12345";
-		Order order = new Order(user, company, date, true, postalAddress, postalCode);
+		Order order = new Order(user, company, date, true, postalAddress, postalCode, new BigDecimal(15));
 		OrderItem item = new OrderItem(product, product.getPrice(), 1);
 
 		orderDao.save(order);
@@ -112,6 +131,44 @@ public class ShoppingServiceTest {
 
 		return order;
 
+	}
+
+	private GoalType addGoalType() {
+
+		String goalName = "Alcanzar cierta cifra de pedidos";
+		GoalType goalType = new GoalType(goalName);
+
+		goalTypeDao.save(goalType);
+
+		return goalType;
+	}
+
+	private Goal addGoalCash(BigDecimal discountCash, Company company, GoalType goalType, int goal) {
+
+		Goal goal1 = new Goal(discountCash, company, goalType, goal);
+
+		goalDao.save(goal1);
+
+		return goal1;
+	}
+
+	private Goal addGoalPercentage(int discountPercentage, Company company, GoalType goalType, int goal) {
+
+		Goal goal1 = new Goal(discountPercentage, company, goalType, goal);
+
+		goalDao.save(goal1);
+
+		return goal1;
+	}
+
+	private DiscountTicket addDiscountTicket(User user, Goal goal, Order order, String code,
+			LocalDateTime expirationDate, DiscountType discountType) {
+
+		DiscountTicket discountTicket = new DiscountTicket(code, expirationDate, discountType, user, goal, order);
+
+		discountTicketDao.save(discountTicket);
+
+		return discountTicket;
 	}
 
 	@Test
@@ -640,8 +697,8 @@ public class ShoppingServiceTest {
 	}
 
 	@Test
-	public void testBuyAndFindOrder()
-			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
+	public void testBuyAndFindOrder() throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -672,7 +729,7 @@ public class ShoppingServiceTest {
 				company.getId(), quantity2);
 
 		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
-				postalAddress, postalCode);
+				postalAddress, postalCode, "");
 		Order foundOrder = shoppingService.findOrder(user.getId(), order.getId());
 
 		assertEquals(order, foundOrder);
@@ -708,7 +765,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(InstanceNotFoundException.class, () -> shoppingService.buy(user.getId(), NON_EXISTENT_ID,
-				company.getId(), true, "Postal Address", "12345"));
+				company.getId(), true, "Postal Address", "12345", ""));
 
 	}
 
@@ -729,7 +786,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.buy(user1.getId(),
-				user2.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345"));
+				user2.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", ""));
 
 	}
 
@@ -749,7 +806,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(PermissionException.class, () -> shoppingService.buy(NON_EXISTENT_ID,
-				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345"));
+				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", ""));
 
 	}
 
@@ -768,7 +825,7 @@ public class ShoppingServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
 		assertThrows(EmptyShoppingCartException.class, () -> shoppingService.buy(user.getId(),
-				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345"));
+				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", ""));
 
 	}
 
@@ -783,7 +840,8 @@ public class ShoppingServiceTest {
 
 	@Test
 	public void testFindOrderOfAnotherUser()
-			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
+			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
 		User user1 = signUpUser("user1");
 		User user2 = signUpUser("user2");
@@ -806,7 +864,7 @@ public class ShoppingServiceTest {
 				company.getId(), 1);
 
 		Order order = shoppingService.buy(user1.getId(), user1.getShoppingCart().getId(), company.getId(), true,
-				"Postal Address", "12345");
+				"Postal Address", "12345", "");
 
 		assertThrows(PermissionException.class, () -> shoppingService.findOrder(user2.getId(), order.getId()));
 
@@ -814,7 +872,8 @@ public class ShoppingServiceTest {
 
 	@Test
 	public void testFindOrderWithNonExistingUserId()
-			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException {
+			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -836,7 +895,7 @@ public class ShoppingServiceTest {
 				company.getId(), 1);
 
 		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
-				"Postal Address", "12345");
+				"Postal Address", "12345", "");
 
 		assertThrows(PermissionException.class, () -> shoppingService.findOrder(NON_EXISTENT_ID, order.getId()));
 
@@ -938,6 +997,46 @@ public class ShoppingServiceTest {
 
 		expectedBlock = new Block<>(Arrays.asList(order4), false);
 		assertEquals(expectedBlock, shoppingService.findCompanyOrders(user2.getId(), company2.getId(), 0, 1));
+	}
+
+	@Test
+	public void testCheckDiscountTicketAndDiscount()
+			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
+			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3), "path", pCategory.getId());
+
+		ShoppingCart shoppingCart = shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(),
+				product.getId(), company.getId(), 3);
+
+		GoalType goalType = addGoalType();
+
+		BigDecimal discount = new BigDecimal(2);
+		Goal goal = addGoalCash(discount, company, goalType, 2);
+
+		DiscountTicket discountTicket = addDiscountTicket(user, goal, null, "12345ABCD",
+				LocalDateTime.of(2017, 10, 1, 10, 2, 3), DiscountType.CASH);
+
+		BigDecimal totalPriceActual = shoppingCart.getTotalPrice().subtract(discount);
+		BigDecimal totalPriceExpected = shoppingService.redeemDiscountTicket(user.getId(), company.getId(),
+				user.getShoppingCart().getId(), "12345ABCD");
+
+		assertEquals(totalPriceExpected, totalPriceActual);
+
 	}
 
 }
