@@ -2,8 +2,12 @@ package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +20,10 @@ import org.springframework.util.StringUtils;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
 import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.GoalDao;
 import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
@@ -28,6 +34,7 @@ import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
+import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
@@ -56,6 +63,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Autowired
 	private CompanyDao companyDao;
+
+	@Autowired
+	private GoalDao goalDao;
+
+	@Autowired
+	private EmailUtil emailUtil;
 
 	@Autowired
 	private DiscountTicketDao discountTicketDao;
@@ -147,6 +160,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 			String codeDiscount) throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
 			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
+		User user = permissionChecker.checkUser(userId);
 		Company company = companyDao.findById(companyId).get();
 		Order order = new Order();
 
@@ -188,8 +202,80 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 		shoppingCart.removeAll();
 
-		return order;
+		// Obtengo los goals de la compañia
+		List<Goal> goals = goalDao.findByCompanyId(companyId);
 
+		for (Goal goal : goals) {
+			switch (goal.getGoalType().getGoalName()) {
+			case Constantes.NUMERO_PEDIDOS:
+				checkNumberOfOrdersGoalAndSendEmail(user, company, goal);
+				break;
+
+			default:
+				break;
+			}
+		}
+
+		return order;
+	}
+
+	private void checkNumberOfOrdersGoalAndSendEmail(User user, Company company, Goal goal) {
+		// Obtener el número de pedidos que ha realizado el usuario para una compañia
+		int numberOfOrders = orderDao.findByUserIdAndCompanyId(user.getId(), company.getId()).size();
+
+		if (goal.getGoalQuantity() == numberOfOrders) {
+
+			String code = generateRandomCode();
+
+			DiscountTicket newDiscountTicket = new DiscountTicket();
+			newDiscountTicket.setCode(code);
+			newDiscountTicket.setExpirationDate(LocalDateTime.now().plusDays(Long.valueOf(Constantes.EXPIRATION_DAYS)));
+			newDiscountTicket.setUsed(false);
+			newDiscountTicket.setUser(user);
+			newDiscountTicket.setGoal(goal);
+			if (!new BigDecimal(0).equals(goal.getDiscountCash())) {
+				newDiscountTicket.setDiscountType(DiscountType.CASH);
+			} else {
+				newDiscountTicket.setDiscountType(DiscountType.PERCENTAGE);
+			}
+
+			discountTicketDao.save(newDiscountTicket);
+
+			StringBuilder texto = new StringBuilder();
+			texto = texto.append("Hola ").append(user.getUserName()).append(",").append(System.lineSeparator())
+					.append(System.lineSeparator()).append("Has conseguido un ticket descuento para usar en ")
+					.append(company.getName());
+
+			if (!new BigDecimal(0).equals(goal.getDiscountCash())) {
+				texto.append(". Con este ticket, tendrás ").append(goal.getDiscountCash()).append("€ de descuento.")
+						.append(System.lineSeparator()).append(System.lineSeparator());
+			} else {
+				texto.append(". Con este ticket, tendrás un ").append(goal.getDiscountPercentage())
+						.append("% de descuento.").append(System.lineSeparator()).append(System.lineSeparator());
+			}
+
+			String textoString = texto.append("Puedes usar el código antes del ")
+					.append(newDiscountTicket.getExpirationDate()
+							.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)))
+					.append(System.lineSeparator()).append(System.lineSeparator()).append("Código descuento: ")
+					.append(newDiscountTicket.getCode()).toString();
+
+			emailUtil.sendMail(user.getEmail(), "¡Nuevo código descuento!", textoString);
+		}
+
+	}
+
+	private String generateRandomCode() {
+		int leftLimit = 48; // numeral '0'
+		int rightLimit = 122; // letter 'z'
+		int targetStringLength = 10;
+		Random random = new Random();
+
+		String code = random.ints(leftLimit, rightLimit + 1).filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+				.limit(targetStringLength)
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+
+		return code;
 	}
 
 	@Override
@@ -230,16 +316,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 	private DiscountTicket checkDiscountTicket(Long userId, Long companyId, String code)
 			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
 			DiscountTicketHasExpiredException, DiscountTicketUsedException {
-		System.out.println("code" + code + "userId" + userId);
 		DiscountTicket discountTicket = permissionChecker.checkDiscountTicketExistsAndBelongsToUser(code, userId);
-		if (discountTicket.getUsed()) {
-			throw new DiscountTicketUsedException();
-		}
-		if (discountTicket.getExpirationDate().isAfter(LocalDateTime.now())) {
+		if (discountTicket.getExpirationDate().isBefore(LocalDateTime.now())) {
 			throw new DiscountTicketHasExpiredException();
 		}
-		if (!discountTicket.getCode().equals(code)) {
-			throw new IncorrectDiscountCodeException();
+		if (discountTicket.getUsed()) {
+			throw new DiscountTicketUsedException();
 		}
 
 		return discountTicket;
@@ -275,6 +357,8 @@ public class ShoppingServiceImpl implements ShoppingService {
 			discountedPrice = shoppingCart.getTotalPrice().subtract(calculatePriceFromPercentage(
 					discountTicket.getGoal().getDiscountPercentage(), shoppingCart.getTotalPrice()));
 			break;
+
+		default:
 		}
 
 		return discountedPrice;
@@ -288,15 +372,87 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	@Override
-	public Block<DiscountTicket> findDiscountTickets(Long userId, Long companyId) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional(readOnly = true)
+	public Block<DiscountTicket> findUserDiscountTickets(Long userId, int page, int size)
+			throws InstanceNotFoundException {
+		permissionChecker.checkUserExists(userId);
+
+		Slice<DiscountTicket> slice = discountTicketDao.findByUserIdOrderByExpirationDateDesc(userId,
+				PageRequest.of(page, size));
+
+		return new Block<>(slice.getContent(), slice.hasNext());
 	}
 
 	@Override
-	public Goal addGoal(Long companyId, BigDecimal discountCash, int discountPercentage, GoalType goalType, int goal) {
-		// TODO Auto-generated method stub
-		return null;
+	public Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException {
+		Goal goal = new Goal();
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+
+		switch (discountType) {
+		case CASH:
+			goal = new Goal(discountCash, 0, company, goalType, goalQuantity);
+			break;
+		case PERCENTAGE:
+			goal = new Goal(new BigDecimal(0), discountPercentage, company, goalType, goalQuantity);
+			break;
+
+		default:
+		}
+
+		goalDao.save(goal);
+		return goal;
+	}
+
+	@Override
+	public Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Goal goal = permissionChecker.checkGoalAndBelongsToCompany(goalId, companyId);
+
+		switch (discountType) {
+		case CASH:
+			goal.setDiscountCash(discountCash);
+			goal.setDiscountPercentage(0);
+			goal.setGoalQuantity(goalQuantity);
+			goal.setGoalType(goalType);
+			break;
+
+		case PERCENTAGE:
+			goal.setDiscountPercentage(discountPercentage);
+			goal.setDiscountCash(new BigDecimal(0));
+			goal.setGoalQuantity(goalQuantity);
+			goal.setGoalType(goalType);
+			break;
+
+		default:
+			break;
+		}
+
+		return goal;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException {
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+
+		Slice<Goal> slice = goalDao.findByCompanyIdOrderByIdDesc(company.getId(), PageRequest.of(page, size));
+		return new Block<>(slice.getContent(), slice.hasNext());
+	}
+
+	@Override
+	public void removeGoal(Long userId, Long companyId, Long goalId)
+			throws InstanceNotFoundException, PermissionException {
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Goal goal = permissionChecker.checkGoalExistsAndBelongsToCompany(goalId, companyId);
+
+		goalDao.delete(goal);
+
 	}
 
 }

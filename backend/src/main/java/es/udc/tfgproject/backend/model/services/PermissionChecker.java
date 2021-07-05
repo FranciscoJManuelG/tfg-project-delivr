@@ -4,6 +4,7 @@ import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
+import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
@@ -45,6 +46,12 @@ public interface PermissionChecker {
 			throws InstanceNotFoundException, PermissionException;
 
 	public DiscountTicket checkDiscountTicketExistsAndBelongsToUser(String code, Long userId)
+			throws InstanceNotFoundException, PermissionException;
+
+	public Goal checkGoalAndBelongsToCompany(Long goalId, Long companyId)
+			throws InstanceNotFoundException, PermissionException;
+
+	public Goal checkGoalExistsAndBelongsToCompany(Long goalId, Long companyId)
 			throws InstanceNotFoundException, PermissionException;
 
 }

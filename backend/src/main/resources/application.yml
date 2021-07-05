@@ -30,6 +30,20 @@ spring:
       use-sql-comments: true
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: delivrcompany@gmail.com
+    password: delivrPasswd124
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
 project:
   jwt:
     signKey: Bu:GW8bgPlEw

@@ -224,9 +224,9 @@ CREATE INDEX GoalTypeIndexByGoalName ON GoalType (goalName);
 
 CREATE TABLE Goal (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    discountCash DECIMAL(11, 2) NOT NULL,
-    discountPercentage SMALLINT NOT NULL,
-    goal SMALLINT NOT NULL, 
+    discountCash DECIMAL(11, 2),
+    discountPercentage SMALLINT,
+    goalQuantity SMALLINT NOT NULL, 
     companyId BIGINT NOT NULL,
     goalTypeId BIGINT NOT NULL,
     CONSTRAINT GoalPK PRIMARY KEY (id),

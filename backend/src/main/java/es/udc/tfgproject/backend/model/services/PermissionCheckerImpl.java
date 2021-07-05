@@ -14,6 +14,8 @@ import es.udc.tfgproject.backend.model.entities.DiscountTicket;
 import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
+import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.GoalDao;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.Product;
@@ -53,6 +55,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private DiscountTicketDao discountTicketDao;
+
+	@Autowired
+	private GoalDao goalDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -253,6 +258,38 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 		return discountTicket.get();
 
+	}
+
+	@Override
+	public Goal checkGoalAndBelongsToCompany(Long goalId, Long companyId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<Goal> goal = goalDao.findById(goalId);
+
+		if (!goal.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.goal", goalId);
+		}
+
+		if (!goal.get().getCompany().getId().equals(companyId)) {
+			throw new PermissionException();
+		}
+
+		return goal.get();
+	}
+
+	@Override
+	public Goal checkGoalExistsAndBelongsToCompany(Long goalId, Long companyId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<Goal> goal = goalDao.findById(goalId);
+
+		if (!goal.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.goal", goalId);
+		}
+
+		if (!goal.get().getCompany().getId().equals(companyId)) {
+			throw new PermissionException();
+		}
+
+		return goal.get();
 	}
 
 }

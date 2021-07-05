@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,7 @@ import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
+import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.model.services.ProductManagementService;
 import es.udc.tfgproject.backend.model.services.ShoppingService;
 import es.udc.tfgproject.backend.model.services.UserService;
@@ -106,7 +108,7 @@ public class ShoppingServiceTest {
 
 	private User signUpUser(String userName) {
 
-		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
+		User user = new User(userName, "passwd", "firstName", "lastName", "clienteDelivr@gmail.com", "123456789");
 
 		try {
 			userService.signUpBusinessman(user);
@@ -135,7 +137,16 @@ public class ShoppingServiceTest {
 
 	private GoalType addGoalType() {
 
-		String goalName = "Alcanzar cierta cifra de pedidos";
+		String goalName = "Numero de pedidos";
+		GoalType goalType = new GoalType(goalName);
+
+		goalTypeDao.save(goalType);
+
+		return goalType;
+	}
+
+	private GoalType addGoalType(String goalName) {
+
 		GoalType goalType = new GoalType(goalName);
 
 		goalTypeDao.save(goalType);
@@ -145,7 +156,7 @@ public class ShoppingServiceTest {
 
 	private Goal addGoalCash(BigDecimal discountCash, Company company, GoalType goalType, int goal) {
 
-		Goal goal1 = new Goal(discountCash, company, goalType, goal);
+		Goal goal1 = new Goal(discountCash, 0, company, goalType, goal);
 
 		goalDao.save(goal1);
 
@@ -154,7 +165,7 @@ public class ShoppingServiceTest {
 
 	private Goal addGoalPercentage(int discountPercentage, Company company, GoalType goalType, int goal) {
 
-		Goal goal1 = new Goal(discountPercentage, company, goalType, goal);
+		Goal goal1 = new Goal(new BigDecimal(0), discountPercentage, company, goalType, goal);
 
 		goalDao.save(goal1);
 
@@ -728,6 +739,10 @@ public class ShoppingServiceTest {
 		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
 				company.getId(), quantity2);
 
+		GoalType goalType = addGoalType();
+		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				10, goalType, 1);
+
 		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
 				postalAddress, postalCode, "");
 		Order foundOrder = shoppingService.findOrder(user.getId(), order.getId());
@@ -747,6 +762,17 @@ public class ShoppingServiceTest {
 		assertEquals(product2.getPrice(), item2.getProductPrice());
 		assertEquals(quantity2, item2.getQuantity());
 		assertTrue(user.getShoppingCart().isEmpty());
+
+		List<DiscountTicket> discountTickets = shoppingService.findUserDiscountTickets(user.getId(), 0, 2).getItems();
+
+		assertEquals(1, discountTickets.size());
+		assertEquals(LocalDateTime.now().plusDays(Constantes.EXPIRATION_DAYS),
+				discountTickets.get(0).getExpirationDate());
+		assertEquals(order, discountTickets.get(0).getOrder());
+		assertEquals(goal, discountTickets.get(0).getGoal());
+		assertFalse(discountTickets.get(0).getUsed());
+		assertEquals(user, discountTickets.get(0).getUser());
+		assertEquals(DiscountType.PERCENTAGE, discountTickets.get(0).getDiscountType());
 
 	}
 
@@ -805,7 +831,7 @@ public class ShoppingServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
 
-		assertThrows(PermissionException.class, () -> shoppingService.buy(NON_EXISTENT_ID,
+		assertThrows(InstanceNotFoundException.class, () -> shoppingService.buy(NON_EXISTENT_ID,
 				user.getShoppingCart().getId(), company.getId(), true, "Postal Address", "12345", ""));
 
 	}
@@ -1028,14 +1054,397 @@ public class ShoppingServiceTest {
 		BigDecimal discount = new BigDecimal(2);
 		Goal goal = addGoalCash(discount, company, goalType, 2);
 
-		DiscountTicket discountTicket = addDiscountTicket(user, goal, null, "12345ABCD",
-				LocalDateTime.of(2017, 10, 1, 10, 2, 3), DiscountType.CASH);
+		addDiscountTicket(user, goal, null, "12345ABCD", LocalDateTime.of(2022, 10, 1, 10, 2, 3), DiscountType.CASH);
 
 		BigDecimal totalPriceActual = shoppingCart.getTotalPrice().subtract(discount);
 		BigDecimal totalPriceExpected = shoppingService.redeemDiscountTicket(user.getId(), company.getId(),
 				user.getShoppingCart().getId(), "12345ABCD");
 
 		assertEquals(totalPriceExpected, totalPriceActual);
+
+	}
+
+	@Test
+	public void testCheckDiscountTicketIsUsed()
+			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
+			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3), "path", pCategory.getId());
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), 3);
+
+		GoalType goalType = addGoalType();
+
+		BigDecimal discount = new BigDecimal(2);
+		Goal goal = addGoalCash(discount, company, goalType, 2);
+
+		DiscountTicket discountTicket = addDiscountTicket(user, goal, null, "12345ABCD",
+				LocalDateTime.of(2022, 10, 1, 10, 2, 3), DiscountType.CASH);
+
+		discountTicket.setUsed(true);
+
+		assertThrows(DiscountTicketUsedException.class, () -> shoppingService.redeemDiscountTicket(user.getId(),
+				company.getId(), user.getShoppingCart().getId(), "12345ABCD"));
+
+	}
+
+	@Test
+	public void testCheckDiscountTicketHasExpired()
+			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
+			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3), "path", pCategory.getId());
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), 3);
+
+		GoalType goalType = addGoalType();
+
+		BigDecimal discount = new BigDecimal(2);
+		Goal goal = addGoalCash(discount, company, goalType, 2);
+
+		addDiscountTicket(user, goal, null, "12345ABCD", LocalDateTime.of(2020, 10, 1, 10, 2, 3), DiscountType.CASH);
+
+		assertThrows(DiscountTicketHasExpiredException.class, () -> shoppingService.redeemDiscountTicket(user.getId(),
+				company.getId(), user.getShoppingCart().getId(), "12345ABCD"));
+
+	}
+
+	@Test
+	public void testCheckDiscountTicketInvalidCode()
+			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
+			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3), "path", pCategory.getId());
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), 3);
+
+		GoalType goalType = addGoalType();
+
+		BigDecimal discount = new BigDecimal(2);
+		Goal goal = addGoalCash(discount, company, goalType, 2);
+
+		addDiscountTicket(user, goal, null, "12345ABCD", LocalDateTime.of(2022, 10, 1, 10, 2, 3), DiscountType.CASH);
+
+		assertThrows(InstanceNotFoundException.class, () -> shoppingService.redeemDiscountTicket(user.getId(),
+				company.getId(), user.getShoppingCart().getId(), "12345ABCDERROR"));
+
+	}
+
+	@Test
+	public void testBuyWithDiscountTicket()
+			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+		String postalAddress = "Postal Address";
+		String postalCode = "12345";
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+
+		int discount = 10;
+		Goal goal = addGoalPercentage(discount, company, goalType, 2);
+
+		addDiscountTicket(user, goal, null, "12345ABCD", LocalDateTime.of(2022, 10, 1, 10, 2, 3),
+				DiscountType.PERCENTAGE);
+
+		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
+				postalAddress, postalCode, "12345ABCD");
+		Order foundOrder = shoppingService.findOrder(user.getId(), order.getId());
+
+		assertEquals(order, foundOrder);
+		assertEquals(foundOrder.getTotalPrice(), order.getTotalPrice());
+
+	}
+
+	@Test
+	public void testAddGoalCash() throws InstanceNotFoundException, PermissionException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+
+		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.CASH, new BigDecimal(5), 0,
+				goalType, 10);
+
+		assertEquals(company, goal.getCompany());
+		assertEquals(new BigDecimal(5), goal.getDiscountCash());
+		assertEquals(0, goal.getDiscountPercentage());
+		assertEquals(goalType, goal.getGoalType());
+		assertEquals(10, goal.getGoalQuantity());
+	}
+
+	@Test
+	public void testAddGoalPercentage() throws InstanceNotFoundException, PermissionException {
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+
+		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				10, goalType, 10);
+
+		assertEquals(company, goal.getCompany());
+		assertEquals(new BigDecimal(0), goal.getDiscountCash());
+		assertEquals(10, goal.getDiscountPercentage());
+		assertEquals(goalType, goal.getGoalType());
+		assertEquals(10, goal.getGoalQuantity());
+
+	}
+
+	@Test
+	public void testModifyGoalPercentageToCash() throws InstanceNotFoundException, PermissionException {
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+		GoalType goalType2 = addGoalType("Precio de pedido");
+
+		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				10, goalType, 10);
+
+		Goal goalModified = shoppingService.modifyGoal(user.getId(), company.getId(), goal.getId(), DiscountType.CASH,
+				new BigDecimal(5), null, goalType2, 12);
+
+		assertEquals(company, goalModified.getCompany());
+		assertEquals(new BigDecimal(5), goalModified.getDiscountCash());
+		assertEquals(0, goalModified.getDiscountPercentage());
+		assertEquals(goalType2, goalModified.getGoalType());
+		assertEquals(12, goalModified.getGoalQuantity());
+
+	}
+
+	@Test
+	public void testModifyGoalCashToPercentage() throws InstanceNotFoundException, PermissionException {
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+		GoalType goalType2 = addGoalType("Precio de pedido");
+
+		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.CASH, new BigDecimal(10), 10,
+				goalType2, 10);
+
+		Goal goalModified = shoppingService.modifyGoal(user.getId(), company.getId(), goal.getId(),
+				DiscountType.PERCENTAGE, null, 15, goalType, 7);
+
+		assertEquals(company, goalModified.getCompany());
+		assertEquals(new BigDecimal(0), goalModified.getDiscountCash());
+		assertEquals(15, goalModified.getDiscountPercentage());
+		assertEquals(goalType, goalModified.getGoalType());
+		assertEquals(7, goalModified.getGoalQuantity());
+
+	}
+
+	@Test
+	public void testFindGoalAndRemoveIt() throws InstanceNotFoundException, PermissionException {
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+
+		Goal goal1 = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				10, goalType, 10);
+
+		Goal goal2 = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.CASH, new BigDecimal(3), 0,
+				goalType, 1);
+		Goal goal3 = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				15, goalType, 20);
+
+		Block<Goal> expectedBlock = new Block<>(Arrays.asList(goal1, goal2), true);
+		assertEquals(expectedBlock, shoppingService.findCompanyGoals(user.getId(), company.getId(), 0, 2));
+
+		expectedBlock = new Block<>(Arrays.asList(goal3), false);
+		assertEquals(expectedBlock, shoppingService.findCompanyGoals(user.getId(), company.getId(), 1, 2));
+
+		shoppingService.removeGoal(user.getId(), company.getId(), goal2.getId());
+
+		expectedBlock = new Block<>(Arrays.asList(goal1, goal3), false);
+		assertEquals(expectedBlock, shoppingService.findCompanyGoals(user.getId(), company.getId(), 0, 2));
 
 	}
 

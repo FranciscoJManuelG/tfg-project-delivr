@@ -3,6 +3,7 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.Order;
@@ -42,15 +43,23 @@ public interface ShoppingService {
 	Block<Order> findCompanyOrders(Long userId, Long companyId, int page, int size)
 			throws InstanceNotFoundException, PermissionException;
 
-	// Canjear cupon
 	BigDecimal redeemDiscountTicket(Long userId, Long companyId, Long shoppingCartId, String code)
 			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
 			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException;
 
-	// buscarCupones
-	Block<DiscountTicket> findDiscountTickets(Long userId, Long companyId);
+	Block<DiscountTicket> findUserDiscountTickets(Long userId, int page, int size) throws InstanceNotFoundException;
 
-	// añadir goals
-	Goal addGoal(Long companyId, BigDecimal discountCash, int discountPercentage, GoalType goalType, int goal);
+	Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException;
+
+	Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException;
+
+	void removeGoal(Long userId, Long companyId, Long goalId) throws InstanceNotFoundException, PermissionException;
+
+	Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException;
 
 }
