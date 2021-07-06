@@ -16,6 +16,8 @@ import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalDao;
+import es.udc.tfgproject.backend.model.entities.GoalType;
+import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.Product;
@@ -58,6 +60,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private GoalDao goalDao;
+
+	@Autowired
+	private GoalTypeDao goalTypeDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -290,6 +295,17 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return goal.get();
+	}
+
+	@Override
+	public GoalType checkGoalType(Long goalTypeId) throws InstanceNotFoundException, PermissionException {
+		Optional<GoalType> goalType = goalTypeDao.findById(goalTypeId);
+
+		if (!goalType.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.goalType", goalTypeId);
+		}
+
+		return goalType.get();
 	}
 
 }

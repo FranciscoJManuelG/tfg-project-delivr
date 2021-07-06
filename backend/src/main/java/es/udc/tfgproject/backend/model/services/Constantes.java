@@ -6,4 +6,6 @@ public class Constantes {
 
 	public static final String NUMERO_PEDIDOS = "Numero de pedidos";
 
+	public static final int PAGE = 10;
+
 }

@@ -275,6 +275,13 @@ public class ShoppingServiceImpl implements ShoppingService {
 				.limit(targetStringLength)
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
+		Optional<DiscountTicket> ticket = discountTicketDao.findByCode(code);
+
+		// Si ya existe un ticket con ese código, generamos uno nuevo
+		if (ticket.isPresent()) {
+			code = generateRandomCode();
+		}
+
 		return code;
 	}
 
@@ -373,11 +380,11 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Block<DiscountTicket> findUserDiscountTickets(Long userId, int page, int size)
+	public Block<DiscountTicket> findUserDiscountTicketsNotUsed(Long userId, int page, int size)
 			throws InstanceNotFoundException {
 		permissionChecker.checkUserExists(userId);
 
-		Slice<DiscountTicket> slice = discountTicketDao.findByUserIdOrderByExpirationDateDesc(userId,
+		Slice<DiscountTicket> slice = discountTicketDao.findByUserIdWhereUsedIsFalseOrderByExpirationDateDesc(userId,
 				PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
@@ -385,10 +392,11 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Override
 	public Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
 			throws InstanceNotFoundException, PermissionException {
 		Goal goal = new Goal();
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		GoalType goalType = permissionChecker.checkGoalType(goalTypeId);
 
 		switch (discountType) {
 		case CASH:
@@ -407,11 +415,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Override
 	public Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
 			throws InstanceNotFoundException, PermissionException {
 
 		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 		Goal goal = permissionChecker.checkGoalAndBelongsToCompany(goalId, companyId);
+		GoalType goalType = permissionChecker.checkGoalType(goalTypeId);
 
 		switch (discountType) {
 		case CASH:

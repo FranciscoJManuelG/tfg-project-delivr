@@ -52,7 +52,6 @@ import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
-import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.model.services.ProductManagementService;
 import es.udc.tfgproject.backend.model.services.ShoppingService;
 import es.udc.tfgproject.backend.model.services.UserService;
@@ -741,7 +740,7 @@ public class ShoppingServiceTest {
 
 		GoalType goalType = addGoalType();
 		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
-				10, goalType, 1);
+				10, goalType.getId(), 1);
 
 		Order order = shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true,
 				postalAddress, postalCode, "");
@@ -763,16 +762,73 @@ public class ShoppingServiceTest {
 		assertEquals(quantity2, item2.getQuantity());
 		assertTrue(user.getShoppingCart().isEmpty());
 
-		List<DiscountTicket> discountTickets = shoppingService.findUserDiscountTickets(user.getId(), 0, 2).getItems();
+		List<DiscountTicket> discountTickets = shoppingService.findUserDiscountTicketsNotUsed(user.getId(), 0, 2)
+				.getItems();
 
 		assertEquals(1, discountTickets.size());
-		assertEquals(LocalDateTime.now().plusDays(Constantes.EXPIRATION_DAYS),
-				discountTickets.get(0).getExpirationDate());
 		assertEquals(order, discountTickets.get(0).getOrder());
 		assertEquals(goal, discountTickets.get(0).getGoal());
 		assertFalse(discountTickets.get(0).getUsed());
 		assertEquals(user, discountTickets.get(0).getUser());
 		assertEquals(DiscountType.PERCENTAGE, discountTickets.get(0).getDiscountType());
+
+	}
+
+	@Test
+	public void testFindUsedDiscountTicket()
+			throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
+
+		User user = signUpUser("user");
+		CompanyCategory category1 = new CompanyCategory("Tradicional");
+		companyCategoryDao.save(category1);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
+
+		Province province = new Province("Lugo");
+		provinceDao.save(province);
+		City city = new City("Lugo", province);
+		cityDao.save(city);
+
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		int quantity1 = 1;
+		int quantity2 = 2;
+		String postalAddress = "Postal Address";
+		String postalCode = "12345";
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				10, goalType.getId(), 1);
+
+		shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true, postalAddress,
+				postalCode, "");
+
+		List<DiscountTicket> discountTickets = shoppingService.findUserDiscountTicketsNotUsed(user.getId(), 0, 2)
+				.getItems();
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true, postalAddress,
+				postalCode, discountTickets.get(0).getCode());
+
+		List<DiscountTicket> discountTicketsNew = shoppingService.findUserDiscountTicketsNotUsed(user.getId(), 0, 2)
+				.getItems();
+
+		assertEquals(0, discountTicketsNew.size());
 
 	}
 
@@ -1054,7 +1110,8 @@ public class ShoppingServiceTest {
 		BigDecimal discount = new BigDecimal(2);
 		Goal goal = addGoalCash(discount, company, goalType, 2);
 
-		addDiscountTicket(user, goal, null, "12345ABCD", LocalDateTime.of(2022, 10, 1, 10, 2, 3), DiscountType.CASH);
+		DiscountTicket ticket = addDiscountTicket(user, goal, null, "12345ABCD",
+				LocalDateTime.of(2022, 10, 1, 10, 2, 3), DiscountType.CASH);
 
 		BigDecimal totalPriceActual = shoppingCart.getTotalPrice().subtract(discount);
 		BigDecimal totalPriceExpected = shoppingService.redeemDiscountTicket(user.getId(), company.getId(),
@@ -1257,7 +1314,7 @@ public class ShoppingServiceTest {
 		GoalType goalType = addGoalType();
 
 		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.CASH, new BigDecimal(5), 0,
-				goalType, 10);
+				goalType.getId(), 10);
 
 		assertEquals(company, goal.getCompany());
 		assertEquals(new BigDecimal(5), goal.getDiscountCash());
@@ -1297,7 +1354,7 @@ public class ShoppingServiceTest {
 		GoalType goalType = addGoalType();
 
 		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
-				10, goalType, 10);
+				10, goalType.getId(), 10);
 
 		assertEquals(company, goal.getCompany());
 		assertEquals(new BigDecimal(0), goal.getDiscountCash());
@@ -1339,10 +1396,10 @@ public class ShoppingServiceTest {
 		GoalType goalType2 = addGoalType("Precio de pedido");
 
 		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
-				10, goalType, 10);
+				10, goalType.getId(), 10);
 
 		Goal goalModified = shoppingService.modifyGoal(user.getId(), company.getId(), goal.getId(), DiscountType.CASH,
-				new BigDecimal(5), null, goalType2, 12);
+				new BigDecimal(5), null, goalType2.getId(), 12);
 
 		assertEquals(company, goalModified.getCompany());
 		assertEquals(new BigDecimal(5), goalModified.getDiscountCash());
@@ -1384,10 +1441,10 @@ public class ShoppingServiceTest {
 		GoalType goalType2 = addGoalType("Precio de pedido");
 
 		Goal goal = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.CASH, new BigDecimal(10), 10,
-				goalType2, 10);
+				goalType2.getId(), 10);
 
 		Goal goalModified = shoppingService.modifyGoal(user.getId(), company.getId(), goal.getId(),
-				DiscountType.PERCENTAGE, null, 15, goalType, 7);
+				DiscountType.PERCENTAGE, null, 15, goalType.getId(), 7);
 
 		assertEquals(company, goalModified.getCompany());
 		assertEquals(new BigDecimal(0), goalModified.getDiscountCash());
@@ -1428,12 +1485,12 @@ public class ShoppingServiceTest {
 		GoalType goalType = addGoalType();
 
 		Goal goal1 = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
-				10, goalType, 10);
+				10, goalType.getId(), 10);
 
 		Goal goal2 = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.CASH, new BigDecimal(3), 0,
-				goalType, 1);
+				goalType.getId(), 1);
 		Goal goal3 = shoppingService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
-				15, goalType, 20);
+				15, goalType.getId(), 20);
 
 		Block<Goal> expectedBlock = new Block<>(Arrays.asList(goal1, goal2), true);
 		assertEquals(expectedBlock, shoppingService.findCompanyGoals(user.getId(), company.getId(), 0, 2));

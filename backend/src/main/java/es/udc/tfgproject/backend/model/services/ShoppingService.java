@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
-import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
@@ -47,14 +46,15 @@ public interface ShoppingService {
 			throws InstanceNotFoundException, PermissionException, IncorrectDiscountCodeException,
 			EmptyShoppingCartException, DiscountTicketHasExpiredException, DiscountTicketUsedException;
 
-	Block<DiscountTicket> findUserDiscountTickets(Long userId, int page, int size) throws InstanceNotFoundException;
+	Block<DiscountTicket> findUserDiscountTicketsNotUsed(Long userId, int page, int size)
+			throws InstanceNotFoundException;
 
 	Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
 			throws InstanceNotFoundException, PermissionException;
 
 	Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, GoalType goalType, int goalQuantity)
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
 			throws InstanceNotFoundException, PermissionException;
 
 	void removeGoal(Long userId, Long companyId, Long goalId) throws InstanceNotFoundException, PermissionException;
