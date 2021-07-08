@@ -308,4 +308,15 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		return goalType.get();
 	}
 
+	@Override
+	public Company checkCompany(Long companyId) throws InstanceNotFoundException {
+		Optional<Company> company = companyDao.findById(companyId);
+
+		if (!company.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.comapny", companyId);
+		}
+
+		return company.get();
+	}
+
 }

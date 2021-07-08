@@ -15,15 +15,16 @@ public class Goal {
 
 	private Long id;
 	private BigDecimal discountCash;
-	private int discountPercentage;
+	private Integer discountPercentage;
 	private Company company;
 	private GoalType goalType;
 	private Integer goalQuantity;
+	private Boolean active;
 
 	public Goal() {
 	}
 
-	public Goal(BigDecimal discountCash, int discountPercentage, Company company, GoalType goalType,
+	public Goal(BigDecimal discountCash, Integer discountPercentage, Company company, GoalType goalType,
 			Integer goalQuantity) {
 
 		this.discountCash = discountCash;
@@ -31,6 +32,7 @@ public class Goal {
 		this.company = company;
 		this.goalType = goalType;
 		this.goalQuantity = goalQuantity;
+		this.active = true;
 	}
 
 	@Id
@@ -79,12 +81,20 @@ public class Goal {
 		this.goalType = goalType;
 	}
 
-	public int getGoalQuantity() {
+	public Integer getGoalQuantity() {
 		return goalQuantity;
 	}
 
-	public void setGoalQuantity(int goalQuantity) {
+	public void setGoalQuantity(Integer goalQuantity) {
 		this.goalQuantity = goalQuantity;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }

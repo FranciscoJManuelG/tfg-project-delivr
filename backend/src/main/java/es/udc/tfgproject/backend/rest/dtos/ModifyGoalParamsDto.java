@@ -10,7 +10,6 @@ import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 public class ModifyGoalParamsDto {
 
 	private Long companyId;
-	private Long goalId;
 	private DiscountType discountType;
 	private BigDecimal discountCash;
 	private Integer discountPercentage;
@@ -27,15 +26,6 @@ public class ModifyGoalParamsDto {
 	}
 
 	@NotNull
-	public Long getGoalId() {
-		return goalId;
-	}
-
-	public void setGoalId(Long goalId) {
-		this.goalId = goalId;
-	}
-
-	@NotNull
 	public DiscountType getDiscountType() {
 		return discountType;
 	}
@@ -45,7 +35,7 @@ public class ModifyGoalParamsDto {
 	}
 
 	@NotNull
-	@Min(value = 1)
+	@Min(value = 0)
 	public BigDecimal getDiscountCash() {
 		return discountCash;
 	}
@@ -55,7 +45,6 @@ public class ModifyGoalParamsDto {
 	}
 
 	@NotNull
-	@Min(value = 1)
 	public Integer getDiscountPercentage() {
 		return discountPercentage;
 	}

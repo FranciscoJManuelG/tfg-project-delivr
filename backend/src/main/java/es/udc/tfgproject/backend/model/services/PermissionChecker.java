@@ -57,4 +57,6 @@ public interface PermissionChecker {
 
 	public GoalType checkGoalType(Long goalTypeId) throws InstanceNotFoundException, PermissionException;
 
+	public Company checkCompany(Long companyId) throws InstanceNotFoundException;
+
 }

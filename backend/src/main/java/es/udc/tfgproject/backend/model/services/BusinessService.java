@@ -1,11 +1,14 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
+import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
@@ -36,5 +39,19 @@ public interface BusinessService {
 			throws InstanceNotFoundException, PermissionException;
 
 	List<City> findAllCities();
+
+	Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException;
+
+	Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException;
+
+	Goal modifyStateGoal(Long userId, Long companyId, Long goalId, String option)
+			throws InstanceNotFoundException, PermissionException;
+
+	Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException;
 
 }

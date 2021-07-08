@@ -1,5 +1,6 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,10 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
+import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.GoalDao;
+import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -40,6 +45,9 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Autowired
 	private CityDao cityDao;
+
+	@Autowired
+	private GoalDao goalDao;
 
 	@Override
 	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
@@ -245,6 +253,91 @@ public class BusinessServiceImpl implements BusinessService {
 			company = companyOpt.get();
 
 		return company;
+	}
+
+	@Override
+	public Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException {
+		Goal goal = new Goal();
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		GoalType goalType = permissionChecker.checkGoalType(goalTypeId);
+
+		switch (discountType) {
+		case CASH:
+			goal = new Goal(discountCash, 0, company, goalType, goalQuantity);
+			break;
+		case PERCENTAGE:
+			goal = new Goal(new BigDecimal(0), discountPercentage, company, goalType, goalQuantity);
+			break;
+
+		default:
+		}
+
+		goalDao.save(goal);
+		return goal;
+	}
+
+	@Override
+	public Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
+			Integer discountPercentage, Long goalTypeId, int goalQuantity)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Goal goal = permissionChecker.checkGoalAndBelongsToCompany(goalId, companyId);
+		GoalType goalType = permissionChecker.checkGoalType(goalTypeId);
+
+		switch (discountType) {
+		case CASH:
+			goal.setDiscountCash(discountCash);
+			goal.setDiscountPercentage(0);
+			goal.setGoalQuantity(goalQuantity);
+			goal.setGoalType(goalType);
+			break;
+
+		case PERCENTAGE:
+			goal.setDiscountPercentage(discountPercentage);
+			goal.setDiscountCash(new BigDecimal(0));
+			goal.setGoalQuantity(goalQuantity);
+			goal.setGoalType(goalType);
+			break;
+
+		default:
+			break;
+		}
+
+		return goal;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException {
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+
+		Slice<Goal> slice = goalDao.findByCompanyIdOrderByIdDesc(company.getId(), PageRequest.of(page, size));
+		return new Block<>(slice.getContent(), slice.hasNext());
+	}
+
+	@Override
+	public Goal modifyStateGoal(Long userId, Long companyId, Long goalId, String option)
+			throws InstanceNotFoundException, PermissionException {
+		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		Goal goal = permissionChecker.checkGoalExistsAndBelongsToCompany(goalId, companyId);
+
+		switch (option) {
+		case Constantes.ACTIVAR:
+			goal.setActive(true);
+			break;
+		case Constantes.DESACTIVAR:
+			goal.setActive(false);
+			break;
+		default:
+			break;
+		}
+
+		return goal;
+
 	}
 
 }

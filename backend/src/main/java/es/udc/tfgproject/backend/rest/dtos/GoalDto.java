@@ -4,23 +4,35 @@ import java.math.BigDecimal;
 
 public class GoalDto {
 
+	private Long id;
 	private BigDecimal discountCash;
 	private int discountPercentage;
 	private Long companyId;
 	private Long goalTypeId;
 	private Integer goalQuantity;
+	private Boolean active;
 
 	public GoalDto() {
 
 	}
 
-	public GoalDto(BigDecimal discountCash, int discountPercentage, Long companyId, Long goalTypeId,
-			Integer goalQuantity) {
+	public GoalDto(Long id, BigDecimal discountCash, int discountPercentage, Long companyId, Long goalTypeId,
+			Integer goalQuantity, Boolean active) {
+		this.id = id;
 		this.discountCash = discountCash;
 		this.discountPercentage = discountPercentage;
 		this.companyId = companyId;
 		this.goalTypeId = goalTypeId;
 		this.goalQuantity = goalQuantity;
+		this.active = active;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public BigDecimal getDiscountCash() {
@@ -61,6 +73,14 @@ public class GoalDto {
 
 	public void setGoalQuantity(Integer goalQuantity) {
 		this.goalQuantity = goalQuantity;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }

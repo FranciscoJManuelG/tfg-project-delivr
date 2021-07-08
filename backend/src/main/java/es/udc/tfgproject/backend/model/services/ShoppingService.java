@@ -3,10 +3,9 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
-import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
-import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesNotAllowHomeSaleException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
@@ -29,7 +28,7 @@ public interface ShoppingService {
 			throws InstanceNotFoundException, PermissionException;
 
 	ShoppingCart changeShoppingCartHomeSale(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale)
-			throws InstanceNotFoundException, PermissionException;
+			throws InstanceNotFoundException, PermissionException, CompanyDoesNotAllowHomeSaleException;
 
 	Order buy(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale, String street, String cp,
 			String codeDiscount) throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
@@ -48,18 +47,5 @@ public interface ShoppingService {
 
 	Block<DiscountTicket> findUserDiscountTicketsNotUsed(Long userId, int page, int size)
 			throws InstanceNotFoundException;
-
-	Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, Long goalTypeId, int goalQuantity)
-			throws InstanceNotFoundException, PermissionException;
-
-	Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, Long goalTypeId, int goalQuantity)
-			throws InstanceNotFoundException, PermissionException;
-
-	void removeGoal(Long userId, Long companyId, Long goalId) throws InstanceNotFoundException, PermissionException;
-
-	Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
-			throws InstanceNotFoundException, PermissionException;
 
 }

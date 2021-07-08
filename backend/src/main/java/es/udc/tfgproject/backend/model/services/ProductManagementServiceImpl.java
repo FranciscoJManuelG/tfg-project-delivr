@@ -125,10 +125,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 	@Override
 	public Product unlockProduct(Long userId, Long companyId, Long productId)
 			throws InstanceNotFoundException, PermissionException {
-		/*
-		 * TODO: revisar si esto es mejor hacerlo solo con el
-		 * checkProductExistsAndBelongsToUserproductId, userId)
-		 */
+
 		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 		Product product = permissionChecker.checkProductExistsAndBelongsToCompany(productId, companyId);
 

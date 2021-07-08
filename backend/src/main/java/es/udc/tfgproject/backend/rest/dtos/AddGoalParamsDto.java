@@ -35,7 +35,7 @@ public class AddGoalParamsDto {
 	}
 
 	@NotNull
-	@Min(value = 1)
+	@Min(value = 0)
 	public BigDecimal getDiscountCash() {
 		return discountCash;
 	}
@@ -45,7 +45,6 @@ public class AddGoalParamsDto {
 	}
 
 	@NotNull
-	@Min(value = 1)
 	public Integer getDiscountPercentage() {
 		return discountPercentage;
 	}

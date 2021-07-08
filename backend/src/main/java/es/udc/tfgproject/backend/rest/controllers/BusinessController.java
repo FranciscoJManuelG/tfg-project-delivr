@@ -5,6 +5,8 @@ import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toComp
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyCategoryConversor.toCompanyCategoryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyConversor.toCompanyDto;
+import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalDto;
+import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalSummaryDtos;
 
 import java.util.List;
 
@@ -25,19 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
+import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
+import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.rest.dtos.AddCompanyAddressParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddCompanyParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.AddGoalParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.BlockDto;
 import es.udc.tfgproject.backend.rest.dtos.CityDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyAddressDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyAddressSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyDto;
+import es.udc.tfgproject.backend.rest.dtos.GoalDto;
+import es.udc.tfgproject.backend.rest.dtos.GoalSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyCompanyParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.ModifyGoalParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.ModifyStateGoalParamsDto;
 
 @RestController
 @RequestMapping("/business")
@@ -141,6 +150,47 @@ public class BusinessController {
 	@GetMapping("/cities")
 	public List<CityDto> findAllCities() {
 		return toCityDtos(businessService.findAllCities());
+	}
+
+	@GetMapping("/companyGoals")
+	public BlockDto<GoalSummaryDto> findCompanyGoals(@RequestAttribute Long userId, @RequestParam Long companyId,
+			@RequestParam(defaultValue = "0") int page) throws InstanceNotFoundException, PermissionException {
+
+		Block<Goal> goalBlock = businessService.findCompanyGoals(userId, companyId, page, Constantes.SIZE);
+
+		return new BlockDto<>(toGoalSummaryDtos(goalBlock.getItems()), goalBlock.getExistMoreItems());
+
+	}
+
+	@PostMapping("/goals")
+	public GoalDto addGoal(@RequestAttribute Long userId, @Validated @RequestBody AddGoalParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+
+		return toGoalDto(businessService.addGoal(userId, params.getCompanyId(), params.getDiscountType(),
+				params.getDiscountCash(), params.getDiscountPercentage(), params.getGoalTypeId(),
+				params.getGoalQuantity()));
+
+	}
+
+	@PutMapping("/goals/{goalId}")
+	public GoalDto modifyGoal(@RequestAttribute Long userId, @PathVariable Long goalId,
+			@Validated @RequestBody ModifyGoalParamsDto params) throws InstanceNotFoundException, PermissionException {
+
+		return toGoalDto(businessService.modifyGoal(userId, params.getCompanyId(), goalId, params.getDiscountType(),
+				params.getDiscountCash(), params.getDiscountPercentage(), params.getGoalTypeId(),
+				params.getGoalQuantity()));
+
+	}
+
+	@PostMapping("/goals/{goalId}")
+	public GoalDto modifyStateGoal(@RequestAttribute Long userId, @PathVariable Long goalId,
+			@Validated @RequestBody ModifyStateGoalParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+
+		System.out.println("Controller");
+
+		return toGoalDto(businessService.modifyStateGoal(userId, params.getCompanyId(), goalId, params.getOption()));
+
 	}
 
 }

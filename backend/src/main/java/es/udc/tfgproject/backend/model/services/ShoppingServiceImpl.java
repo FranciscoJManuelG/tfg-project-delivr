@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +25,6 @@ import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalDao;
-import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.OrderItem;
@@ -35,6 +35,7 @@ import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesNotAllowHomeSaleException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
@@ -147,10 +148,16 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Override
 	public ShoppingCart changeShoppingCartHomeSale(Long userId, Long shoppingCartId, Long companyId, Boolean homeSale)
-			throws InstanceNotFoundException, PermissionException {
+			throws InstanceNotFoundException, PermissionException, CompanyDoesNotAllowHomeSaleException {
 
 		ShoppingCart shoppingCart = permissionChecker.checkShoppingCartExistsAndBelongsToUser(shoppingCartId, userId);
-		shoppingCart.setHomeSale(homeSale);
+		Company company = permissionChecker.checkCompany(companyId);
+
+		if (company.getHomeSale()) {
+			shoppingCart.setHomeSale(homeSale);
+		} else {
+			throw new CompanyDoesNotAllowHomeSaleException();
+		}
 
 		return filterShoppingCart(shoppingCart, companyId);
 	}
@@ -173,6 +180,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 		// Comprobamos si el codigo del ticket descuento introducido es el correcto o
 		// no, si se ha introducido algún código
 		if (!StringUtils.isEmpty(codeDiscount)) {
+
 			DiscountTicket discountTicket = checkDiscountTicket(userId, companyId, codeDiscount);
 			BigDecimal totalPrice = getDiscountedPrice(discountTicket, shoppingCart);
 			order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp,
@@ -206,13 +214,15 @@ public class ShoppingServiceImpl implements ShoppingService {
 		List<Goal> goals = goalDao.findByCompanyId(companyId);
 
 		for (Goal goal : goals) {
-			switch (goal.getGoalType().getGoalName()) {
-			case Constantes.NUMERO_PEDIDOS:
-				checkNumberOfOrdersGoalAndSendEmail(user, company, goal);
-				break;
+			if (goal.getActive()) {
+				switch (goal.getGoalType().getGoalName()) {
+				case Constantes.NUMERO_PEDIDOS:
+					checkNumberOfOrdersGoalAndSendEmail(user, company, goal);
+					break;
 
-			default:
-				break;
+				default:
+					break;
+				}
 			}
 		}
 
@@ -233,12 +243,11 @@ public class ShoppingServiceImpl implements ShoppingService {
 			newDiscountTicket.setUsed(false);
 			newDiscountTicket.setUser(user);
 			newDiscountTicket.setGoal(goal);
-			if (!new BigDecimal(0).equals(goal.getDiscountCash())) {
-				newDiscountTicket.setDiscountType(DiscountType.CASH);
-			} else {
+			if (!Integer.valueOf(0).equals(goal.getDiscountPercentage())) {
 				newDiscountTicket.setDiscountType(DiscountType.PERCENTAGE);
+			} else {
+				newDiscountTicket.setDiscountType(DiscountType.CASH);
 			}
-
 			discountTicketDao.save(newDiscountTicket);
 
 			StringBuilder texto = new StringBuilder();
@@ -246,12 +255,12 @@ public class ShoppingServiceImpl implements ShoppingService {
 					.append(System.lineSeparator()).append("Has conseguido un ticket descuento para usar en ")
 					.append(company.getName());
 
-			if (!new BigDecimal(0).equals(goal.getDiscountCash())) {
-				texto.append(". Con este ticket, tendrás ").append(goal.getDiscountCash()).append("€ de descuento.")
-						.append(System.lineSeparator()).append(System.lineSeparator());
-			} else {
+			if (!Integer.valueOf(0).equals(goal.getDiscountPercentage())) {
 				texto.append(". Con este ticket, tendrás un ").append(goal.getDiscountPercentage())
 						.append("% de descuento.").append(System.lineSeparator()).append(System.lineSeparator());
+			} else {
+				texto.append(". Con este ticket, tendrás ").append(goal.getDiscountCash()).append("€ de descuento.")
+						.append(System.lineSeparator()).append(System.lineSeparator());
 			}
 
 			String textoString = texto.append("Puedes usar el código antes del ")
@@ -312,6 +321,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}
 
+	// Devuelve el carrito con los productos que pertenezcan a una compañía
 	private ShoppingCart filterShoppingCart(ShoppingCart cart, Long companyId) {
 		Set<ShoppingCartItem> items = new HashSet<>();
 		items.addAll(shoppingCartItemDao.findByProductCompanyId(companyId));
@@ -372,7 +382,8 @@ public class ShoppingServiceImpl implements ShoppingService {
 	}
 
 	private BigDecimal calculatePriceFromPercentage(int discountPercentage, BigDecimal totalPrice) {
-		BigDecimal valorToDiscount = totalPrice.multiply(new BigDecimal(discountPercentage));
+		double percentage = (double) discountPercentage / 100;
+		BigDecimal valorToDiscount = totalPrice.multiply(new BigDecimal(percentage));
 		BigDecimal discountedPrice = totalPrice.subtract(valorToDiscount);
 
 		return discountedPrice;
@@ -387,81 +398,10 @@ public class ShoppingServiceImpl implements ShoppingService {
 		Slice<DiscountTicket> slice = discountTicketDao.findByUserIdWhereUsedIsFalseOrderByExpirationDateDesc(userId,
 				PageRequest.of(page, size));
 
-		return new Block<>(slice.getContent(), slice.hasNext());
-	}
+		List<DiscountTicket> discountTickets = slice.getContent().stream()
+				.filter(dt -> dt.getExpirationDate().isAfter(LocalDateTime.now())).collect(Collectors.toList());
 
-	@Override
-	public Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, Long goalTypeId, int goalQuantity)
-			throws InstanceNotFoundException, PermissionException {
-		Goal goal = new Goal();
-		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
-		GoalType goalType = permissionChecker.checkGoalType(goalTypeId);
-
-		switch (discountType) {
-		case CASH:
-			goal = new Goal(discountCash, 0, company, goalType, goalQuantity);
-			break;
-		case PERCENTAGE:
-			goal = new Goal(new BigDecimal(0), discountPercentage, company, goalType, goalQuantity);
-			break;
-
-		default:
-		}
-
-		goalDao.save(goal);
-		return goal;
-	}
-
-	@Override
-	public Goal modifyGoal(Long userId, Long companyId, Long goalId, DiscountType discountType, BigDecimal discountCash,
-			Integer discountPercentage, Long goalTypeId, int goalQuantity)
-			throws InstanceNotFoundException, PermissionException {
-
-		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
-		Goal goal = permissionChecker.checkGoalAndBelongsToCompany(goalId, companyId);
-		GoalType goalType = permissionChecker.checkGoalType(goalTypeId);
-
-		switch (discountType) {
-		case CASH:
-			goal.setDiscountCash(discountCash);
-			goal.setDiscountPercentage(0);
-			goal.setGoalQuantity(goalQuantity);
-			goal.setGoalType(goalType);
-			break;
-
-		case PERCENTAGE:
-			goal.setDiscountPercentage(discountPercentage);
-			goal.setDiscountCash(new BigDecimal(0));
-			goal.setGoalQuantity(goalQuantity);
-			goal.setGoalType(goalType);
-			break;
-
-		default:
-			break;
-		}
-
-		return goal;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
-			throws InstanceNotFoundException, PermissionException {
-		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
-
-		Slice<Goal> slice = goalDao.findByCompanyIdOrderByIdDesc(company.getId(), PageRequest.of(page, size));
-		return new Block<>(slice.getContent(), slice.hasNext());
-	}
-
-	@Override
-	public void removeGoal(Long userId, Long companyId, Long goalId)
-			throws InstanceNotFoundException, PermissionException {
-		permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
-		Goal goal = permissionChecker.checkGoalExistsAndBelongsToCompany(goalId, companyId);
-
-		goalDao.delete(goal);
-
+		return new Block<>(discountTickets, slice.hasNext());
 	}
 
 }

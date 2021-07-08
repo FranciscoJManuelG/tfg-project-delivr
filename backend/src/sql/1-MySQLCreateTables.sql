@@ -229,6 +229,7 @@ CREATE TABLE Goal (
     goalQuantity SMALLINT NOT NULL, 
     companyId BIGINT NOT NULL,
     goalTypeId BIGINT NOT NULL,
+    active BOOLEAN NOT NULL,
     CONSTRAINT GoalPK PRIMARY KEY (id),
     CONSTRAINT GoalCompanyIdFK FOREIGN KEY(companyId)
         REFERENCES Company (id),
@@ -242,14 +243,14 @@ CREATE TABLE DiscountTicket (
     expirationDate DATETIME NOT NULL, 
     discountType TINYINT NOT NULL,
     userId BIGINT NOT NULL, 
-    goalId BIGINT NOT NULL,
     orderId BIGINT,
+    goalId BIGINT NOT NULL,
     used BOOLEAN NOT NULL,
     CONSTRAINT DiscountTicketPK PRIMARY KEY (id),
     CONSTRAINT DiscountTicketCodeUniqueKey UNIQUE (code),
     CONSTRAINT DiscountTicketUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
-    CONSTRAINT DiscountTickeGoalIdFK FOREIGN KEY(goalId)
+    CONSTRAINT DiscountTicketGoalIdFK FOREIGN KEY(goalId)
         REFERENCES Goal (id),
     CONSTRAINT DiscountTicketOrderIdFK FOREIGN KEY(orderId)
         REFERENCES OrderTable (id)

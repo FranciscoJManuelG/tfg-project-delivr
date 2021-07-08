@@ -105,6 +105,9 @@ INSERT INTO ShoppingCart(userId, homeSale)
 	VALUES (1, false);
 INSERT INTO ShoppingCart(userId, homeSale)
 	VALUES (2, false);
+	
+INSERT INTO GoalType(goalName)
+    VALUES ("Numero de pedidos");
 
 	
 
