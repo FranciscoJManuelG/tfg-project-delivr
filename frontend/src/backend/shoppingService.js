@@ -24,11 +24,10 @@ export const changeShoppingCartHomeSale = (shoppingCartId, companyId, homeSale,
     appFetch(`/shopping/shoppingCarts/${shoppingCartId}/changeShoppingCartHomeSale`, 
         config('POST', {companyId, homeSale}), onSuccess, onErrors);
         
-
-export const buy = (shoppingCartId, companyId, homeSale, street, cp,
+export const buy = (shoppingCartId, companyId, homeSale, street, cp, codeDiscount,
     onSuccess, onErrors) =>
     appFetch(`/shopping/shoppingCarts/${shoppingCartId}/buy`, 
-        config('POST', {companyId, homeSale, street, cp}), onSuccess, onErrors);
+        config('POST', {companyId, homeSale, street, cp, codeDiscount}), onSuccess, onErrors);
 
 export const findUserOrders = ({page}, onSuccess) => 
     appFetch(`/shopping/userOrders?page=${page}`, config('GET'), onSuccess);
@@ -38,4 +37,11 @@ export const findCompanyOrders = (companyId, {page}, onSuccess) =>
 
 export const findOrder = (orderId, onSuccess) =>
     appFetch(`/shopping/orders/${orderId}`, config('GET'), onSuccess);
+
+export const findUserDiscountTickets = ({page}, onSuccess) => 
+    appFetch(`/shopping/userDiscountTickets?page=${page}`, config('GET'), onSuccess);
+
+export const redeemDiscountTicket = (companyId, shoppingCartId, code, onSuccess) => 
+    appFetch(`/shopping/redeemDiscountTicket?companyId=${companyId}&shoppingCartId=${shoppingCartId}&code=${code}`, 
+    config('GET'), onSuccess);
         

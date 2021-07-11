@@ -46,4 +46,22 @@ export const findCompanyAddresses = (companyId, {page}, onSuccess) =>
 export const findAllCities = (onSuccess) => 
     appFetch('/business/cities', 
         config('GET'), onSuccess);
-    
+
+export const findCompanyGoals = (companyId, {page}, onSuccess) => 
+    appFetch(`/business/companyGoals?companyId=${companyId}&page=${page}`, 
+        config('GET'), onSuccess);
+
+export const addGoal = (companyId, discountType, discountCash, discountPercentage, goalTypeId, goalQuantity, 
+    onSuccess, onErrors) =>{
+        appFetch(`/business/goals`,
+        config('POST', {companyId, discountType, discountCash, discountPercentage, goalTypeId, goalQuantity}),
+        onSuccess, onErrors);
+    }
+
+export const modifyGoal = (goal, onSuccess, onErrors) =>
+    appFetch(`/business/goals/${goal.id}`, config('PUT', goal),
+        onSuccess, onErrors);
+
+export const modifyStateGoal = (goalId, companyId, option, onSuccess) =>
+    appFetch(`/business/goals/${goalId}/modifyStateGoal`, 
+        config('POST', {companyId, option}), onSuccess);

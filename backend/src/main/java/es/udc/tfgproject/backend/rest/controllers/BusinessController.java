@@ -182,7 +182,7 @@ public class BusinessController {
 
 	}
 
-	@PostMapping("/goals/{goalId}")
+	@PostMapping("/goals/{goalId}/modifyStateGoal")
 	public GoalDto modifyStateGoal(@RequestAttribute Long userId, @PathVariable Long goalId,
 			@Validated @RequestBody ModifyStateGoalParamsDto params)
 			throws InstanceNotFoundException, PermissionException {
