@@ -145,15 +145,6 @@ public class ShoppingServiceTest {
 		return goalType;
 	}
 
-	private GoalType addGoalType(String goalName) {
-
-		GoalType goalType = new GoalType(goalName);
-
-		goalTypeDao.save(goalType);
-
-		return goalType;
-	}
-
 	private Goal addGoalCash(BigDecimal discountCash, Company company, GoalType goalType, int goal) {
 
 		Goal goal1 = new Goal(discountCash, 0, company, goalType, goal);
@@ -810,7 +801,7 @@ public class ShoppingServiceTest {
 				company.getId(), quantity2);
 
 		GoalType goalType = addGoalType();
-		Goal goal = businessService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+		businessService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
 				10, goalType.getId(), 1);
 
 		shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true, postalAddress,
@@ -1112,7 +1103,7 @@ public class ShoppingServiceTest {
 		BigDecimal discount = new BigDecimal(2);
 		Goal goal = addGoalCash(discount, company, goalType, 2);
 
-		DiscountTicket ticket = addDiscountTicket(user, goal, null, "12345ABCD",
+		addDiscountTicket(user, goal, null, "12345ABCD",
 				LocalDateTime.of(2022, 10, 1, 10, 2, 3), DiscountType.CASH);
 
 		BigDecimal totalPriceActual = shoppingCart.getTotalPrice().subtract(discount);

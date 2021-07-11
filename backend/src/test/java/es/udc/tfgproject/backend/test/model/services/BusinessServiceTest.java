@@ -26,11 +26,8 @@ import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
-import es.udc.tfgproject.backend.model.entities.GoalDao;
 import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
-import es.udc.tfgproject.backend.model.entities.OrderDao;
-import es.udc.tfgproject.backend.model.entities.OrderItemDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
@@ -90,15 +87,6 @@ public class BusinessServiceTest {
 
 	@Autowired
 	private ProductCategoryDao productCategoryDao;
-
-	@Autowired
-	private OrderDao orderDao;
-
-	@Autowired
-	private GoalDao goalDao;
-
-	@Autowired
-	private OrderItemDao orderItemDao;
 
 	@Autowired
 	private GoalTypeDao goalTypeDao;
