@@ -10,7 +10,7 @@ import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 public class AddGoalParamsDto {
 
 	private Long companyId;
-	private DiscountType discountType;
+	private String discountType;
 	private BigDecimal discountCash;
 	private Integer discountPercentage;
 	private Long goalTypeId;
@@ -26,11 +26,11 @@ public class AddGoalParamsDto {
 	}
 
 	@NotNull
-	public DiscountType getDiscountType() {
+	public String getDiscountType() {
 		return discountType;
 	}
 
-	public void setDiscountType(DiscountType discountType) {
+	public void setDiscountType(String discountType) {
 		this.discountType = discountType;
 	}
 

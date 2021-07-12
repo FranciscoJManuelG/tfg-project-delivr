@@ -23,6 +23,8 @@ const App = () => {
         dispatch(business.actions.findAllCities());
 
         dispatch(management.actions.findAllProductCategories());
+
+        dispatch(business.actions.findAllGoalTypes());
     
     });
 

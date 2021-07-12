@@ -23,6 +23,7 @@ import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalDao;
 import es.udc.tfgproject.backend.model.entities.GoalType;
+import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
@@ -48,6 +49,9 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Autowired
 	private GoalDao goalDao;
+
+	@Autowired
+	private GoalTypeDao goalTypeDao;
 
 	@Override
 	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
@@ -337,6 +341,19 @@ public class BusinessServiceImpl implements BusinessService {
 		}
 
 		return goal;
+
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<GoalType> findAllGoalTypes() {
+
+		Iterable<GoalType> goalTypes = goalTypeDao.findAll();
+		List<GoalType> goalTypesList = new ArrayList<>();
+
+		goalTypes.forEach(goalType -> goalTypesList.add(goalType));
+
+		return goalTypesList;
 
 	}
 

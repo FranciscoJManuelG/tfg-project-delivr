@@ -48,3 +48,21 @@ export const existsCompany = state =>
 
 export const getBlock = state => 
     existsCompany(state) ? getCompany(state).block : null;
+
+export const getGoalTypes = state =>
+    getModuleState(state).goalTypes;
+
+export const getGoalTypeGoalName = (goalTypes, id) => {
+    
+    if (!goalTypes){
+        return '';
+    }
+    
+    const goalType = goalTypes.find(goalType => goalType.id === id);
+    
+    if (!goalType){
+        return '';
+    }
+
+    return goalType.name;
+}

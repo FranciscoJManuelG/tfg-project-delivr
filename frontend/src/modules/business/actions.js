@@ -146,3 +146,37 @@ export const findCompanyCompleted = company => ({
     type: actionTypes.FIND_COMPANY_COMPLETED,
     company
 })
+
+const addedGoalCompleted = goal => ({
+    type: actionTypes.ADDED_GOAL_COMPLETED,
+    goal
+});
+
+export const addGoal = (companyId, discountType, discountCash, discountPercentage, goalTypeId, goalQuantity,
+    onSuccess, onErrors) => dispatch =>
+    backend.businessService.addGoal(companyId, discountType, discountCash, discountPercentage, goalTypeId, goalQuantity,
+        goal => {
+            dispatch(addedGoalCompleted(goal));
+            onSuccess();
+        },
+        onErrors);
+
+const findAllGoalTypesCompleted = goalTypes => ({
+    type: actionTypes.FIND_ALL_GOAL_TYPES_COMPLETED,
+    goalTypes
+});
+
+export const findAllGoalTypes = () => (dispatch, getState) => {
+
+    const goalTypes = selectors.getGoalTypes(getState());
+
+    if (!goalTypes) {
+
+        backend.businessService.findAllGoalTypes(
+            goalTypes => dispatch(findAllGoalTypesCompleted(goalTypes))
+        );
+
+    }
+
+}
+        

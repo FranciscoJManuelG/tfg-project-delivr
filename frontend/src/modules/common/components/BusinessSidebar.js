@@ -22,6 +22,11 @@ const BusinessSidebar = () => {
                         <FormattedMessage id="project.business.BlockCompany.title"/>
                     </Link>
                 </div>
+                <div className="list-group list-group-flush">
+                    <Link className="list-group-item list-group-item-action" to="/business/add-goal">
+                        <FormattedMessage id="project.business.AddGoal.title"/>
+                    </Link>
+                </div>
         </div>
     );
 

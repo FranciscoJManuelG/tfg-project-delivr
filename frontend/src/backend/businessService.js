@@ -65,3 +65,7 @@ export const modifyGoal = (goal, onSuccess, onErrors) =>
 export const modifyStateGoal = (goalId, companyId, option, onSuccess) =>
     appFetch(`/business/goals/${goalId}/modifyStateGoal`, 
         config('POST', {companyId, option}), onSuccess);
+
+export const findAllGoalTypes = (onSuccess) => 
+    appFetch('/business/goals/goalTypes', 
+        config('GET'), onSuccess);

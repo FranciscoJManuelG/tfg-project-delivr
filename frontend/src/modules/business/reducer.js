@@ -8,6 +8,8 @@ const initialState = {
     company: null,
     cities: null,
     companyAddressSearch: null,
+    goals: null,
+    goalTypes: null,
 };
 
 const company = (state = initialState.company, action) => {
@@ -92,11 +94,37 @@ const cities = (state = initialState.cities, action) => {
 
 }
 
+const goals = (state = initialState.goals, action) => {
+    switch(action.type){
+        case actionTypes.ADDED_GOAL_COMPLETED:
+            return action.goals;
+
+        default:
+            return state;
+    }
+}
+
+const goalTypes = (state = initialState.goalTypes, action) => {
+
+    switch (action.type) {
+
+        case actionTypes.FIND_ALL_GOAL_TYPES_COMPLETED:
+            return action.goalTypes;
+
+        default:
+            return state;
+
+    }
+
+}
+
 const reducer = combineReducers({
     companyCategories,
     company,
     cities,
-    companyAddressSearch
+    companyAddressSearch,
+    goals,
+    goalTypes
 });
 
 export default reducer;

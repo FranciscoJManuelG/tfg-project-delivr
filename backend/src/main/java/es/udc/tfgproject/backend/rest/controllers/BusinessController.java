@@ -4,6 +4,7 @@ import static es.udc.tfgproject.backend.rest.dtos.CityConversor.toCityDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressDto;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyCategoryConversor.toCompanyCategoryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.GoalTypeConversor.toGoalTypeDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyConversor.toCompanyDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalSummaryDtos;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
@@ -44,6 +46,7 @@ import es.udc.tfgproject.backend.rest.dtos.CompanyCategoryDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyDto;
 import es.udc.tfgproject.backend.rest.dtos.GoalDto;
 import es.udc.tfgproject.backend.rest.dtos.GoalSummaryDto;
+import es.udc.tfgproject.backend.rest.dtos.GoalTypeDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyCompanyParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyGoalParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyStateGoalParamsDto;
@@ -166,7 +169,7 @@ public class BusinessController {
 	public GoalDto addGoal(@RequestAttribute Long userId, @Validated @RequestBody AddGoalParamsDto params)
 			throws InstanceNotFoundException, PermissionException {
 
-		return toGoalDto(businessService.addGoal(userId, params.getCompanyId(), params.getDiscountType(),
+		return toGoalDto(businessService.addGoal(userId, params.getCompanyId(), DiscountType.valueOf(params.getDiscountType()),
 				params.getDiscountCash(), params.getDiscountPercentage(), params.getGoalTypeId(),
 				params.getGoalQuantity()));
 
@@ -191,6 +194,11 @@ public class BusinessController {
 
 		return toGoalDto(businessService.modifyStateGoal(userId, params.getCompanyId(), goalId, params.getOption()));
 
+	}
+
+	@GetMapping("/goals/goalTypes")
+	public List<GoalTypeDto> findAllGoalTypes() {
+		return toGoalTypeDtos(businessService.findAllGoalTypes());
 	}
 
 }

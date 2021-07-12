@@ -4,7 +4,7 @@ import {Route, Switch} from 'react-router-dom';
 
 import AppGlobalComponents from './AppGlobalComponents';
 import {Login, SignUp, UpdateProfile, ChangePassword, Logout, SignUpBusinessman, AddFavouriteAddress, FindFavouriteAddresses, FindFavouriteAddressesResult} from '../../users';
-import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany} from '../../business';
+import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany, AddGoal} from '../../business';
 import {FindCompaniesByAddress, FindCompaniesResult} from '../../businessCatalog';
 import {FindProductsByCompanyResult} from '../../productCatalog';
 import {FindProductsResult, FindProducts, AddProduct, EditProduct, FindProductToEdit} from '../../productManagement';
@@ -42,6 +42,7 @@ const Body = () => {
                 {loggedIn && <Route exact path="/business/find-company-addresses-result"><FindCompanyAddressesResult/></Route>}
                 {loggedIn && <Route exact path="/business/add-company-address"><AddCompanyAddress/></Route>}
                 {loggedIn && <Route exact path="/business/state-company"><StateCompany/></Route>}
+                {loggedIn && <Route exact path="/business/add-goal"><AddGoal/></Route>}
                 {loggedIn && <Route exact path="/shopping/add-to-shopping-cart"><AddToShoppingCart/></Route>}
                 {loggedIn && <Route exact path="/shopping/find-shopping-cart-products/:id"><FindShoppingCartProducts/></Route>}
                 {loggedIn && <Route exact path="/shopping/purchase-details/:id"><PurchaseDetails/></Route>}

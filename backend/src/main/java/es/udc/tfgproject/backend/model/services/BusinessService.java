@@ -9,6 +9,7 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
+import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
@@ -53,5 +54,7 @@ public interface BusinessService {
 
 	Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
 			throws InstanceNotFoundException, PermissionException;
+
+	List<GoalType> findAllGoalTypes();
 
 }

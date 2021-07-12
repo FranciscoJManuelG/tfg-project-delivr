@@ -9,6 +9,7 @@ export {default as AddCompanyAddress} from './components/AddCompanyAddress';
 export {default as FindCompanyAddresses} from './components/FindCompanyAddresses';
 export {default as FindCompanyAddressesResult} from './components/FindCompanyAddressesResult';
 export {default as StateCompany} from './components/StateCompany';
+export {default as AddGoal} from './components/AddGoal';
 
 export default {actions, actionTypes, reducer, selectors};
 
