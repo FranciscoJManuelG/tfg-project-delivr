@@ -10,6 +10,7 @@ export {default as FindCompanyAddresses} from './components/FindCompanyAddresses
 export {default as FindCompanyAddressesResult} from './components/FindCompanyAddressesResult';
 export {default as StateCompany} from './components/StateCompany';
 export {default as AddGoal} from './components/AddGoal';
+export {default as FindGoals} from './components/FindGoals';
 
 export default {actions, actionTypes, reducer, selectors};
 

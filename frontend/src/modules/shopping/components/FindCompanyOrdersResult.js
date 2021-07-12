@@ -7,7 +7,7 @@ import * as businessSelectors from '../../business/selectors';
 import {Pager} from '../../common';
 import Orders from './Orders';
 
-const FindOrdersResult = () => {
+const FindCompanyOrdersResult = () => {
 
     const company = useSelector(businessSelectors.getCompany);
     const orderSearch = useSelector(selectors.getOrderSearch);
@@ -42,4 +42,4 @@ const FindOrdersResult = () => {
 
 }
 
-export default FindOrdersResult;
+export default FindCompanyOrdersResult;

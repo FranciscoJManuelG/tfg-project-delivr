@@ -179,4 +179,39 @@ export const findAllGoalTypes = () => (dispatch, getState) => {
     }
 
 }
+
+const findGoalsCompleted = goalSearch => ({
+    type: actionTypes.FIND_GOALS_COMPLETED,
+    goalSearch
+});
+
+const clearGoalSearch = () => ({
+    type: actionTypes.CLEAR_GOAL_SEARCH
+});
+
+export const findGoals = (companyId, criteria) => dispatch => {
+
+    dispatch(clearGoalSearch());
+    backend.businessService.findCompanyGoals(companyId, criteria,
+        result => dispatch(findGoalsCompleted({criteria, result})));
+
+}      
+
+export const previousFindGoalsResultPage = (companyId, criteria) => 
+    findGoals(companyId, {page: criteria.page-1});
+
+export const nextFindGoalsResultPage = (companyId, criteria) => 
+    findGoals(companyId, {page: criteria.page+1});
+
+const modifiedGoalStateCompleted = goal => ({
+    type: actionTypes.MODIFIED_GOAL_STATE_COMPLETED,
+    goal
+});
+
+export const changeStateGoal = () => dispatch =>
+    backend.businessService.modifyStateGoal(goalId, companyId, option, 
+    goal => {
+        dispatch(modifiedGoalStateCompleted(goal));
+        onSuccess();
+    });
         

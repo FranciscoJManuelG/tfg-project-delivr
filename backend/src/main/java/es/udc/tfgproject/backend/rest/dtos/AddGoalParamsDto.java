@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
-
 public class AddGoalParamsDto {
 
 	private Long companyId;

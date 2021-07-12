@@ -7,6 +7,7 @@ import {Errors} from '../../common';
 import * as actions from '../actions';
 import GoalTypeSelector from './GoalTypeSelector';
 import Sidebar from '../../common/components/BusinessSidebar'
+import * as businessSelectors from '../selectors';
 
 const AddGoal = () => {
 

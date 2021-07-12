@@ -11,3 +11,6 @@ export const COMPANY_ADDRESS_DELETED = "project/business/companyAddressDeleted";
 export const FIND_COMPANY_COMPLETED = "project/business/findCompanyCompleted";
 export const ADDED_GOAL_COMPLETED="project/business/addedGoalCompleted";
 export const FIND_ALL_GOAL_TYPES_COMPLETED="project/business/findAllGoalTypesCompleted";
+export const FIND_GOALS_COMPLETED = "project/business/findGoalsCompleted";
+export const CLEAR_GOAL_SEARCH = "project/business/clearGoalSearch";
+export const MODIFIED_GOAL_STATE_COMPLETED = "project/business/modifiedGoalStateCompleted";

@@ -65,4 +65,8 @@ export const getGoalTypeGoalName = (goalTypes, id) => {
     }
 
     return goalType.name;
+    
 }
+
+export const getGoalSearch = state =>
+    getModuleState(state).goalSearch;
