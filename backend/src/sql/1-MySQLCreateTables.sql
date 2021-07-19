@@ -1,5 +1,10 @@
 -- Indexes for primary keys have been explicitly created.
 
+DROP TABLE Valoration;
+DROP TABLE ReserveItem;
+DROP TABLE Reserve;
+DROP TABLE MenuItem;
+DROP TABLE Menu;
 DROP TABLE DiscountTicket;
 DROP TABLE Goal;
 DROP TABLE GoalType;
@@ -257,6 +262,65 @@ CREATE TABLE DiscountTicket (
 ) ENGINE = InnoDB;
 
 CREATE INDEX DiscountTicketIndexByCode ON DiscountTicket (code);
+
+CREATE TABLE Menu (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    userId BIGINT NOT NULL,
+    CONSTRAINT MenuPK PRIMARY KEY (id),
+    CONSTRAINT MenuUserIdFK FOREIGN KEY(userId)
+        REFERENCES User (id)
+) ENGINE = InnoDB;
+
+CREATE TABLE MenuItem (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    productId BIGINT NOT NULL,
+    quantity SMALLINT NOT NULL,
+    menuId BIGINT NOT NULL,
+    CONSTRAINT MenuItemPK PRIMARY KEY (id),
+    CONSTRAINT MenuItemProductIdFK FOREIGN KEY(productId)
+        REFERENCES Product (id),
+    CONSTRAINT MenuItemMenuIdFK FOREIGN KEY(MenuId)
+        REFERENCES Menu (id)
+) ENGINE = InnoDB;
+
+CREATE TABLE Reserve (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    userId BIGINT NOT NULL,
+    companyId BIGINT NOT NULL,
+    date DATETIME NOT NULL,
+    diners SMALLINT NOT NULL,
+    periodType TINYINT NOT NULL,
+    totalPrice DECIMAL(11, 2) NOT NULL,
+    CONSTRAINT ReservePK PRIMARY KEY (id),
+    CONSTRAINT ReserveUserIdFK FOREIGN KEY(userId)
+        REFERENCES User (id),
+    CONSTRAINT ReserveCompanyIdFK FOREIGN KEY(companyId)
+        REFERENCES Company (id)
+) ENGINE = InnoDB;
+
+CREATE TABLE ReserveItem (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    productId BIGINT NOT NULL,
+    productPrice DECIMAL(11, 2) NOT NULL,
+    quantity SMALLINT NOT NULL,
+    reserveId BIGINT NOT NULL,
+    CONSTRAINT ReserveItemPK PRIMARY KEY (id),
+    CONSTRAINT ReserveItemProductIdFK FOREIGN KEY(productId)
+        REFERENCES Product (id),
+    CONSTRAINT ReserveItemReserveIdFK FOREIGN KEY(reserveId)
+        REFERENCES Reserve (id)
+) ENGINE = InnoDB;
+
+CREATE TABLE Valoration (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    points SMALLINT NOT NULL,
+    opinion VARCHAR(250),
+    reserveId BIGINT NOT NULL,
+    done BOOLEAN NOT NULL,
+    CONSTRAINT ValorationPK PRIMARY KEY (id),
+    CONSTRAINT ValorationReserveIdFK FOREIGN KEY(reserveId)
+        REFERENCES Reserve (id)
+) ENGINE = InnoDB;
 
 
 
