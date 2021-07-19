@@ -99,8 +99,8 @@ const goal = (state = initialState.goal, action) => {
     switch(action.type){
         case actionTypes.ADDED_GOAL_COMPLETED:
             return action.goal;
-            
-        case actionTypes.MODIFIED_GOAL_STATE_COMPLETED:
+
+        case actionTypes.FIND_GOAL_COMPLETED:
             return action.goal; 
 
         default:
@@ -131,6 +131,15 @@ const goalSearch = (state = initialState.goalSearch, action) => {
 
         case actionTypes.CLEAR_GOAL_SEARCH:
             return initialState.goalSearch;
+
+        case actionTypes.MODIFIED_GOAL_STATE_COMPLETED:
+            return {criteria: state.criteria,
+                result: {
+                    items: state.result.items.map(
+                        function(goal) { return goal.id == action.goal.id ? action.goal : goal; }
+                    ),
+                    existMoreItems: state.result.existMoreItems
+                }} ;
 
         default:
             return state;

@@ -58,9 +58,13 @@ export const addGoal = (companyId, discountType, discountCash, discountPercentag
         onSuccess, onErrors);
     }
 
-export const modifyGoal = (goal, onSuccess, onErrors) =>
-    appFetch(`/business/goals/${goal.id}`, config('PUT', goal),
+export const modifyGoal = (goal, companyId, onSuccess, onErrors) =>
+    appFetch(`/business/goals/${goal.id}`, config('PUT', {goal, companyId}),
         onSuccess, onErrors);
+
+export const findGoal = (goalId, companyId, onSuccess) =>
+    appFetch(`/business/goals/${goalId}?companyId=${companyId}`, 
+        config('GET'), onSuccess);
 
 export const modifyStateGoal = (goalId, companyId, option, onSuccess) =>
     appFetch(`/business/goals/${goalId}/modifyStateGoal`, 

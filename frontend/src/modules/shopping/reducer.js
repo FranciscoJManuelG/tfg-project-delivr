@@ -9,7 +9,8 @@ const initialState = {
     lastOrderId: null,
     orderSearch: null,
     order: null,
-    lastAddress: null
+    lastAddress: null,
+    discountTicketSearch: null,
 };
 
 const shoppingCart = (state = initialState.shoppingCart, action) => {
@@ -30,7 +31,11 @@ const shoppingCart = (state = initialState.shoppingCart, action) => {
 
         case actionTypes.BUY_COMPLETED:
             return {id: state.id, items: [], totalPrice: 0, totalQuantity: 0};
-    
+
+        case actionTypes.REDEEM_DISCOUNT_TICKET_COMPLETED:
+            return {homeSale: state.homeSale, id: state.id, items: state.items, totalPrice: action.price, totalQuantity: state.totalQuantity};
+        
+        
         default:
             return state;
 
@@ -102,12 +107,27 @@ const lastAddress = (state = initialState.lastAddress, action) => {
     }
 }
 
+const discountTicketSearch = (state = initialState.discountTicketSearch, action) => {
+
+    switch(action.type) {
+        
+        case actionTypes.FIND_DISCOUNT_TICKETS_COMPLETED:
+            return action.discountTicketSearch;
+
+        default:
+            return state;
+    
+    }
+
+}
+
 const reducer = combineReducers({
     shoppingCart,
     lastOrderId,
     orderSearch,
     order,
-    lastAddress
+    lastAddress,
+    discountTicketSearch
 
 });
 

@@ -27,6 +27,11 @@ const BusinessSidebar = () => {
                         <FormattedMessage id="project.business.AddGoal.title"/>
                     </Link>
                 </div>
+                <div className="list-group list-group-flush">
+                    <Link className="list-group-item list-group-item-action" to="/business/find-goals">
+                        <FormattedMessage id="project.business.FindGoals.title"/>
+                    </Link>
+                </div>
         </div>
     );
 

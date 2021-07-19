@@ -315,6 +315,14 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	@Transactional(readOnly = true)
+	public Goal findGoal(Long userId, Long companyId, Long goalId) throws InstanceNotFoundException, PermissionException {
+
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+		return permissionChecker.checkGoalExistsAndBelongsToCompany(goalId, company.getId());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public Block<Goal> findCompanyGoals(Long userId, Long companyId, int page, int size)
 			throws InstanceNotFoundException, PermissionException {
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);

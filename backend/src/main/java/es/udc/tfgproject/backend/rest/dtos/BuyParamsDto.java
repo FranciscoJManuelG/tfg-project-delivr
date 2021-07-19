@@ -49,7 +49,6 @@ public class BuyParamsDto {
 		this.cp = cp;
 	}
 
-	@Size(min = 1, max = 60)
 	public String getCodeDiscount() {
 		return codeDiscount;
 	}

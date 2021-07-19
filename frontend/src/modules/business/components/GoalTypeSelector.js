@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
+import {FormattedMessage} from 'react-intl';
 import PropTypes from 'prop-types';
 
 import * as selectors from '../selectors';
@@ -11,6 +12,11 @@ const GoalTypeSelector = (selectProps) => {
     return (
 
         <select {...selectProps}>
+
+            <FormattedMessage id='project.business.GoalTypeSelector.selectOption'>
+                {message => (<option value="">{message}</option>)}
+            </FormattedMessage>
+
 
             {goalTypes && goalTypes.map(goalType => 
                 <option key={goalType.id} value={goalType.id}>{goalType.goalName}</option>

@@ -3,18 +3,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 
 import * as actions from '../actions';
-import * as businessSelectors from '../selectors';
 
-const FindGoals = () => {
+const FindDiscountTickets = () => {
 
-    const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
     const history = useHistory();
 
     useEffect(() => {
 
-        dispatch(actions.findGoals(company.id, {page: 0}));
-        history.push('/business/find-goals-result');
+        dispatch(actions.findDiscountTickets({page: 0}));
+        history.push('/shopping/find-discount-tickets-result');
 
     });
 
@@ -22,4 +20,4 @@ const FindGoals = () => {
 
 }
 
-export default FindGoals;
+export default FindDiscountTickets;

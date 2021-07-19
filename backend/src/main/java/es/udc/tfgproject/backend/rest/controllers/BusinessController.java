@@ -185,6 +185,12 @@ public class BusinessController {
 
 	}
 
+	@GetMapping("/goals/{goalId}")
+	public GoalDto findGoal(@RequestAttribute Long userId, @PathVariable Long goalId, @RequestParam Long companyId)
+			throws InstanceNotFoundException, PermissionException {
+		return toGoalDto(businessService.findGoal(userId, companyId, goalId));
+	}
+
 	@PostMapping("/goals/{goalId}/modifyStateGoal")
 	public GoalDto modifyStateGoal(@RequestAttribute Long userId, @PathVariable Long goalId,
 			@Validated @RequestBody ModifyStateGoalParamsDto params)

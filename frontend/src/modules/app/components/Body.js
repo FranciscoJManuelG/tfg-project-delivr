@@ -4,11 +4,11 @@ import {Route, Switch} from 'react-router-dom';
 
 import AppGlobalComponents from './AppGlobalComponents';
 import {Login, SignUp, UpdateProfile, ChangePassword, Logout, SignUpBusinessman, AddFavouriteAddress, FindFavouriteAddresses, FindFavouriteAddressesResult} from '../../users';
-import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany, AddGoal} from '../../business';
+import {AddCompany, ModifyCompany, FindCompanyAddresses, FindCompanyAddressesResult, AddCompanyAddress, StateCompany, AddGoal, FindGoals, FindGoalsResult, EditGoal, FindGoalToEdit} from '../../business';
 import {FindCompaniesByAddress, FindCompaniesResult} from '../../businessCatalog';
 import {FindProductsByCompanyResult} from '../../productCatalog';
 import {FindProductsResult, FindProducts, AddProduct, EditProduct, FindProductToEdit} from '../../productManagement';
-import {AddToShoppingCart, FindShoppingCartProducts, PurchaseDetails, SetAddressToSendPurchase, ShowFavAddresses, PurchaseCompleted, OrderDetails, FindUserOrdersResult, FindCompanyOrdersResult, FindCompanyOrders, FindUserOrders} from '../../shopping';
+import {AddToShoppingCart, FindShoppingCartProducts, PurchaseDetails, SetAddressToSendPurchase, ShowFavAddresses, PurchaseCompleted, OrderDetails, FindUserOrdersResult, FindCompanyOrdersResult, FindCompanyOrders, FindUserOrders, FindDiscountTicketsResult, FindDiscountTickets} from '../../shopping';
 import users from '../../users';
 
 const Body = () => {
@@ -43,6 +43,10 @@ const Body = () => {
                 {loggedIn && <Route exact path="/business/add-company-address"><AddCompanyAddress/></Route>}
                 {loggedIn && <Route exact path="/business/state-company"><StateCompany/></Route>}
                 {loggedIn && <Route exact path="/business/add-goal"><AddGoal/></Route>}
+                {loggedIn && <Route exact path="/business/find-goals"><FindGoals/></Route>}
+                {loggedIn && <Route exact path="/business/find-goals-result"><FindGoalsResult/></Route>}
+                {loggedIn && <Route exact path="/business/edit-goal"><EditGoal/></Route>}
+                {loggedIn && <Route exact path="/business/find-goal-to-edit/:id"><FindGoalToEdit/></Route>}
                 {loggedIn && <Route exact path="/shopping/add-to-shopping-cart"><AddToShoppingCart/></Route>}
                 {loggedIn && <Route exact path="/shopping/find-shopping-cart-products/:id"><FindShoppingCartProducts/></Route>}
                 {loggedIn && <Route exact path="/shopping/purchase-details/:id"><PurchaseDetails/></Route>}
@@ -54,6 +58,8 @@ const Body = () => {
                 {loggedIn && <Route exact path="/shopping/find-company-orders"><FindCompanyOrders/></Route>}
                 {loggedIn && <Route exact path="/shopping/find-user-orders-result"><FindUserOrdersResult/></Route>}
                 {loggedIn && <Route exact path="/shopping/find-company-orders-result"><FindCompanyOrdersResult/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-discount-tickets-result"><FindDiscountTicketsResult/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-discount-tickets"><FindDiscountTickets/></Route>}
                 {!loggedIn && <Route exact path="/users/login"><Login/></Route>}
                 {!loggedIn && <Route exact path="/users/signup"><SignUp/></Route>}
                 {!loggedIn && <Route exact path="/users/signup-businessman"><SignUpBusinessman/></Route>}

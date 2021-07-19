@@ -41,7 +41,7 @@ export const findOrder = (orderId, onSuccess) =>
 export const findUserDiscountTickets = ({page}, onSuccess) => 
     appFetch(`/shopping/userDiscountTickets?page=${page}`, config('GET'), onSuccess);
 
-export const redeemDiscountTicket = (companyId, shoppingCartId, code, onSuccess) => 
+export const redeemDiscountTicket = (companyId, shoppingCartId, code, onSuccess, onErrors) => 
     appFetch(`/shopping/redeemDiscountTicket?companyId=${companyId}&shoppingCartId=${shoppingCartId}&code=${code}`, 
-    config('GET'), onSuccess);
+    config('GET'), onSuccess, onErrors);
         

@@ -14,6 +14,8 @@ export {default as FindUserOrders} from './components/FindUserOrders';
 export {default as FindCompanyOrders} from './components/FindCompanyOrders';
 export {default as FindCompanyOrdersResult} from './components/FindCompanyOrdersResult';
 export {default as FindUserOrdersResult} from './components/FindUserOrdersResult';
+export {default as FindDiscountTickets} from './components/FindDiscountTickets';
+export {default as FindDiscountTicketsResult} from './components/FindDiscountTicketsResult';
 
 
 export default {actions, reducer, selectors};

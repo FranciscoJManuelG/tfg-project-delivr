@@ -6,6 +6,7 @@ import * as selectors from '../selectors';
 import * as businessSelectors from '../selectors';
 import {Pager} from '../../common';
 import Goals from './Goals';
+import Sidebar from '../../common/components/BusinessSidebar'
 
 const FindGoalsResult = () => {
 
@@ -20,8 +21,11 @@ const FindGoalsResult = () => {
 
     if (goalSearch.result.items.length === 0) {
         return (
-            <div className="alert alert-info" role="alert">
-                No se ha establecido ningún objetivo para generar descuentos a los clientes
+            <div>
+                <Sidebar/>
+                <div className="alert alert-info" role="alert">
+                    No se ha establecido ningún objetivo para generar descuentos a los clientes
+                </div>
             </div>
         );
     }
@@ -29,7 +33,8 @@ const FindGoalsResult = () => {
     return (
 
         <div>
-            <Goals goals = {goalSearch} goalTypes= {goalTypes} company={company}
+            <Sidebar/>
+            <Goals goalList = {goalSearch.result.items} goalTypes= {goalTypes} company={company}
                 onChangeStateItem={(...args) => dispatch(actions.changeStateGoal(...args))}/>
             <Pager 
                 back={{

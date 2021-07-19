@@ -48,6 +48,7 @@ export default {
     'project.business.ModifyCompany.title': 'Modificar información da empresa',
     'project.business.FindAddresses.title': 'Direccións da empresa',
     'project.business.BlockCompany.title': 'Bloquear empresa',
-    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'Non existe ningunha dirección asignada a esta empresa'
+    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'Non existe ningunha dirección asignada a esta empresa',
+    'project.business.GoalTypeSelector.selectOption' : 'Seleccione unha opción'
 
 }

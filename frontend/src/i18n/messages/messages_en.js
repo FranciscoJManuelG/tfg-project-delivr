@@ -48,6 +48,7 @@ export default {
     'project.business.ModifyCompany.title': 'Modify company information',
     'project.business.FindAddresses.title': 'Company addresses',
     'project.business.BlockCompany.title': 'Block company',
-    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'No company addresses found'
+    'project.business.FindCompanyAddressesResult.noCompanyAddresses': 'No company addresses found',
+    'project.business.GoalTypeSelector.selectOption' : 'Select an option'
 
 }

@@ -49,6 +49,8 @@ public interface BusinessService {
 			Integer discountPercentage, Long goalTypeId, int goalQuantity)
 			throws InstanceNotFoundException, PermissionException;
 
+	Goal findGoal(Long userId, Long companyId, Long goalId) throws InstanceNotFoundException, PermissionException;
+
 	Goal modifyStateGoal(Long userId, Long companyId, Long goalId, String option)
 			throws InstanceNotFoundException, PermissionException;
 
@@ -56,5 +58,6 @@ public interface BusinessService {
 			throws InstanceNotFoundException, PermissionException;
 
 	List<GoalType> findAllGoalTypes();
+
 
 }

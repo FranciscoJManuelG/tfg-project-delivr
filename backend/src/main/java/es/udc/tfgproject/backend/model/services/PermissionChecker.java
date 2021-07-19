@@ -59,4 +59,5 @@ public interface PermissionChecker {
 
 	public Company checkCompany(Long companyId) throws InstanceNotFoundException;
 
+
 }

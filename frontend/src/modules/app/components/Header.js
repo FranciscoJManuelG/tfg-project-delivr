@@ -40,6 +40,14 @@ const Header = () => {
                             </Link>
                         </div>
                     }
+                    {userName &&
+                        <div>
+                            <Link className="dropdown-item" to="/shopping/find-discount-tickets">
+                                Tickets descuento
+                            </Link>
+                        </div>
+                    }
+                    
                 </ul>
 
                 {userName ? 

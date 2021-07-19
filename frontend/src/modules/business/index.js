@@ -11,6 +11,9 @@ export {default as FindCompanyAddressesResult} from './components/FindCompanyAdd
 export {default as StateCompany} from './components/StateCompany';
 export {default as AddGoal} from './components/AddGoal';
 export {default as FindGoals} from './components/FindGoals';
+export {default as FindGoalsResult} from './components/FindGoalsResult';
+export {default as FindGoalToEdit} from './components/FindGoalToEdit';
+export {default as EditGoal} from './components/EditGoal';
 
 export default {actions, actionTypes, reducer, selectors};
 

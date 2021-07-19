@@ -14,3 +14,6 @@ export const getOrder = state =>
 
 export const getLastAddress = state =>
     getModuleState(state).lastAddress;
+
+export const getDiscountTicketSearch = state =>
+    getModuleState(state).discountTicketSearch;

@@ -14,3 +14,6 @@ export const FIND_ALL_GOAL_TYPES_COMPLETED="project/business/findAllGoalTypesCom
 export const FIND_GOALS_COMPLETED = "project/business/findGoalsCompleted";
 export const CLEAR_GOAL_SEARCH = "project/business/clearGoalSearch";
 export const MODIFIED_GOAL_STATE_COMPLETED = "project/business/modifiedGoalStateCompleted";
+export const EDIT_GOAL_COMPLETED = "project/business/editGoalCompleted";
+export const CLEAR_GOAL = "project/business/clearGoal";
+export const FIND_GOAL_COMPLETED = "project/business/findGoalCompleted";

@@ -62,9 +62,9 @@ const buyCompleted = (orderId) => ({
     orderId
 });
 
-export const buy = (shoppingCartId, companyId, homeSale, street, cp, 
+export const buy = (shoppingCartId, companyId, homeSale, street, cp, codeDiscount,
     onSuccess, onErrors) => dispatch =>
-    backend.shoppingService.buy(shoppingCartId, companyId, homeSale, street, cp, ({id}) => {
+    backend.shoppingService.buy(shoppingCartId, companyId, homeSale, street, cp, codeDiscount, ({id}) => {
         dispatch(buyCompleted(id));
         onSuccess();
     },
@@ -122,5 +122,38 @@ export const findOrder = orderId => dispatch => {
     });
 }
 
+const redeemDiscountTicketCompleted = (price) => ({
+    type: actionTypes.REDEEM_DISCOUNT_TICKET_COMPLETED,
+    price
+});
 
+export const redeemDiscountTicket = (companyId, shoppingCartId, code, onSuccess, onErrors) => dispatch =>
+    backend.shoppingService.redeemDiscountTicket(companyId, shoppingCartId, code, ({price}) => {
+        dispatch(redeemDiscountTicketCompleted(price));
+        onSuccess();
+    },
+    onErrors);
+
+const findDiscountTicketsCompleted = discountTicketSearch => ({
+    type: actionTypes.FIND_DISCOUNT_TICKETS_COMPLETED,
+    discountTicketSearch
+});
+
+const clearDiscountTicketSearch = () => ({
+    type: actionTypes.CLEAR_DISCOUNT_TICKET_SEARCH
+});
+
+export const findDiscountTickets = (criteria) => dispatch => {
+
+    dispatch(clearDiscountTicketSearch());
+    backend.shoppingService.findUserDiscountTickets(criteria,
+        result => dispatch(findDiscountTicketsCompleted({criteria, result})));
+
+}      
+
+export const previousFindDiscountTicketsResultPage = (criteria) => 
+    findDiscountTickets({page: criteria.page-1});
+
+export const nextFindDiscountTicketsResultPage = (criteria) => 
+    findDiscountTickets({page: criteria.page+1});
 

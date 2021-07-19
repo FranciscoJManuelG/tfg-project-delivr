@@ -161,6 +161,20 @@ export const addGoal = (companyId, discountType, discountCash, discountPercentag
         },
         onErrors);
 
+const editGoalCompleted = goal => ({
+    type: actionTypes.EDIT_GOAL_COMPLETED,
+    goal
+})
+                
+export const editGoal = (goal, companyId, onSuccess, onErrors) => dispatch =>
+    backend.businessService.modifyGoal(goal, companyId,
+        goal => {
+            dispatch(editGoalCompleted(goal));
+            onSuccess();
+        },
+        onErrors);
+        
+
 const findAllGoalTypesCompleted = goalTypes => ({
     type: actionTypes.FIND_ALL_GOAL_TYPES_COMPLETED,
     goalTypes
@@ -208,10 +222,27 @@ const modifiedGoalStateCompleted = goal => ({
     goal
 });
 
-export const changeStateGoal = () => dispatch =>
+export const changeStateGoal = (goalId, companyId, option, onSuccess) => dispatch =>
     backend.businessService.modifyStateGoal(goalId, companyId, option, 
     goal => {
         dispatch(modifiedGoalStateCompleted(goal));
         onSuccess();
     });
+
+const findGoalCompleted = goal => ({
+    type: actionTypes.FIND_GOAL_COMPLETED,
+    goal
+});
+
+export const clearGoal = () => ({
+    type: actionTypes.CLEAR_GOAL
+});
+
+export const findGoal = (goalId, companyId) => dispatch => {
+    dispatch(clearGoal());
+    backend.businessService.findGoal(goalId, companyId,
+        goal => {
+            dispatch(findGoalCompleted(goal))
+        });
+}
         

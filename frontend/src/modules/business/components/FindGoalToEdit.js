@@ -1,25 +1,26 @@
 import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {useHistory} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 
-import * as actions from '../actions';
 import * as businessSelectors from '../selectors';
+import * as actions from '../actions';
 
-const FindGoals = () => {
+const FindGoalToEdit = () => {
 
     const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
     const history = useHistory();
+    const {id} = useParams();
 
     useEffect(() => {
 
-        dispatch(actions.findGoals(company.id, {page: 0}));
-        history.push('/business/find-goals-result');
-
+        dispatch(actions.findGoal(id, company.id));
+        history.push(`/business/edit-goal`);
+    
     });
 
     return null;
 
 }
 
-export default FindGoals;
+export default FindGoalToEdit;

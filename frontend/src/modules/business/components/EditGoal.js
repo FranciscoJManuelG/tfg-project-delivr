@@ -3,22 +3,24 @@ import {useDispatch, useSelector} from 'react-redux';
 import {FormattedMessage} from 'react-intl';
 import {useHistory} from 'react-router-dom';
 
-import {Errors} from '../../common';
-import * as actions from '../actions';
+import * as businessSelectors from '../selectors';
 import GoalTypeSelector from './GoalTypeSelector';
 import Sidebar from '../../common/components/BusinessSidebar'
-import * as businessSelectors from '../selectors';
+import {Errors} from '../../common';
+import * as actions from '../actions';
 
-const AddGoal = () => {
+const EditGoal = () => {
 
+    const goal1 = useSelector(businessSelectors.getGoal);
     const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
     const history = useHistory();
+    
     const [discountType, setdiscountType] = useState('CASH');
-    const [discountCash, setDiscountCash] = useState(0);
-    const [discountPercentage, setDiscountPercentage] = useState(0);
-    const [goalQuantity, setGoalQuantity] = useState(1);
-    const [goalTypeId, setGoalTypeId]  = useState('');
+    const [discountCash, setDiscountCash] = useState(goal1.discountCash);
+    const [discountPercentage, setDiscountPercentage] = useState(goal1.discountPercentage);
+    const [goalQuantity, setGoalQuantity] = useState(goal1.goalQuantity);
+    const [goalTypeId, setGoalTypeId]  = useState(goal1.goalTypeId);
     const [backendErrors, setBackendErrors] = useState(null);
     let form;
 
@@ -28,13 +30,20 @@ const AddGoal = () => {
 
         if (form.checkValidity()) {
             
-            dispatch(actions.addGoal(company.id,
-                discountType.trim(), discountCash,
-                discountPercentage, toNumber(goalTypeId),
-                goalQuantity, 
+            dispatch(actions,actions.editGoal(
+                {
+                    id: goal1.id,
+                    discountType: discountType.trim(),
+                    discountCash: discountCash,
+                    discountPercentage: discountPercentage,
+                    goalTypeId: toNumber(goalTypeId),
+                    goalQuantity:goalQuantity
+                },
+                company.id,
                 () => history.push('/business/find-goals'),
-                errors => setBackendErrors(errors)));
-
+                errors => setBackendErrors(errors)
+            ));
+            
         } else {
 
             setBackendErrors(null);
@@ -130,4 +139,4 @@ const AddGoal = () => {
 
 }
 
-export default AddGoal;
+export default EditGoal;

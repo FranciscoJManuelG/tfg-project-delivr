@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
-const Goals = ({goals, goalTypes, company, onChangeStateItem, onBackendErrors}) => {
+import Goal from './Goal';
+import {Errors} from '../../common';
+
+const Goals = ({goalList, goalTypes, company, onChangeStateItem}) => {
 
     const [backendErrors, setBackendErrors] = useState(null);
 
@@ -12,7 +15,7 @@ const Goals = ({goals, goalTypes, company, onChangeStateItem, onBackendErrors}) 
             <Errors errors={backendErrors}
                 onClose={() => setBackendErrors(null)}/>
 
-            {goals.map(goal => 
+            {goalList.map(goal => 
                 <Goal key={goal.id}
                     goal={goal}
                     goalTypes={goalTypes}
@@ -27,7 +30,7 @@ const Goals = ({goals, goalTypes, company, onChangeStateItem, onBackendErrors}) 
 };
 
 Goals.propTypes = {
-    goals: PropTypes.array.isRequired,
+    goalList: PropTypes.array.isRequired,
     goalTypes: PropTypes.array.isRequired
 };
 

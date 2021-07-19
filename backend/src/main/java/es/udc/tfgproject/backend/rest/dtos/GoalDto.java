@@ -17,7 +17,7 @@ public class GoalDto {
 	}
 
 	public GoalDto(Long id, BigDecimal discountCash, int discountPercentage, Long companyId, Long goalTypeId,
-			Integer goalQuantity, Boolean active) {
+			Integer goalQuantity, Boolean active ) {
 		this.id = id;
 		this.discountCash = discountCash;
 		this.discountPercentage = discountPercentage;
@@ -82,5 +82,4 @@ public class GoalDto {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-
 }

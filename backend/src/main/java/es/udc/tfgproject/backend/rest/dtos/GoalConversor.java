@@ -23,8 +23,8 @@ public class GoalConversor {
 
 	private final static GoalSummaryDto toGoalSummaryDto(Goal goal) {
 
-		return new GoalSummaryDto(goal.getDiscountCash(), goal.getDiscountPercentage(), goal.getGoalType().getId(),
-				goal.getGoalQuantity());
+		return new GoalSummaryDto(goal.getId(), goal.getDiscountCash(), goal.getDiscountPercentage(),
+				goal.getGoalType().getId(), goal.getGoalQuantity(), goal.getActive());
 
 	}
 }
