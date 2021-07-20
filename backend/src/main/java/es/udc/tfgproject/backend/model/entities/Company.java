@@ -20,12 +20,13 @@ public class Company {
 	private Boolean block;
 	private User user;
 	private CompanyCategory companyCategory;
+	private Integer reserveCapacity;
 
 	public Company() {
 	}
 
 	public Company(User user, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			Boolean block, CompanyCategory companyCategory) {
+			Boolean block, CompanyCategory companyCategory, Integer reserveCapacity) {
 		this.user = user;
 		this.name = name;
 		this.capacity = capacity;
@@ -34,6 +35,7 @@ public class Company {
 		this.reservePercentage = reservePercentage;
 		this.block = block;
 		this.companyCategory = companyCategory;
+		this.reserveCapacity = reserveCapacity;
 	}
 
 	@Id
@@ -112,6 +114,14 @@ public class Company {
 
 	public void setCompanyCategory(CompanyCategory companyCategory) {
 		this.companyCategory = companyCategory;
+	}
+
+	public Integer getReserveCapacity() {
+		return reserveCapacity;
+	}
+
+	public void setReserveCapacity(Integer reserveCapacity) {
+		this.reserveCapacity = reserveCapacity;
 	}
 
 }

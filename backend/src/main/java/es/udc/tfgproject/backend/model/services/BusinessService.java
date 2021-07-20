@@ -16,10 +16,11 @@ import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 public interface BusinessService {
 
 	Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			Long companyCategoryId) throws InstanceNotFoundException;
+			Long companyCategoryId, Integer reserveCapacity) throws InstanceNotFoundException;
 
 	Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId) throws InstanceNotFoundException, PermissionException;
+			int reservePercentage, Long companyCategoryId, Integer reserveCapacity)
+			throws InstanceNotFoundException, PermissionException;
 
 	Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
 
@@ -58,6 +59,5 @@ public interface BusinessService {
 			throws InstanceNotFoundException, PermissionException;
 
 	List<GoalType> findAllGoalTypes();
-
 
 }

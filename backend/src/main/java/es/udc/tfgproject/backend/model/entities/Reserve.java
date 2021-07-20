@@ -1,7 +1,7 @@
 package es.udc.tfgproject.backend.model.entities;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -15,9 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
+@Table(name = "ReserveTable")
 public class Reserve {
 
 	public enum PeriodType {
@@ -28,18 +30,19 @@ public class Reserve {
 	private Set<ReserveItem> items = new HashSet<>();
 	private User user;
 	private Company company;
-	private LocalDateTime date;
+	private LocalDate date;
 	private Integer diners;
 	private PeriodType periodType;
-	private Valoration valoration;
+	private EventEvaluation eventEvaluation;
 	private BigDecimal totalPrice;
+	private BigDecimal deposit;
 
 	public Reserve() {
 		super();
 	}
 
-	public Reserve(User user, Company company, LocalDateTime date, Integer diners, PeriodType periodType,
-			BigDecimal totalPrice) {
+	public Reserve(User user, Company company, LocalDate date, Integer diners, PeriodType periodType,
+			BigDecimal totalPrice, BigDecimal deposit) {
 		super();
 		this.user = user;
 		this.company = company;
@@ -47,6 +50,7 @@ public class Reserve {
 		this.diners = diners;
 		this.periodType = periodType;
 		this.totalPrice = totalPrice;
+		this.deposit = deposit;
 	}
 
 	@Id
@@ -88,11 +92,11 @@ public class Reserve {
 		this.company = company;
 	}
 
-	public LocalDateTime getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDateTime date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
@@ -112,13 +116,13 @@ public class Reserve {
 		this.periodType = periodType;
 	}
 
-	public Valoration getValoration() {
-		return valoration;
+	@OneToOne(mappedBy = "reserve", optional = false, fetch = FetchType.LAZY)
+	public EventEvaluation getEventEvaluation() {
+		return eventEvaluation;
 	}
 
-	@OneToOne(mappedBy = "reserve", optional = false, fetch = FetchType.LAZY)
-	public void setValoration(Valoration valoration) {
-		this.valoration = valoration;
+	public void setEventEvaluation(EventEvaluation eventEvaluation) {
+		this.eventEvaluation = eventEvaluation;
 	}
 
 	public BigDecimal getTotalPrice() {
@@ -127,6 +131,14 @@ public class Reserve {
 
 	public void setTotalPrice(BigDecimal totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+
+	public BigDecimal getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(BigDecimal deposit) {
+		this.deposit = deposit;
 	}
 
 	@Transient

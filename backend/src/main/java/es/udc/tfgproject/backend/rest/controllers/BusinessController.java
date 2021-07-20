@@ -4,10 +4,10 @@ import static es.udc.tfgproject.backend.rest.dtos.CityConversor.toCityDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressDto;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyCategoryConversor.toCompanyCategoryDtos;
-import static es.udc.tfgproject.backend.rest.dtos.GoalTypeConversor.toGoalTypeDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyConversor.toCompanyDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalSummaryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.GoalTypeConversor.toGoalTypeDtos;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
-import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
+import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
@@ -62,9 +62,9 @@ public class BusinessController {
 	public CompanyDto addCompany(@RequestAttribute Long userId, @Validated @RequestBody AddCompanyParamsDto params)
 			throws InstanceNotFoundException {
 
-		return toCompanyDto(
-				businessService.addCompany(userId, params.getName(), params.getCapacity(), params.getReserve(),
-						params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId()));
+		return toCompanyDto(businessService.addCompany(userId, params.getName(), params.getCapacity(),
+				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
+				params.getReserveCapacity()));
 
 	}
 
@@ -74,8 +74,8 @@ public class BusinessController {
 			throws InstanceNotFoundException, PermissionException {
 
 		return toCompanyDto(businessService.modifyCompany(userId, companyId, params.getName(), params.getCapacity(),
-				params.getReserve(), params.getHomeSale(), params.getReservePercentage(),
-				params.getCompanyCategoryId()));
+				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
+				params.getReserveCapacity()));
 
 	}
 
@@ -169,9 +169,9 @@ public class BusinessController {
 	public GoalDto addGoal(@RequestAttribute Long userId, @Validated @RequestBody AddGoalParamsDto params)
 			throws InstanceNotFoundException, PermissionException {
 
-		return toGoalDto(businessService.addGoal(userId, params.getCompanyId(), DiscountType.valueOf(params.getDiscountType()),
-				params.getDiscountCash(), params.getDiscountPercentage(), params.getGoalTypeId(),
-				params.getGoalQuantity()));
+		return toGoalDto(businessService.addGoal(userId, params.getCompanyId(),
+				DiscountType.valueOf(params.getDiscountType()), params.getDiscountCash(),
+				params.getDiscountPercentage(), params.getGoalTypeId(), params.getGoalQuantity()));
 
 	}
 

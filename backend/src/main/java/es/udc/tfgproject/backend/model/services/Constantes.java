@@ -12,4 +12,6 @@ public class Constantes {
 
 	public static final String DESACTIVAR = "desactivar";
 
+	public static final long NUMERO_UNO = 1;
+
 }

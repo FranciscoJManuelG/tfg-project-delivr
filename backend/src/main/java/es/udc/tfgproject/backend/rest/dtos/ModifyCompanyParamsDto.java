@@ -12,6 +12,15 @@ public class ModifyCompanyParamsDto {
 	private Boolean homeSale;
 	private int reservePercentage;
 	private Long companyCategoryId;
+	private Integer reserveCapacity;
+
+	public Integer getReserveCapacity() {
+		return reserveCapacity;
+	}
+
+	public void setReserveCapacity(Integer reserveCapacity) {
+		this.reserveCapacity = reserveCapacity;
+	}
 
 	@NotNull
 	@Size(min = 1, max = 60)

@@ -71,7 +71,7 @@ public class BusinessCatalogServiceTest {
 	}
 
 	private Company createCompany(User user, String name, CompanyCategory companyCategory) {
-		return new Company(user, name, 20, true, true, 15, false, companyCategory);
+		return new Company(user, name, 20, true, true, 15, false, companyCategory, 20);
 	}
 
 	@Test

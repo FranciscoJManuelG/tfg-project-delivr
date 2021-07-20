@@ -13,6 +13,8 @@ import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
+import es.udc.tfgproject.backend.model.entities.Menu;
+import es.udc.tfgproject.backend.model.entities.MenuDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartDao;
 import es.udc.tfgproject.backend.model.entities.User;
@@ -46,6 +48,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ShoppingCartDao shoppingCartDao;
 
+	@Autowired
+	private MenuDao menuDao;
+
 	@Override
 	public void signUp(User user) throws DuplicateInstanceException {
 
@@ -54,13 +59,15 @@ public class UserServiceImpl implements UserService {
 		}
 
 		ShoppingCart shoppingCart = new ShoppingCart(user);
-
+		Menu menu = new Menu(user);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setRole(RoleType.CLIENT);
 		user.setShoppingCart(shoppingCart);
+		user.setMenu(menu);
 
 		userDao.save(user);
 		shoppingCartDao.save(shoppingCart);
+		menuDao.save(menu);
 
 	}
 
@@ -72,12 +79,15 @@ public class UserServiceImpl implements UserService {
 		}
 
 		ShoppingCart shoppingCart = new ShoppingCart(user);
+		Menu menu = new Menu(user);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setRole(RoleType.BUSINESSMAN);
 		user.setShoppingCart(shoppingCart);
+		user.setMenu(menu);
 
 		userDao.save(user);
 		shoppingCartDao.save(shoppingCart);
+		menuDao.save(menu);
 
 	}
 

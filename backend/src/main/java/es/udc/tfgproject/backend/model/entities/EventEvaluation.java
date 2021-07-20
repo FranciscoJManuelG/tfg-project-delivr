@@ -1,5 +1,7 @@
 package es.udc.tfgproject.backend.model.entities;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,21 +11,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Valoration {
+public class EventEvaluation {
 
 	private Long id;
 	private Reserve reserve;
 	private Integer points;
 	private String opinion;
 	private Boolean done;
+	private LocalDate dateEvaluation;
 
-	public Valoration() {
+	public EventEvaluation() {
 	}
 
-	public Valoration(Reserve reserve, Integer points, String opinion) {
+	public EventEvaluation(Reserve reserve, LocalDate dateEvaluation) {
 		this.reserve = reserve;
-		this.points = points;
-		this.opinion = opinion;
+		this.dateEvaluation = dateEvaluation;
 		this.done = false;
 	}
 
@@ -69,6 +71,14 @@ public class Valoration {
 
 	public void setDone(Boolean done) {
 		this.done = done;
+	}
+
+	public LocalDate getDateEvaluation() {
+		return dateEvaluation;
+	}
+
+	public void setDateEvaluation(LocalDate dateEvaluation) {
+		this.dateEvaluation = dateEvaluation;
 	}
 
 }

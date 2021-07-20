@@ -1,8 +1,8 @@
 -- Indexes for primary keys have been explicitly created.
 
-DROP TABLE Valoration;
+DROP TABLE EventEvaluation;
 DROP TABLE ReserveItem;
-DROP TABLE Reserve;
+DROP TABLE ReserveTable;
 DROP TABLE MenuItem;
 DROP TABLE Menu;
 DROP TABLE DiscountTicket;
@@ -96,6 +96,7 @@ CREATE TABLE Company(
     userId BIGINT NOT NULL,
     companyCategoryId BIGINT NOT NULL,
     block BOOLEAN NOT NULL,
+    reserveCapacity SMALLINT,
     CONSTRAINT CompanyIdPK PRIMARY KEY (id),
     CONSTRAINT CompanyUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
@@ -283,14 +284,15 @@ CREATE TABLE MenuItem (
         REFERENCES Menu (id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE Reserve (
+CREATE TABLE ReserveTable (
     id BIGINT NOT NULL AUTO_INCREMENT,
     userId BIGINT NOT NULL,
     companyId BIGINT NOT NULL,
-    date DATETIME NOT NULL,
+    date DATE NOT NULL,
     diners SMALLINT NOT NULL,
     periodType TINYINT NOT NULL,
     totalPrice DECIMAL(11, 2) NOT NULL,
+    deposit DECIMAL(11, 2) NOT NULL,
     CONSTRAINT ReservePK PRIMARY KEY (id),
     CONSTRAINT ReserveUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
@@ -308,18 +310,18 @@ CREATE TABLE ReserveItem (
     CONSTRAINT ReserveItemProductIdFK FOREIGN KEY(productId)
         REFERENCES Product (id),
     CONSTRAINT ReserveItemReserveIdFK FOREIGN KEY(reserveId)
-        REFERENCES Reserve (id)
+        REFERENCES ReserveTable (id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE Valoration (
+CREATE TABLE EventEvaluation (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    points SMALLINT NOT NULL,
+    points SMALLINT,
     opinion VARCHAR(250),
     reserveId BIGINT NOT NULL,
     done BOOLEAN NOT NULL,
-    CONSTRAINT ValorationPK PRIMARY KEY (id),
-    CONSTRAINT ValorationReserveIdFK FOREIGN KEY(reserveId)
-        REFERENCES Reserve (id)
+    CONSTRAINT EventEvaluationPK PRIMARY KEY (id),
+    CONSTRAINT EventEvaluationReserveIdFK FOREIGN KEY(reserveId)
+        REFERENCES ReserveTable (id)
 ) ENGINE = InnoDB;
 
 

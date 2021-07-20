@@ -3,11 +3,14 @@ package es.udc.tfgproject.backend.model.services;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
+import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalType;
+import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.Product;
+import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -59,5 +62,15 @@ public interface PermissionChecker {
 
 	public Company checkCompany(Long companyId) throws InstanceNotFoundException;
 
+	public Menu checkMenuExistsAndBelongsToUser(Long menuId, Long userId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public Reserve checkReserveExistsAndBelongsToUser(Long reserveId, Long userId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public EventEvaluation checkEventEvaluationBelongsToReserve(Long reserveId) throws InstanceNotFoundException;
+
+	public EventEvaluation checkEventEvaluationExistsAndBelongsToUser(Long eventEvaluationId, Long userId)
+			throws InstanceNotFoundException, PermissionException;
 
 }

@@ -55,14 +55,14 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId) throws InstanceNotFoundException {
+			int reservePercentage, Long companyCategoryId, Integer reserveCapacity) throws InstanceNotFoundException {
 
 		User user = permissionChecker.checkUser(userId);
 
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
 		Company company = new Company(user, name, capacity, reserve, homeSale, reservePercentage, false,
-				companyCategory);
+				companyCategory, reserveCapacity);
 		companyDao.save(company);
 
 		return company;
@@ -70,7 +70,7 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	public Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve,
-			Boolean homeSale, int reservePercentage, Long companyCategoryId)
+			Boolean homeSale, int reservePercentage, Long companyCategoryId, Integer reserveCapacity)
 			throws InstanceNotFoundException, PermissionException {
 
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
@@ -83,6 +83,9 @@ public class BusinessServiceImpl implements BusinessService {
 		company.setHomeSale(homeSale);
 		company.setReservePercentage(reservePercentage);
 		company.setCompanyCategory(companyCategory);
+		if (reserveCapacity != null) {
+			company.setReserveCapacity(reserveCapacity);
+		}
 
 		return company;
 
@@ -315,7 +318,8 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Goal findGoal(Long userId, Long companyId, Long goalId) throws InstanceNotFoundException, PermissionException {
+	public Goal findGoal(Long userId, Long companyId, Long goalId)
+			throws InstanceNotFoundException, PermissionException {
 
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 		return permissionChecker.checkGoalExistsAndBelongsToCompany(goalId, company.getId());

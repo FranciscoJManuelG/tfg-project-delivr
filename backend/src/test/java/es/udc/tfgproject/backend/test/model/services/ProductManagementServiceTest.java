@@ -94,7 +94,7 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
+		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId(), 20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -122,7 +122,7 @@ public class ProductManagementServiceTest {
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
 
-		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
+		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId(), 20);
 
 		assertThrows(InstanceNotFoundException.class,
 				() -> productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
@@ -144,7 +144,7 @@ public class ProductManagementServiceTest {
 		ProductCategory pCategory = new ProductCategory("Bocadillos");
 		productCategoryDao.save(pCategory);
 
-		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId());
+		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId(), 20);
 
 		assertThrows(PermissionException.class,
 				() -> productManagementService.addProduct(userWrong.getId(), company.getId(), "Bocadillo de tortilla",
@@ -187,7 +187,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
+				20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -220,7 +221,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
+				20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "burger.jpg", pCategory.getId());
@@ -248,7 +250,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
+				20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -280,7 +283,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
+				20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -324,7 +328,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category.getId(),
+				20);
 
 		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -349,7 +354,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
+				20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -388,7 +394,8 @@ public class ProductManagementServiceTest {
 		provinceDao.save(province);
 		City city = new City("Lugo", province);
 		cityDao.save(city);
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
+				20);
 
 		Product product1 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -429,7 +436,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
+				20);
 
 		productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -456,7 +464,8 @@ public class ProductManagementServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId());
+		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
+				20);
 
 		productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());

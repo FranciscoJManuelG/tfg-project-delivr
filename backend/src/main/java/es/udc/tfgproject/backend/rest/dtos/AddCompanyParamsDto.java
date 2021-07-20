@@ -12,6 +12,7 @@ public class AddCompanyParamsDto {
 	private Boolean homeSale;
 	private int reservePercentage;
 	private Long companyCategoryId;
+	private Integer reserveCapacity;
 
 	@NotNull
 	@Size(min = 1, max = 60)
@@ -69,4 +70,13 @@ public class AddCompanyParamsDto {
 	public void setCompanyCategoryId(Long companyCategoryId) {
 		this.companyCategoryId = companyCategoryId;
 	}
+
+	public Integer getReserveCapacity() {
+		return reserveCapacity;
+	}
+
+	public void setReserveCapacity(Integer reserveCapacity) {
+		this.reserveCapacity = reserveCapacity;
+	}
+
 }

@@ -23,6 +23,7 @@ public class User {
 	private String phone;
 	private RoleType role;
 	private ShoppingCart shoppingCart;
+	private Menu menu;
 
 	public User() {
 	}
@@ -111,6 +112,15 @@ public class User {
 
 	public void setShoppingCart(ShoppingCart shoppingCart) {
 		this.shoppingCart = shoppingCart;
+	}
+
+	@OneToOne(mappedBy = "user", optional = false, fetch = FetchType.LAZY)
+	public Menu getMenu() {
+		return menu;
+	}
+
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 
 }

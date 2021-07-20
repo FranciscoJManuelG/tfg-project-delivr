@@ -12,16 +12,22 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket;
 import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
+import es.udc.tfgproject.backend.model.entities.EventEvaluation;
+import es.udc.tfgproject.backend.model.entities.EventEvaluationDao;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddress;
 import es.udc.tfgproject.backend.model.entities.FavouriteAddressDao;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalDao;
 import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
+import es.udc.tfgproject.backend.model.entities.Menu;
+import es.udc.tfgproject.backend.model.entities.MenuDao;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
+import es.udc.tfgproject.backend.model.entities.Reserve;
+import es.udc.tfgproject.backend.model.entities.ReserveDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartDao;
 import es.udc.tfgproject.backend.model.entities.User;
@@ -63,6 +69,15 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private GoalTypeDao goalTypeDao;
+
+	@Autowired
+	private MenuDao menuDao;
+
+	@Autowired
+	private ReserveDao reserveDao;
+
+	@Autowired
+	private EventEvaluationDao eventEvaluationDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -317,6 +332,66 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return company.get();
+	}
+
+	@Override
+	public Menu checkMenuExistsAndBelongsToUser(Long menuId, Long userId)
+			throws PermissionException, InstanceNotFoundException {
+		Optional<Menu> menu = menuDao.findById(menuId);
+
+		if (!menu.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.menu", menuId);
+		}
+
+		if (!menu.get().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return menu.get();
+	}
+
+	@Override
+	public Reserve checkReserveExistsAndBelongsToUser(Long reserveId, Long userId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<Reserve> reserve = reserveDao.findById(reserveId);
+
+		if (!reserve.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.reserve", reserveId);
+		}
+
+		if (!reserve.get().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return reserve.get();
+
+	}
+
+	@Override
+	public EventEvaluation checkEventEvaluationBelongsToReserve(Long reserveId) throws InstanceNotFoundException {
+		Optional<EventEvaluation> eventEvaluationOptional = eventEvaluationDao.findByReserveId(reserveId);
+
+		if (!eventEvaluationOptional.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.eventEvaluation", null);
+		}
+
+		return eventEvaluationOptional.get();
+	}
+
+	@Override
+	public EventEvaluation checkEventEvaluationExistsAndBelongsToUser(Long eventEvaluationId, Long userId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<EventEvaluation> eventEvaluation = eventEvaluationDao.findById(eventEvaluationId);
+
+		if (!eventEvaluation.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.eventEvaluation", eventEvaluationId);
+		}
+
+		if (!eventEvaluation.get().getReserve().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return eventEvaluation.get();
 	}
 
 }
