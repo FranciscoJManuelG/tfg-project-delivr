@@ -5,12 +5,10 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
-
 public class ModifyGoalParamsDto {
 
 	private Long companyId;
-	private DiscountType discountType;
+	private String discountType;
 	private BigDecimal discountCash;
 	private Integer discountPercentage;
 	private Long goalTypeId;
@@ -26,11 +24,11 @@ public class ModifyGoalParamsDto {
 	}
 
 	@NotNull
-	public DiscountType getDiscountType() {
+	public String getDiscountType() {
 		return discountType;
 	}
 
-	public void setDiscountType(DiscountType discountType) {
+	public void setDiscountType(String discountType) {
 		this.discountType = discountType;
 	}
 

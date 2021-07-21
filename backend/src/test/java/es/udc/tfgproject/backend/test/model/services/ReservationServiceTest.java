@@ -23,17 +23,10 @@ import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
-import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
-import es.udc.tfgproject.backend.model.entities.EventEvaluationDao;
-import es.udc.tfgproject.backend.model.entities.GoalDao;
-import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
 import es.udc.tfgproject.backend.model.entities.Menu;
-import es.udc.tfgproject.backend.model.entities.MenuDao;
 import es.udc.tfgproject.backend.model.entities.MenuItem;
 import es.udc.tfgproject.backend.model.entities.MenuItemDao;
-import es.udc.tfgproject.backend.model.entities.OrderDao;
-import es.udc.tfgproject.backend.model.entities.OrderItemDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
@@ -49,13 +42,12 @@ import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceeded;
+import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.ProductManagementService;
 import es.udc.tfgproject.backend.model.services.ReservationService;
-import es.udc.tfgproject.backend.model.services.ShoppingService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
 @SpringBootTest
@@ -67,9 +59,6 @@ public class ReservationServiceTest {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private ShoppingService shoppingService;
 
 	@Autowired
 	private ReservationService reservationService;
@@ -90,34 +79,13 @@ public class ReservationServiceTest {
 	private CityDao cityDao;
 
 	@Autowired
-	private OrderDao orderDao;
-
-	@Autowired
-	private OrderItemDao orderItemDao;
-
-	@Autowired
 	private ProvinceDao provinceDao;
-
-	@Autowired
-	private DiscountTicketDao discountTicketDao;
-
-	@Autowired
-	private GoalDao goalDao;
-
-	@Autowired
-	private GoalTypeDao goalTypeDao;
 
 	@Autowired
 	private ReserveDao reserveDao;
 
 	@Autowired
 	private MenuItemDao MenuItemDao;
-
-	@Autowired
-	private MenuDao menuDao;
-
-	@Autowired
-	private EventEvaluationDao eventEvaluationDao;
 
 	@Autowired
 	private ReserveItemDao reserveItemDao;
@@ -647,8 +615,8 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testReservationAndFindReserve()
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+	public void testReservationAndFindReserve() throws InstanceNotFoundException, PermissionException,
+			EmptyMenuException, MaximumCapacityExceededException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -693,8 +661,8 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testCancelReservation()
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+	public void testCancelReservation() throws InstanceNotFoundException, PermissionException, EmptyMenuException,
+			MaximumCapacityExceededException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -819,8 +787,8 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testFindReserveOfAnotherUser()
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+	public void testFindReserveOfAnotherUser() throws InstanceNotFoundException, PermissionException,
+			EmptyMenuException, MaximumCapacityExceededException {
 
 		User user1 = signUpUser("user1");
 		User user2 = signUpUser("user2");
@@ -850,8 +818,8 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testFindReserveWithNonExistingUserId()
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+	public void testFindReserveWithNonExistingUserId() throws InstanceNotFoundException, PermissionException,
+			EmptyMenuException, MaximumCapacityExceededException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -959,13 +927,9 @@ public class ReservationServiceTest {
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
 				20);
-		Company company2 = businessService.addCompany(user2.getId(), "TRadFood", 36, true, true, 10, category1.getId(),
-				20);
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
-		Product product2 = productManagementService.addProduct(user2.getId(), company2.getId(), "Bocadillo de tortilla",
-				"Tortilla con cebolla y pimientos", new BigDecimal(4.50), "otherpath", pCategory.getId());
 
 		Reserve reserve1 = addReserve(user, company, product, LocalDate.of(2021, 07, 25), 3, PeriodType.DINER);
 		Reserve reserve2 = addReserve(user, company, product, LocalDate.of(2021, 07, 28), 3, PeriodType.LUNCH);
@@ -987,8 +951,8 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testAddEventEvaluation()
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+	public void testAddEventEvaluation() throws InstanceNotFoundException, PermissionException, EmptyMenuException,
+			MaximumCapacityExceededException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");

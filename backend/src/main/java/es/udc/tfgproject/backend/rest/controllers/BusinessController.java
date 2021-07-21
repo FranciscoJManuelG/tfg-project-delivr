@@ -179,9 +179,9 @@ public class BusinessController {
 	public GoalDto modifyGoal(@RequestAttribute Long userId, @PathVariable Long goalId,
 			@Validated @RequestBody ModifyGoalParamsDto params) throws InstanceNotFoundException, PermissionException {
 
-		return toGoalDto(businessService.modifyGoal(userId, params.getCompanyId(), goalId, params.getDiscountType(),
-				params.getDiscountCash(), params.getDiscountPercentage(), params.getGoalTypeId(),
-				params.getGoalQuantity()));
+		return toGoalDto(businessService.modifyGoal(userId, params.getCompanyId(), goalId,
+				DiscountType.valueOf(params.getDiscountType()), params.getDiscountCash(),
+				params.getDiscountPercentage(), params.getGoalTypeId(), params.getGoalQuantity()));
 
 	}
 

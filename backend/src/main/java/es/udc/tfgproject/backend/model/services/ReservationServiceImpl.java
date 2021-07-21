@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.udc.tfgproject.backend.model.entities.Company;
-import es.udc.tfgproject.backend.model.entities.CompanyDao;
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.EventEvaluationDao;
 import es.udc.tfgproject.backend.model.entities.Menu;
@@ -31,7 +30,7 @@ import es.udc.tfgproject.backend.model.entities.ReserveItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceeded;
+import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 @Service
@@ -52,9 +51,6 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Autowired
 	private ReserveDao reserveDao;
-
-	@Autowired
-	private CompanyDao companyDao;
 
 	@Autowired
 	private EventEvaluationDao eventEvaluationDao;
@@ -126,12 +122,12 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
-			PeriodType periodType)
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
+			MaximumCapacityExceededException {
 		User user = permissionChecker.checkUser(userId);
 		Company company = permissionChecker.checkCompany(companyId);
 
-		Menu menu = permissionChecker.checkMenuExistsAndBelongsToUser(menuId, userId);
+		Menu menu = permissionChecker.checkMenuExistsAndBelongsToUser(menuId, user.getId());
 
 		if (menu.isEmpty()) {
 			throw new EmptyMenuException();
@@ -224,20 +220,19 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Boolean checkCapacity(Long companyId, LocalDate reservationDate, PeriodType periodType, Integer diners)
-			throws MaximumCapacityExceeded, InstanceNotFoundException {
+			throws MaximumCapacityExceededException, InstanceNotFoundException {
 
 		Integer dinersAllowed = obtainMaxDinersAllowed(companyId, reservationDate, periodType);
 
 		if ((dinersAllowed - diners) < Constantes.NUMERO_CERO) {
-			throw new MaximumCapacityExceeded();
+			throw new MaximumCapacityExceededException();
 		}
 
 		return true;
 	}
 
 	@Override
-	public void cancelReservation(Long userId, Long reserveId)
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceeded {
+	public void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException {
 		Reserve reserve = permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, userId);
 		EventEvaluation eventEvaluation = permissionChecker.checkEventEvaluationBelongsToReserve(reserveId);
 		// Cuando implemente lo de PayPal, hacer comprobación de que cuando cancela es
