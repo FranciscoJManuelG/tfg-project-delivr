@@ -319,6 +319,7 @@ CREATE TABLE EventEvaluation (
     opinion VARCHAR(250),
     reserveId BIGINT NOT NULL,
     done BOOLEAN NOT NULL,
+    dateEvaluation DATE NOT NULL,
     CONSTRAINT EventEvaluationPK PRIMARY KEY (id),
     CONSTRAINT EventEvaluationReserveIdFK FOREIGN KEY(reserveId)
         REFERENCES ReserveTable (id)

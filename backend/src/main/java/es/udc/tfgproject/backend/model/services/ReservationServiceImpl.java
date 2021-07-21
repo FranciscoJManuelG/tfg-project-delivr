@@ -3,8 +3,10 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -211,7 +213,6 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public Integer obtainMaxDinersAllowed(Long companyId, LocalDate reservationDate, PeriodType periodType)
 			throws InstanceNotFoundException {
-
 		Company company = permissionChecker.checkCompany(companyId);
 
 		Integer dinersNow = reserveDao.getSumDinersByReservationDateAndPeriodType(reservationDate, periodType);
@@ -227,9 +228,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		Integer dinersAllowed = obtainMaxDinersAllowed(companyId, reservationDate, periodType);
 
-		Company company = companyDao.findById(companyId).get();
-
-		if (company.getReserveCapacity() < (obtainMaxDinersAllowed(companyId, reservationDate, periodType) + diners)) {
+		if ((dinersAllowed - diners) < Constantes.NUMERO_CERO) {
 			throw new MaximumCapacityExceeded();
 		}
 
@@ -246,6 +245,9 @@ public class ReservationServiceImpl implements ReservationService {
 		// Si se cancela el mismo día, no se realiza el reembolso del depoito por
 		// adelantado.
 
+		for (ReserveItem reserveItem : reserve.getItems()) {
+			reserveItemDao.delete(reserveItem);
+		}
 		eventEvaluationDao.delete(eventEvaluation);
 		reserveDao.delete(reserve);
 
@@ -262,6 +264,31 @@ public class ReservationServiceImpl implements ReservationService {
 		eventEvaluation.setOpinion(opinion);
 		eventEvaluation.setDone(true);
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Block<EventEvaluation> findCompanyEventEvaluation(Long userId, Long companyId, int page, int size)
+			throws PermissionException, InstanceNotFoundException {
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+
+		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveCompanyIdOrderByDateEvaluation(company.getId(),
+				PageRequest.of(page, size));
+
+		return new Block<>(slice.getContent(), slice.hasNext());
+
+	}
+
+	@Override
+	public Block<EventEvaluation> findUserEventEvaluation(Long userId, int page, int size)
+			throws PermissionException, InstanceNotFoundException {
+		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveUserIdOrderByDateEvaluation(userId,
+				PageRequest.of(page, size));
+
+		List<EventEvaluation> evaluations = slice.getContent().stream()
+				.filter(e -> e.getDateEvaluation().isBefore(LocalDate.now())).collect(Collectors.toList());
+
+		return new Block<>(evaluations, slice.hasNext());
 	}
 
 }

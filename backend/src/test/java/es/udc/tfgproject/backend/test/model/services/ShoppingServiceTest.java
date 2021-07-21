@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +39,6 @@ import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
 import es.udc.tfgproject.backend.model.entities.Province;
 import es.udc.tfgproject.backend.model.entities.ProvinceDao;
-import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
@@ -49,16 +47,13 @@ import es.udc.tfgproject.backend.model.exceptions.CompanyDoesNotAllowHomeSaleExc
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
-import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
 import es.udc.tfgproject.backend.model.exceptions.IncorrectDiscountCodeException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
-import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceeded;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.ProductManagementService;
-import es.udc.tfgproject.backend.model.services.ReservationService;
 import es.udc.tfgproject.backend.model.services.ShoppingService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
@@ -74,9 +69,6 @@ public class ShoppingServiceTest {
 
 	@Autowired
 	private ShoppingService shoppingService;
-
-	@Autowired
-	private ReservationService reservationService;
 
 	@Autowired
 	private BusinessService businessService;
@@ -1315,47 +1307,6 @@ public class ShoppingServiceTest {
 
 		assertEquals(order, foundOrder);
 		assertEquals(foundOrder.getTotalPrice(), order.getTotalPrice());
-
-	}
-
-	@Test
-	public void testReserve() throws InstanceNotFoundException, PermissionException, EmptyShoppingCartException,
-			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException,
-			EmptyMenuException, MaximumCapacityExceeded {
-
-		User user = signUpUser("user");
-		CompanyCategory category1 = new CompanyCategory("Tradicional");
-		companyCategoryDao.save(category1);
-		ProductCategory pCategory = new ProductCategory("Bocadillos");
-		productCategoryDao.save(pCategory);
-
-		Province province = new Province("Lugo");
-		provinceDao.save(province);
-		City city = new City("Lugo", province);
-		cityDao.save(city);
-
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
-
-		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
-				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
-		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
-				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
-
-		int quantity1 = 1;
-		int quantity2 = 2;
-		String postalAddress = "Postal Address";
-		String postalCode = "12345";
-
-		LocalDate now = LocalDate.now();
-
-		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
-
-		reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(), now, 15,
-				PeriodType.DINER);
-
-		System.out.println("La reserva maxima debe ser 5 y obtenemos ->"
-				+ reservationService.obtainMaxDinersAllowed(company.getId(), now, PeriodType.DINER));
 
 	}
 

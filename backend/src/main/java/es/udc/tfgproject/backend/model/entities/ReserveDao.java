@@ -19,7 +19,7 @@ public interface ReserveDao extends PagingAndSortingRepository<Reserve, Long> {
 
 	List<Reserve> findByUserIdAndCompanyId(Long userId, Long companyId);
 
-	@Query("SELECT SUM(r.diners) FROM Reserve r WHERE r.date = ?1 AND r.periodType = ?2")
+	@Query("SELECT COALESCE(SUM(r.diners), 0) FROM Reserve r WHERE r.date = ?1 AND r.periodType = ?2")
 	Integer getSumDinersByReservationDateAndPeriodType(LocalDate date, PeriodType periodType);
 
 }

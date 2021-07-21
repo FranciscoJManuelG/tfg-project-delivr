@@ -14,4 +14,6 @@ public class Constantes {
 
 	public static final long NUMERO_UNO = 1;
 
+	public static final int NUMERO_CERO = 0;
+
 }

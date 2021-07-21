@@ -2,6 +2,7 @@ package es.udc.tfgproject.backend.model.services;
 
 import java.time.LocalDate;
 
+import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
@@ -45,6 +46,12 @@ public interface ReservationService {
 			int size) throws InstanceNotFoundException, PermissionException;
 
 	void addEventEvaluation(Long userId, Long eventEvaluationId, Integer points, String opinion)
+			throws PermissionException, InstanceNotFoundException;
+
+	Block<EventEvaluation> findUserEventEvaluation(Long userId, int page, int size)
+			throws PermissionException, InstanceNotFoundException;
+
+	Block<EventEvaluation> findCompanyEventEvaluation(Long userId, Long companyId, int page, int size)
 			throws PermissionException, InstanceNotFoundException;
 
 }
