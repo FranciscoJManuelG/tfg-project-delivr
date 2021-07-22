@@ -19,7 +19,8 @@ public class ShoppingCartConversor {
 
 		items.sort(Comparator.comparing(ShoppingCartItemDto::getProductName));
 
-		return new ShoppingCartDto(cart.getId(), items, cart.getHomeSale(), cart.getTotalQuantity(), cart.getTotalPrice());
+		return new ShoppingCartDto(cart.getId(), items, cart.getHomeSale(), cart.getTotalQuantity(),
+				cart.getTotalPrice());
 
 	}
 
@@ -28,10 +29,6 @@ public class ShoppingCartConversor {
 		return new ShoppingCartItemDto(item.getProduct().getId(), item.getProduct().getName(),
 				item.getProduct().getProductCategory().getId(), item.getProduct().getPrice(), item.getQuantity());
 
-	}
-
-	public final static List<ShoppingCartItemDto> toShoppingCartItemDtos(List<ShoppingCartItem> items) {
-		return items.stream().map(o -> toShoppingCartItemDto(o)).collect(Collectors.toList());
 	}
 
 }

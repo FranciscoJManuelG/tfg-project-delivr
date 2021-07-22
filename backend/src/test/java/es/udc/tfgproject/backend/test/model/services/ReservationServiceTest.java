@@ -976,12 +976,12 @@ public class ReservationServiceTest {
 		reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
 				LocalDate.of(2021, 07, 19), 3, PeriodType.DINER);
 
-		Block<EventEvaluation> block = reservationService.findUserEventEvaluation(user.getId(), 0, 2);
+		Block<EventEvaluation> block = reservationService.findUserEventEvaluations(user.getId(), 0, 2);
 
 		EventEvaluation evaluation = block.getItems().get(0);
 		reservationService.addEventEvaluation(user.getId(), evaluation.getId(), 5, "Buena comida");
 
-		Block<EventEvaluation> blockCompany = reservationService.findCompanyEventEvaluation(user.getId(),
+		Block<EventEvaluation> blockCompany = reservationService.findCompanyEventEvaluations(user.getId(),
 				company.getId(), 0, 2);
 		List<EventEvaluation> evaluations = blockCompany.getItems();
 

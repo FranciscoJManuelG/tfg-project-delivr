@@ -263,21 +263,21 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Block<EventEvaluation> findCompanyEventEvaluation(Long userId, Long companyId, int page, int size)
+	public Block<EventEvaluation> findCompanyEventEvaluations(Long userId, Long companyId, int page, int size)
 			throws PermissionException, InstanceNotFoundException {
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
 
-		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveCompanyIdOrderByDateEvaluation(company.getId(),
-				PageRequest.of(page, size));
+		Slice<EventEvaluation> slice = eventEvaluationDao
+				.findByReserveCompanyIdAndDoneOrderByDateEvaluation(company.getId(), true, PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 
 	}
 
 	@Override
-	public Block<EventEvaluation> findUserEventEvaluation(Long userId, int page, int size)
+	public Block<EventEvaluation> findUserEventEvaluations(Long userId, int page, int size)
 			throws PermissionException, InstanceNotFoundException {
-		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveUserIdOrderByDateEvaluation(userId,
+		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveUserIdAndDoneOrderByDateEvaluation(userId, false,
 				PageRequest.of(page, size));
 
 		List<EventEvaluation> evaluations = slice.getContent().stream()

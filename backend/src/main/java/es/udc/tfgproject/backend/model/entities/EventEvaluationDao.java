@@ -10,7 +10,9 @@ public interface EventEvaluationDao extends PagingAndSortingRepository<EventEval
 
 	Optional<EventEvaluation> findByReserveId(Long reserveId);
 
-	Slice<EventEvaluation> findByReserveCompanyIdOrderByDateEvaluation(Long companyId, Pageable pageable);
+	Slice<EventEvaluation> findByReserveCompanyIdAndDoneOrderByDateEvaluation(Long companyId, Boolean done,
+			Pageable pageable);
 
-	Slice<EventEvaluation> findByReserveUserIdOrderByDateEvaluation(Long userId, Pageable pageable);
+	Slice<EventEvaluation> findByReserveUserIdAndDoneOrderByDateEvaluation(Long userId, Boolean done,
+			Pageable pageable);
 }

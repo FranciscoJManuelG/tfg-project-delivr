@@ -47,10 +47,10 @@ public interface ReservationService {
 	void addEventEvaluation(Long userId, Long eventEvaluationId, Integer points, String opinion)
 			throws PermissionException, InstanceNotFoundException;
 
-	Block<EventEvaluation> findUserEventEvaluation(Long userId, int page, int size)
+	Block<EventEvaluation> findUserEventEvaluations(Long userId, int page, int size)
 			throws PermissionException, InstanceNotFoundException;
 
-	Block<EventEvaluation> findCompanyEventEvaluation(Long userId, Long companyId, int page, int size)
+	Block<EventEvaluation> findCompanyEventEvaluations(Long userId, Long companyId, int page, int size)
 			throws PermissionException, InstanceNotFoundException;
 
 }
