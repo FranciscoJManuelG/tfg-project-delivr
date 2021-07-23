@@ -1,6 +1,7 @@
 package es.udc.tfgproject.backend.rest.controllers;
 
-import static es.udc.tfgproject.backend.rest.dtos.EventEvaluationConversor.toEventEvaluationSummaryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.EventEvaluationConversor.toCompanyEventEvaluationSummaryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.EventEvaluationConversor.toUserEventEvaluationSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.MenuConversor.toMenuDto;
 import static es.udc.tfgproject.backend.rest.dtos.ReserveConversor.toReserveDto;
 import static es.udc.tfgproject.backend.rest.dtos.ReserveConversor.toReserveSummaryDtos;
@@ -42,8 +43,8 @@ import es.udc.tfgproject.backend.rest.dtos.AddEventEvaluationParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddToMenuParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AllowDto;
 import es.udc.tfgproject.backend.rest.dtos.BlockDto;
+import es.udc.tfgproject.backend.rest.dtos.CompanyEventEvaluationSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.DinersDto;
-import es.udc.tfgproject.backend.rest.dtos.EventEvaluationSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.IdDto;
 import es.udc.tfgproject.backend.rest.dtos.MenuDto;
 import es.udc.tfgproject.backend.rest.dtos.RemoveMenuItemParamsDto;
@@ -51,6 +52,7 @@ import es.udc.tfgproject.backend.rest.dtos.ReservationParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ReserveDto;
 import es.udc.tfgproject.backend.rest.dtos.ReserveSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.UpdateMenuItemQuantityParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.UserEventEvaluationSummaryDto;
 
 @RestController
 @RequestMapping("/reservation")
@@ -135,6 +137,7 @@ public class ReservationController {
 	}
 
 	@DeleteMapping("/reserves/{reserveId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void cancelReservation(@RequestAttribute Long userId, @PathVariable Long reserveId)
 			throws InstanceNotFoundException, PermissionException {
 
@@ -195,6 +198,7 @@ public class ReservationController {
 	}
 
 	@PostMapping("/eventEvaluation/{eventEvaluationId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void addEventEvaluation(@RequestAttribute Long userId, @PathVariable Long eventEvaluationId,
 			@Validated @RequestBody AddEventEvaluationParamsDto params)
 			throws InstanceNotFoundException, PermissionException {
@@ -204,26 +208,26 @@ public class ReservationController {
 	}
 
 	@GetMapping("/userEventEvaluations")
-	public BlockDto<EventEvaluationSummaryDto> findUserEventEvaluations(@RequestAttribute Long userId,
+	public BlockDto<UserEventEvaluationSummaryDto> findUserEventEvaluations(@RequestAttribute Long userId,
 			@RequestParam(defaultValue = "0") int page) throws InstanceNotFoundException, PermissionException {
 
 		Block<EventEvaluation> eventEvaluationBlock = reservationService.findUserEventEvaluations(userId, page,
 				Constantes.SIZE);
 
-		return new BlockDto<>(toEventEvaluationSummaryDtos(eventEvaluationBlock.getItems()),
+		return new BlockDto<>(toUserEventEvaluationSummaryDtos(eventEvaluationBlock.getItems()),
 				eventEvaluationBlock.getExistMoreItems());
 
 	}
 
 	@GetMapping("/companyEventEvaluations")
-	public BlockDto<EventEvaluationSummaryDto> findCompanyEventEvaluations(@RequestAttribute Long userId,
+	public BlockDto<CompanyEventEvaluationSummaryDto> findCompanyEventEvaluations(@RequestAttribute Long userId,
 			@RequestParam Long companyId, @RequestParam(defaultValue = "0") int page)
 			throws InstanceNotFoundException, PermissionException {
 
 		Block<EventEvaluation> eventEvaluationBlock = reservationService.findCompanyEventEvaluations(userId, companyId,
 				page, Constantes.SIZE);
 
-		return new BlockDto<>(toEventEvaluationSummaryDtos(eventEvaluationBlock.getItems()),
+		return new BlockDto<>(toCompanyEventEvaluationSummaryDtos(eventEvaluationBlock.getItems()),
 				eventEvaluationBlock.getExistMoreItems());
 
 	}

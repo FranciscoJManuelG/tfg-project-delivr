@@ -72,8 +72,8 @@ INSERT INTO User (userName, password, firstName, lastName, email, phone, role)
 INSERT INTO User (userName, password, firstName, lastName, email, phone, role)
 	VALUES ('business', '$2a$10$B6DS8oiZ0fUXNC7HlNRe0.0FpNTWstct2SEujaJYX83Abupq6ptOO', 'nameb', 'lastnameb', 'business@business.com', 345176824, 1); 
 	
-INSERT INTO Company (name, capacity, reserve, homeSale, reservePercentage, userId, companyCategoryId, block)
-	VALUES ('Delivr', 25, true, true, 20, 2, 3, false);
+INSERT INTO Company (name, capacity, reserve, homeSale, reservePercentage, userId, companyCategoryId, block, reserveCapacity)
+	VALUES ('Delivr', 25, true, true, 20, 2, 3, false, 20);
 	
 INSERT INTO Address (street, cp, cityId)
 	VALUES ('Rosalia 23', 15400, 1);
@@ -105,6 +105,11 @@ INSERT INTO ShoppingCart(userId, homeSale)
 	VALUES (1, false);
 INSERT INTO ShoppingCart(userId, homeSale)
 	VALUES (2, false);
+
+INSERT INTO Menu(userId)
+	VALUES (1);
+INSERT INTO Menu(userId)
+	VALUES (2);
 	
 INSERT INTO GoalType(goalName)
     VALUES ("Numero de pedidos");

@@ -1,15 +1,15 @@
 package es.udc.tfgproject.backend.rest.dtos;
 
-public class EventEvaluationSummaryDto {
+public class CompanyEventEvaluationSummaryDto {
 
 	private Integer points;
 	private String opinion;
 	private String username;
 
-	public EventEvaluationSummaryDto() {
+	public CompanyEventEvaluationSummaryDto() {
 	}
 
-	public EventEvaluationSummaryDto(Integer points, String opinion, String username) {
+	public CompanyEventEvaluationSummaryDto(Integer points, String opinion, String username) {
 		this.points = points;
 		this.opinion = opinion;
 		this.username = username;

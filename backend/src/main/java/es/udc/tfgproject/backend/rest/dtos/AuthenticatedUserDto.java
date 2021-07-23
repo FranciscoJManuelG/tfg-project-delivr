@@ -7,15 +7,18 @@ public class AuthenticatedUserDto {
 	private String serviceToken;
 	private UserDto userDto;
 	private ShoppingCartDto shoppingCartDto;
+	private MenuDto menuDto;
 
 	public AuthenticatedUserDto() {
 	}
 
-	public AuthenticatedUserDto(String serviceToken, UserDto userDto, ShoppingCartDto shoppingCartDto) {
+	public AuthenticatedUserDto(String serviceToken, UserDto userDto, ShoppingCartDto shoppingCartDto,
+			MenuDto menuDto) {
 
 		this.serviceToken = serviceToken;
 		this.userDto = userDto;
 		this.shoppingCartDto = shoppingCartDto;
+		this.menuDto = menuDto;
 
 	}
 
@@ -45,5 +48,13 @@ public class AuthenticatedUserDto {
 		this.shoppingCartDto = shoppingCartDto;
 	}
 
+	@JsonProperty("menu")
+	public MenuDto getMenuDto() {
+		return menuDto;
+	}
+
+	public void setMenuDto(MenuDto menuDto) {
+		this.menuDto = menuDto;
+	}
 
 }
