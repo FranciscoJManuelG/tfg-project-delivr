@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
+import {FormattedMessage} from 'react-intl';
 import PropTypes from 'prop-types';
 
 
@@ -12,6 +13,10 @@ const CitySelector = (selectProps) => {
     return (
 
         <select {...selectProps}>
+
+            <FormattedMessage id='project.business.CitySelector.selectOption'>
+                {message => (<option value="">{message}</option>)}
+            </FormattedMessage>
 
             {cities && cities.map(city => 
                 <option key={city.id} value={city.id}>{city.name}</option>

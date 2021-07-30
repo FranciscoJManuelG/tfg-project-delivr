@@ -3,6 +3,7 @@ import reducer from './reducer'
 import * as selectors from './selectors';
 
 export {default as FindProductsByCompany} from "./components/FindProductsByCompany";
-export {default as FindProductsByCompanyResult} from "./components/FindProductsByCompanyResult";
+export {default as FindProductsByCompanyToDeliverResult} from "./components/FindProductsByCompanyToDeliverResult";
+export {default as FindProductsByCompanyForReservationsResult} from "./components/FindProductsByCompanyForReservationsResult";
 
 export default {actions, reducer, selectors};

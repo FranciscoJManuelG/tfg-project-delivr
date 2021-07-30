@@ -32,7 +32,6 @@ const company = (state = initialState.company, action) => {
         case actionTypes.FIND_COMPANY_COMPLETED:
             return action.company;
     
-
         case users.actionTypes.LOGOUT:
             return initialState.company;
 
@@ -136,7 +135,7 @@ const goalSearch = (state = initialState.goalSearch, action) => {
             return {criteria: state.criteria,
                 result: {
                     items: state.result.items.map(
-                        function(goal) { return goal.id == action.goal.id ? action.goal : goal; }
+                        function(goal) { return goal.id === action.goal.id ? action.goal : goal; }
                     ),
                     existMoreItems: state.result.existMoreItems
                 }} ;

@@ -30,7 +30,7 @@ const shoppingCart = (state = initialState.shoppingCart, action) => {
             return action.shoppingCart;
 
         case actionTypes.BUY_COMPLETED:
-            return {id: state.id, items: [], totalPrice: 0, totalQuantity: 0};
+            return {homeSale: false, id: state.id, items: [], totalPrice: 0, totalQuantity: 0};
 
         case actionTypes.REDEEM_DISCOUNT_TICKET_COMPLETED:
             return {homeSale: state.homeSale, id: state.id, items: state.items, totalPrice: action.price, totalQuantity: state.totalQuantity};

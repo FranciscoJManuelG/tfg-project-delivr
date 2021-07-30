@@ -17,7 +17,7 @@ const Companies = ({companies, companyCategories, cities}) => (
                         </p>
                         <div className="justify-content-between align-items-center">
                             <div>
-                                <p>Capacidad: {company.capacity}</p>
+                                <p>Capacidad: {company.capacity} personas</p>
                                 <p>Porcentage de reserva: {company.reservePercentage}</p>
                             </div>
                         </div>

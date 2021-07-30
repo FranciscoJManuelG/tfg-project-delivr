@@ -5,8 +5,9 @@ import * as businessCatalogService from './businessCatalogService';
 import * as productCatalogService from './productCatalogService'
 import * as productManagementService from './productManagementService'
 import * as shoppingService from './shoppingService'
+import * as reservationService from './reservationService'
 
 export {default as NetworkError} from "./NetworkError";
 
 export default {init, userService, businessService, businessCatalogService, 
-    productCatalogService, productManagementService, shoppingService};
+    productCatalogService, productManagementService, shoppingService, reservationService};

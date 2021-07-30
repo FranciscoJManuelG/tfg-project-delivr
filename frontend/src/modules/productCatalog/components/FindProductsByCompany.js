@@ -6,7 +6,7 @@ import {useParams} from 'react-router-dom';
 import CompanyProductCategorySelector from '../components/CompanyProductCategorySelector'
 import * as actions from '../actions';
 
-const FindProducts = () => {
+const FindProductsByCompany = () => {
 
     const dispatch = useDispatch();
     const [productCategoryId, setProductCategoryId] = useState(0);
@@ -46,4 +46,4 @@ const FindProducts = () => {
 
 }
 
-export default FindProducts;
+export default FindProductsByCompany;

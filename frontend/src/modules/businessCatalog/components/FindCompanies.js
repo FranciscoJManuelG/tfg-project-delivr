@@ -17,12 +17,14 @@ const FindCompanies = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
+
         dispatch(actions.findCompanies(
             {companyCategoryId: toNumber(companyCategoryId),
-            cityId: toNumber(cityId),
+            cityId: cityId,
             street: street.trim(), 
             keywords: keywords.trim(), 
             page: 0}));
+
     }
 
     const toNumber = value => value.length > 0 ? Number(value) : null;

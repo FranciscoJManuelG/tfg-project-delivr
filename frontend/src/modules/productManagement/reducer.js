@@ -24,12 +24,20 @@ const productSearch = (state = initialState.productSearch, action) => {
             )
 
         case actionTypes.BLOCK_PRODUCT_COMPLETED:
-            state[action.product.id-1] = action.product;
-            return state;
+            return {criteria: state.criteria,
+                result: {
+                    items:state.result.items.map(
+                        function(product) { return product.id === action.product.id ? action.product : product;}
+                    ), existMoreItems: state.result.existMoreItems
+                }};
 
         case actionTypes.UNLOCK_PRODUCT_COMPLETED:
-            state[action.product.id-1] = action.product;
-            return state;
+            return {criteria: state.criteria,
+                result: {
+                    items: state.result.items.map(
+                        function(product) { return product.id === action.product.id ? action.product : product;}
+                    ), existMoreItems: state.result.existMoreItems
+                }};
 
         default:
             return state;

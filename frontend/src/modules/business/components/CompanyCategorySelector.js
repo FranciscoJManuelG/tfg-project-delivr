@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
+import {FormattedMessage} from 'react-intl';
 import PropTypes from 'prop-types';
 
 
@@ -12,6 +13,10 @@ const CompanyCategorySelector = (selectProps) => {
     return (
 
         <select {...selectProps}>
+
+            <FormattedMessage id='project.business.CompanyCategorySelector.selectOption'>
+                {message => (<option value="">{message}</option>)}
+            </FormattedMessage>
 
             {companyCategories && companyCategories.map(companyCategory => 
                 <option key={companyCategory.id} value={companyCategory.id}>{companyCategory.name}</option>

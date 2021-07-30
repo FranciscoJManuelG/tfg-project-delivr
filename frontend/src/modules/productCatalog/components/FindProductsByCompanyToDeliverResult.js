@@ -5,11 +5,12 @@ import {useParams} from 'react-router-dom';
 
 import * as selectors from '../selectors';
 import * as actions from '../actions';
-import CompanyProducts from './CompanyProducts';
+import CompanyProductsToDeliver from './CompanyProductsToDeliver';
 import FindProductsByCompany from './FindProductsByCompany';
 import ShoppingCart from '../../shopping/components/ShoppingCart';
+import BeginReserveLink from './BeginReserveLink';
 
-const FindProductsResult = () => {
+const FindProductsByCompanyToDeliverResult = () => {
 
     const productSearch = useSelector(selectors.getProductSearch);
     const productCategories = useSelector(selectors.getProductCategories);
@@ -39,6 +40,7 @@ const FindProductsResult = () => {
     if (productSearch.result.length === 0) {
         return (
             <div>
+                <BeginReserveLink id={id}/>
                 <FindProductsByCompany/>
                 <div className="alert alert-info" role="alert">
                     <FormattedMessage id='project.business.FindCompaniesResult.noCompanies'/>
@@ -50,8 +52,9 @@ const FindProductsResult = () => {
     return (
 
         <div>
+            <BeginReserveLink id={id}/>
             <FindProductsByCompany/>
-            <CompanyProducts products={productSearch.result} productCategories={productCategories} companyId={id}/>
+            <CompanyProductsToDeliver products={productSearch.result} productCategories={productCategories} companyId={id}/>
             <ShoppingCart companyId={id}/>
         </div>
 
@@ -59,4 +62,4 @@ const FindProductsResult = () => {
 
 }
 
-export default FindProductsResult;
+export default FindProductsByCompanyToDeliverResult;

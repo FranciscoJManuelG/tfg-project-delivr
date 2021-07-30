@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as selectors from '../selectors';
 import AddToShoppingCart from '../../shopping/components/AddToShoppingCart';
 
-const CompanyProducts = ({products, productCategories, companyId}) => (
+const CompanyProductsToDeliver = ({products, productCategories, companyId}) => (
 
     <div className="container-fluid">
         {products.map(product => 
@@ -27,9 +27,9 @@ const CompanyProducts = ({products, productCategories, companyId}) => (
 
 );
 
-CompanyProducts.propTypes = {
+CompanyProductsToDeliver.propTypes = {
     products: PropTypes.array.isRequired,
     productCategories: PropTypes.array.isRequired
 };
 
-export default CompanyProducts;
+export default CompanyProductsToDeliver;

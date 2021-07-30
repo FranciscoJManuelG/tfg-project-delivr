@@ -7,6 +7,7 @@ import businessCatalog from '../modules/businessCatalog';
 import productCatalog from '../modules/productCatalog';
 import productManagement from '../modules/productManagement';
 import shopping from '../modules/shopping';
+import reservation from '../modules/reservation';
 
 const rootReducer = combineReducers({
     app: app.reducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     productCatalog: productCatalog.reducer,
     productManagement: productManagement.reducer,
     shopping: shopping.reducer,
+    reservation: reservation.reducer,
 });
 
 export default rootReducer;

@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -132,8 +131,9 @@ public class ReservationController {
 			@Validated @RequestBody ReservationParamsDto params) throws InstanceNotFoundException, PermissionException,
 			EmptyMenuException, MaximumCapacityExceededException {
 
+		LocalDate reservationDate = LocalDate.parse(params.getReservationDate().trim());
 		return new IdDto(reservationService.reservation(userId, menuId, params.getCompanyId(),
-				params.getReservationDate(), params.getDiners(), PeriodType.valueOf(params.getPeriodType())).getId());
+			reservationDate, params.getDiners(), PeriodType.valueOf(params.getPeriodType())).getId());
 	}
 
 	@DeleteMapping("/reserves/{reserveId}")
@@ -147,22 +147,22 @@ public class ReservationController {
 
 	@GetMapping("/menus/checkCapacity")
 	public AllowDto checkCapacity(@RequestAttribute Long userId, @RequestParam Long companyId,
-			@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate reservationDate,
-			@RequestParam String periodType, @RequestParam Integer diners)
+			@RequestParam String reservationDate, @RequestParam String periodType, @RequestParam Integer diners)
 			throws InstanceNotFoundException, PermissionException, MaximumCapacityExceededException {
 
-		return new AllowDto(
-				reservationService.checkCapacity(companyId, reservationDate, PeriodType.valueOf(periodType), diners));
+		LocalDate date = LocalDate.parse(reservationDate.trim());
+		return new AllowDto(reservationService.checkCapacity(companyId, date, PeriodType.valueOf(periodType), diners));
 
 	}
 
 	@GetMapping("/menus/obtainMaxDinersAllowed")
 	public DinersDto obtainMaxDinersAllowed(@RequestAttribute Long userId, @RequestParam Long companyId,
-			@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate reservationDate,
+			@RequestParam String reservationDate,
 			@RequestParam String periodType) throws InstanceNotFoundException, PermissionException {
 
+		LocalDate date = LocalDate.parse(reservationDate.trim());
 		return new DinersDto(
-				reservationService.obtainMaxDinersAllowed(companyId, reservationDate, PeriodType.valueOf(periodType)));
+				reservationService.obtainMaxDinersAllowed(companyId, date, PeriodType.valueOf(periodType)));
 
 	}
 
@@ -186,11 +186,12 @@ public class ReservationController {
 
 	@GetMapping("/companyReserves")
 	public BlockDto<ReserveSummaryDto> findCompanyReserves(@RequestAttribute Long userId, @RequestParam Long companyId,
-			@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate reservationDate,
+			@RequestParam String reservationDate,
 			@RequestParam String periodType, @RequestParam(defaultValue = "0") int page)
 			throws InstanceNotFoundException, PermissionException {
 
-		Block<Reserve> reserveBlock = reservationService.findCompanyReserves(userId, companyId, reservationDate,
+		LocalDate date = LocalDate.parse(reservationDate.trim());
+		Block<Reserve> reserveBlock = reservationService.findCompanyReserves(userId, companyId, date,
 				PeriodType.valueOf(periodType), page, Constantes.SIZE);
 
 		return new BlockDto<>(toReserveSummaryDtos(reserveBlock.getItems()), reserveBlock.getExistMoreItems());

@@ -1,16 +1,12 @@
 package es.udc.tfgproject.backend.rest.dtos;
 
-import java.time.LocalDate;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ReservationParamsDto {
 
 	private Long companyId;
-	private LocalDate reservationDate;
+	private String reservationDate;
 	private Integer diners;
 	private String periodType;
 
@@ -24,12 +20,11 @@ public class ReservationParamsDto {
 	}
 
 	@NotNull
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	public LocalDate getReservationDate() {
+	public String getReservationDate() {
 		return reservationDate;
 	}
 
-	public void setReservationDate(LocalDate reservationDate) {
+	public void setReservationDate(String reservationDate) {
 		this.reservationDate = reservationDate;
 	}
 

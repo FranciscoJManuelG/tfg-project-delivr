@@ -14,7 +14,7 @@ const AddGoal = () => {
     const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
     const history = useHistory();
-    const [discountType, setdiscountType] = useState('CASH');
+    const [discountType, setDiscountType] = useState('CASH');
     const [discountCash, setDiscountCash] = useState(0);
     const [discountPercentage, setDiscountPercentage] = useState(0);
     const [goalQuantity, setGoalQuantity] = useState(1);
@@ -99,7 +99,7 @@ const AddGoal = () => {
                                     <div className="form-check-inline">
                                         <input type="radio" id="discountType" name="discountType" className="form-check-input" 
                                             value={'CASH'}
-                                            onChange={e => setdiscountType(e.target.value)}
+                                            onChange={e => setDiscountType(e.target.value)}
                                             autoFocus
                                             checked/>
                                         <label className="form-check-label" htmlFor="discountType">Dinero efectivo</label>
@@ -107,7 +107,7 @@ const AddGoal = () => {
                                     <div className="form-check-inline">
                                         <input type="radio" id="discountType" name="discountType2" className="form-check-input" 
                                             value={'PERCENTAGE'}
-                                            onChange={e => setdiscountType(e.target.value)}
+                                            onChange={e => setDiscountType(e.target.value)}
                                             autoFocus/>
                                         <label className="form-check-label" htmlFor="discountType2">Porcentaje</label>
                                     </div>

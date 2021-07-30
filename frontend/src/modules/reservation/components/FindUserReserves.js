@@ -4,15 +4,15 @@ import {useHistory} from 'react-router-dom';
 
 import * as actions from '../actions';
 
-const FindDiscountTickets = () => {
+const FindUserOrders = () => {
 
     const dispatch = useDispatch();
     const history = useHistory();
 
     useEffect(() => {
 
-        dispatch(actions.findDiscountTickets({page: 0}));
-        history.push('/shopping/find-discount-tickets-result');
+        dispatch(actions.findUserReserves({page: 0}));
+        history.push('/shopping/find-user-orders-result');
 
     });
 
@@ -20,4 +20,4 @@ const FindDiscountTickets = () => {
 
 }
 
-export default FindDiscountTickets;
+export default FindUserOrders;
