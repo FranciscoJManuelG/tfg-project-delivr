@@ -33,10 +33,24 @@ const Header = () => {
                             </Link>
                         </div>
                     }
+                    {role === "BUSINESSMAN" && existsCompany &&
+                        <div>
+                            <Link className="dropdown-item" to="/reservation/set-criteria-for-company-reserves">
+                                Reservas recibidas
+                            </Link>
+                        </div>
+                    }
                     {userName &&
                         <div>
                             <Link className="dropdown-item" to="/shopping/find-user-orders">
                                 Pedidos realizados
+                            </Link>
+                        </div>
+                    }
+                    {userName &&
+                        <div>
+                            <Link className="dropdown-item" to="/reservation/find-user-reserves">
+                                Reservas realizadas
                             </Link>
                         </div>
                     }

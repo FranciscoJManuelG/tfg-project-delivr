@@ -1,45 +1,62 @@
-import React from 'react';
-import {FormattedMessage, FormattedDate, FormattedTime} from 'react-intl';
+import React, {useState} from 'react';
+import {FormattedMessage} from 'react-intl';
+import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import OrderLink from './ReserveLink';
+import Reserve from './Reserve';
+import users from '../../users';
+import {Errors} from '../../common';
 
-const Orders = ({orders}) => (
+const Reserves = ({reserves, onCancelReservation}) => {
 
-    <table className="table table-striped table-hover">
+    const role = useSelector(users.selectors.getRole);
+    const [backendErrors, setBackendErrors] = useState(null);
 
-        <thead>
-            <tr>
-                <th scope="col">
-                </th>
-                <th scope="col">
-                    <FormattedMessage id='project.global.fields.date'/>
-                </th>
-                <th scope="col">
-                </th>
-            </tr>
-        </thead>
+    return (
+        <div>
+            <Errors errors={backendErrors}
+                onClose={() => setBackendErrors(null)}/>
 
-        <tbody>
-            {orders.map(order => 
-                <tr key={order.id}>
-                    <td><OrderLink id={order.id}/></td>
-                    <td>
-                        <FormattedDate value={new Date(order.date)}/> - <FormattedTime value={new Date(order.date)}/>
-                    </td>
-                    <td>
-                        {order.homeSale ? "Envío a domicilio" : "Recogida"}
-                    </td>
-                </tr>
-            )}
-        </tbody>
-
-    </table>
-
-);
-
-Orders.propTypes = {
-    orders: PropTypes.array.isRequired
+            <table className="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                        </th>
+                        <th scope="col">
+                            <FormattedMessage id='project.global.fields.date'/>
+                        </th>
+                        <th scope="col">
+                        </th>
+                        <th scope="col">
+                            Comensales
+                        </th>
+                        {role === "CLIENT" && 
+                            <th scope="col">
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    {reserves.map(reserve => 
+                            <Reserve key={reserve.id}
+                            reserve={reserve}
+                            role={role}
+                            onCancelReservation={onCancelReservation}
+                            onBackendErrors={errors => setBackendErrors(errors)}
+                            />
+                            
+                    )}
+                </tbody>
+            </table>    
+            
+        </div>
+    );
 };
 
-export default Orders;
+Reserves.propTypes = {
+    reserves: PropTypes.array.isRequired,
+    onCancelReservation: PropTypes.func,
+    onBackendErrors: PropTypes.func
+};
+
+export default Reserves;

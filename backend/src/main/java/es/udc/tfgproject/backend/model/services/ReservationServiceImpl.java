@@ -28,10 +28,12 @@ import es.udc.tfgproject.backend.model.entities.ReserveDao;
 import es.udc.tfgproject.backend.model.entities.ReserveItem;
 import es.udc.tfgproject.backend.model.entities.ReserveItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesntAllowReservesException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.exceptions.ReservationDateIsBeforeNowException;
 
 @Service
 @Transactional
@@ -123,9 +125,13 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
 			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException {
+			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 		User user = permissionChecker.checkUser(userId);
 		Company company = permissionChecker.checkCompany(companyId);
+
+		if(!company.getReserve()){
+			throw new CompanyDoesntAllowReservesException();
+		}
 
 		Menu menu = permissionChecker.checkMenuExistsAndBelongsToUser(menuId, user.getId());
 
@@ -174,7 +180,7 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	@Transactional(readOnly = true)
 	public Reserve findReserve(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException {
-		return permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, userId);
+		return permissionChecker.checkReserveExistsAndBelongsToUserOrCompany(reserveId, userId);
 	}
 
 	@Override
@@ -182,7 +188,10 @@ public class ReservationServiceImpl implements ReservationService {
 	public Block<Reserve> findUserReserves(Long userId, int page, int size) {
 		Slice<Reserve> slice = reserveDao.findByUserIdOrderByDateDesc(userId, PageRequest.of(page, size));
 
-		return new Block<>(slice.getContent(), slice.hasNext());
+		List<Reserve> reserves = slice.getContent().stream()
+				.filter(r -> !r.getDate().isBefore(LocalDate.now())).collect(Collectors.toList());
+
+		return new Block<>(reserves, slice.hasNext());
 	}
 
 	@Override
@@ -220,7 +229,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Boolean checkCapacity(Long companyId, LocalDate reservationDate, PeriodType periodType, Integer diners)
-			throws MaximumCapacityExceededException, InstanceNotFoundException {
+			throws MaximumCapacityExceededException, InstanceNotFoundException, ReservationDateIsBeforeNowException {
+
+		if(reservationDate.isBefore(LocalDate.now())){
+			throw new ReservationDateIsBeforeNowException();
+		}
 
 		Integer dinersAllowed = obtainMaxDinersAllowed(companyId, reservationDate, periodType);
 

@@ -10,7 +10,7 @@ import {FindProductsByCompanyToDeliverResult, FindProductsByCompanyForReservatio
 import {FindProductsResult, FindProducts, AddProduct, EditProduct, FindProductToEdit} from '../../productManagement';
 import {FindShoppingCartProducts, PurchaseDetails, SetAddressToSendPurchase, ShowFavAddresses, PurchaseCompleted, OrderDetails, FindUserOrdersResult, FindCompanyOrdersResult, FindCompanyOrders, FindUserOrders, FindDiscountTicketsResult, FindDiscountTickets} from '../../shopping';
 import users from '../../users';
-import {FindMenuProducts, ReservationDetails, ReservationCompleted, SetDateAndDiners } from '../../reservation';
+import {FindMenuProducts, ReservationDetails, ReservationCompleted, SetDateAndDiners, ReserveDetails, FindUserReserves, FindUserReservesResult, FindCompanyReservesResult, SetCriteriaForCompanyReserves, FindCompanyReserves } from '../../reservation';
 
 const Body = () => {
 
@@ -25,7 +25,7 @@ const Body = () => {
                 <Route exact path="/"><FindCompaniesByAddress/></Route>
                 {<Route exact path="/businessCatalog/find-companies-by-address"><FindCompaniesByAddress/></Route>}
                 {<Route exact path="/businessCatalog/find-companies-result"><FindCompaniesResult/></Route>}
-                {<Route exact path="/productCatalog/find-products-by-company-to-deliver-result/:id"><FindProductsByCompanyToDeliverResult/></Route>}
+                {<Route exact path="/productCatalog/find-products-by-company-to-deliver-result/:id/:doReserve/:cityId"><FindProductsByCompanyToDeliverResult/></Route>}
                 {loggedIn && <Route exact path="/productCatalog/find-products-by-company-for-reservations-result/:id/:reservationDate/:periodType/:diners"><FindProductsByCompanyForReservationsResult/></Route>}
                 {loggedIn && <Route exact path="/management/find-products"><FindProducts/></Route>}
                 {loggedIn && <Route exact path="/management/add-product"><AddProduct/></Route>}
@@ -49,10 +49,10 @@ const Body = () => {
                 {loggedIn && <Route exact path="/business/find-goals-result"><FindGoalsResult/></Route>}
                 {loggedIn && <Route exact path="/business/edit-goal"><EditGoal/></Route>}
                 {loggedIn && <Route exact path="/business/find-goal-to-edit/:id"><FindGoalToEdit/></Route>}
-                {loggedIn && <Route exact path="/shopping/find-shopping-cart-products/:id"><FindShoppingCartProducts/></Route>}
+                {loggedIn && <Route exact path="/shopping/find-shopping-cart-products/:id/:doReserve/:cityId"><FindShoppingCartProducts/></Route>}
                 {loggedIn && <Route exact path="/shopping/purchase-details/:id"><PurchaseDetails/></Route>}
-                {loggedIn && <Route exact path="/shopping/set-address-to-send-purchase/:id"><SetAddressToSendPurchase/></Route>}
-                {loggedIn && <Route exact path="/shopping/show-fav-addresses/:id"><ShowFavAddresses/></Route>}
+                {loggedIn && <Route exact path="/shopping/set-address-to-send-purchase/:id/:companyCityId"><SetAddressToSendPurchase/></Route>}
+                {loggedIn && <Route exact path="/shopping/show-fav-addresses/:id/:cityId"><ShowFavAddresses/></Route>}
                 {loggedIn && <Route exact path="/shopping/purchase-completed"><PurchaseCompleted/></Route>}
                 {loggedIn && <Route exact path="/shopping/order-details/:id"><OrderDetails/></Route>}
                 {loggedIn && <Route exact path="/shopping/find-user-orders"><FindUserOrders/></Route>}
@@ -65,6 +65,12 @@ const Body = () => {
                 {loggedIn && <Route exact path="/reservation/reservation-details/:id/:reservationDate/:periodType/:diners"><ReservationDetails/></Route>}
                 {loggedIn && <Route exact path="/reservation/reservation-completed"><ReservationCompleted/></Route>}
                 {loggedIn && <Route exact path="/reservation/set-date-and-diners/:id"><SetDateAndDiners/></Route>}
+                {loggedIn && <Route exact path="/reservation/reserve-details/:id"><ReserveDetails/></Route>}
+                {loggedIn && <Route exact path="/reservation/find-user-reserves"><FindUserReserves/></Route>}
+                {loggedIn && <Route exact path="/reservation/find-company-reserves/:reservationDate/:periodType"><FindCompanyReserves/></Route>}
+                {loggedIn && <Route exact path="/reservation/find-user-reserves-result"><FindUserReservesResult/></Route>}
+                {loggedIn && <Route exact path="/reservation/find-company-reserves-result"><FindCompanyReservesResult/></Route>}
+                {loggedIn && <Route exact path="/reservation/set-criteria-for-company-reserves"><SetCriteriaForCompanyReserves/></Route>}
                 {!loggedIn && <Route exact path="/users/login"><Login/></Route>}
                 {!loggedIn && <Route exact path="/users/signup"><SignUp/></Route>}
                 {!loggedIn && <Route exact path="/users/signup-businessman"><SignUpBusinessman/></Route>}

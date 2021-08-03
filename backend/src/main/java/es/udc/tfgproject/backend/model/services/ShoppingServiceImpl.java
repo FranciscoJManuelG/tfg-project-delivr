@@ -297,7 +297,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 	@Override
 	@Transactional(readOnly = true)
 	public Order findOrder(Long userId, Long orderId) throws InstanceNotFoundException, PermissionException {
-		return permissionChecker.checkOrderExistsAndBelongsToUser(orderId, userId);
+		return permissionChecker.checkOrderExistsAndBelongsToUserOrCompany(orderId, userId);
 	}
 
 	@Override

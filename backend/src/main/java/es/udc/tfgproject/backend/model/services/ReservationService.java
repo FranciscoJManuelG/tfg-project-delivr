@@ -6,10 +6,12 @@ import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesntAllowReservesException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.exceptions.ReservationDateIsBeforeNowException;
 
 public interface ReservationService {
 
@@ -27,12 +29,13 @@ public interface ReservationService {
 
 	Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
 			PeriodType periodType)
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException;
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException, 
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException;
 
 	void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException;
 
 	Boolean checkCapacity(Long companyId, LocalDate reservationDate, PeriodType periodType, Integer diners)
-			throws MaximumCapacityExceededException, InstanceNotFoundException;
+			throws MaximumCapacityExceededException, InstanceNotFoundException, ReservationDateIsBeforeNowException;
 
 	Integer obtainMaxDinersAllowed(Long companyId, LocalDate reservationDate, PeriodType periodType)
 			throws InstanceNotFoundException;

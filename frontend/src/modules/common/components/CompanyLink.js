@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import {Link} from 'react-router-dom';
 
-const CompanyLink = ({id, name}) => {
+const CompanyLink = ({id, name, doReserve, cityId}) => {
 
     return (
-        <Link to={`/shopping/find-shopping-cart-products/${id}`}>
+        <Link to={`/shopping/find-shopping-cart-products/${id}/${doReserve}/${cityId}`}>
             {name}
         </Link>
     );

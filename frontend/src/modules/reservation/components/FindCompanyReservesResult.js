@@ -5,9 +5,9 @@ import * as actions from '../actions';
 import * as selectors from '../selectors';
 import * as businessSelectors from '../../business/selectors';
 import {Pager} from '../../common';
-import Orders from './Reserves';
+import Reserves from './Reserves';
 
-const FindCompanyOrdersResult = () => {
+const FindCompanyReservesResult = () => {
 
     const company = useSelector(businessSelectors.getCompany);
     const reserveSearch = useSelector(selectors.getReserveSearch);
@@ -20,7 +20,7 @@ const FindCompanyOrdersResult = () => {
     if (reserveSearch.result.items.length === 0) {
         return (
             <div className="alert alert-info" role="alert">
-                No hay ningún pedido
+                No hay ninguna reserva
             </div>
         );
     }
@@ -28,7 +28,7 @@ const FindCompanyOrdersResult = () => {
     return (
 
         <div>
-            <Orders orders={reserveSearch.result.items}/>
+            <Reserves reserves={reserveSearch.result.items}/>
             <Pager 
                 back={{
                     enabled: reserveSearch.criteria.page >= 1,
@@ -42,4 +42,4 @@ const FindCompanyOrdersResult = () => {
 
 }
 
-export default FindCompanyOrdersResult;
+export default FindCompanyReservesResult;

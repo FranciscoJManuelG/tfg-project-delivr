@@ -17,7 +17,7 @@ const SetAddressToSendPurchase = () => {
     const [cp, setCp] = useState('');
     const [cityId, setCityId]  = useState(0);
     const [backendErrors, setBackendErrors] = useState(null);
-    const {id} = useParams();
+    const {id, companyCityId} = useParams();
     let form;
 
     const handleSubmit = event => {
@@ -41,7 +41,7 @@ const SetAddressToSendPurchase = () => {
     return (
         
         <div className="container">
-            <ShowFavAddressesResult companyId={id}/>
+            <ShowFavAddressesResult companyId={id} companyCityId={companyCityId}/>
             <div className="row justify-content-center" >
                 <aside className="col-sm-6">
                     <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>

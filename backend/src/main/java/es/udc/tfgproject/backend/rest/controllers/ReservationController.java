@@ -30,10 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesntAllowReservesException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.exceptions.ReservationDateIsBeforeNowException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.model.services.ReservationService;
@@ -59,7 +61,8 @@ public class ReservationController {
 
 	private final static String EMPTY_MENU_EXCEPTION_CODE = "project.exceptions.EmptyMenuException";
 	private final static String MAXIMUM_CAPACITY_EXCEEDED_EXCEPTION = "project.exceptions.MaximumCapacityExceededException";
-
+	private final static String RESERVATION_DATE_IS_BEFORE_NOW_EXCEPTION = "project.exceptions.ReservationDateIsBeforeNowException";
+	private final static String COMPANY_DOESNT_ALLOW_RESERVES = "project.exceptions.CompanyDoesntAllowReservesException";
 	@Autowired
 	private MessageSource messageSource;
 
@@ -85,6 +88,30 @@ public class ReservationController {
 
 		String errorMessage = messageSource.getMessage(MAXIMUM_CAPACITY_EXCEEDED_EXCEPTION, null,
 				MAXIMUM_CAPACITY_EXCEEDED_EXCEPTION, locale);
+
+		return new ErrorsDto(errorMessage);
+
+	}
+
+	@ExceptionHandler(ReservationDateIsBeforeNowException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorsDto handleReservationDateIsBeforeNowException(ReservationDateIsBeforeNowException exception, Locale locale) {
+
+		String errorMessage = messageSource.getMessage(RESERVATION_DATE_IS_BEFORE_NOW_EXCEPTION, null,
+				RESERVATION_DATE_IS_BEFORE_NOW_EXCEPTION, locale);
+
+		return new ErrorsDto(errorMessage);
+
+	}
+
+	@ExceptionHandler(CompanyDoesntAllowReservesException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorsDto handleCompanyDoesntAllowReservesException(CompanyDoesntAllowReservesException exception, Locale locale) {
+
+		String errorMessage = messageSource.getMessage(COMPANY_DOESNT_ALLOW_RESERVES, null,
+		COMPANY_DOESNT_ALLOW_RESERVES, locale);
 
 		return new ErrorsDto(errorMessage);
 
@@ -128,8 +155,9 @@ public class ReservationController {
 
 	@PostMapping("/menus/{menuId}/reservation")
 	public IdDto reservation(@RequestAttribute Long userId, @PathVariable Long menuId,
-			@Validated @RequestBody ReservationParamsDto params) throws InstanceNotFoundException, PermissionException,
-			EmptyMenuException, MaximumCapacityExceededException {
+			@Validated @RequestBody ReservationParamsDto params)
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		LocalDate reservationDate = LocalDate.parse(params.getReservationDate().trim());
 		return new IdDto(reservationService.reservation(userId, menuId, params.getCompanyId(),
@@ -148,7 +176,8 @@ public class ReservationController {
 	@GetMapping("/menus/checkCapacity")
 	public AllowDto checkCapacity(@RequestAttribute Long userId, @RequestParam Long companyId,
 			@RequestParam String reservationDate, @RequestParam String periodType, @RequestParam Integer diners)
-			throws InstanceNotFoundException, PermissionException, MaximumCapacityExceededException {
+			throws InstanceNotFoundException, PermissionException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException {
 
 		LocalDate date = LocalDate.parse(reservationDate.trim());
 		return new AllowDto(reservationService.checkCapacity(companyId, date, PeriodType.valueOf(periodType), diners));

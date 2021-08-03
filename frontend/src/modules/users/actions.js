@@ -152,3 +152,18 @@ export const findFavAddress = (addressId, onSuccess) => dispatch => {
 
 }
 
+
+export const findFavouriteAddressesByCity = (cityId, criteria) => dispatch => {
+
+    dispatch(clearFavouriteAddressSearch());
+    backend.userService.findFavouriteAddressesByCity(cityId, criteria, 
+        result => dispatch(findFavouriteAddressesCompleted({criteria, result})));
+
+}
+
+export const previousFindFavouriteAddressesByCityResultPage = (cityId, criteria) => 
+    findFavouriteAddressesByCity(cityId, {page: criteria.page-1});
+
+export const nextFindFavouriteAddressesByCityResultPage = (cityId, criteria) => 
+    findFavouriteAddressesByCity(cityId, {page: criteria.page+1});
+

@@ -61,6 +61,19 @@ export const reservation = (menuId, companyId, reservationDate, periodType, dine
     },
     onErrors);
 
+const cancelReservationCompleted = reserveId => ({
+    type: actionTypes.CANCEL_RESERVATION_COMPLETED,
+    reserveId
+});
+
+export const cancelReservation = (reserveId, onSuccess, onErrors) => dispatch =>
+    backend.reservationService.cancelReservation(reserveId,
+        () => {
+            dispatch(cancelReservationCompleted(reserveId));
+            onSuccess();
+        },
+        onErrors);
+
 const checkCapacityCompleted = () => ({
     type: actionTypes.CHECK_CAPACITY_COMPLETED
 });
@@ -88,6 +101,10 @@ export const findUserReserves = criteria => dispatch => {
     dispatch(clearReserveSearch());
     backend.reservationService.findUserReserves(criteria, 
         result => dispatch(findReservesCompleted({criteria, result})));
+
+    console.log(backend.reservationService.findUserReserves(criteria, 
+        result => dispatch(findReservesCompleted({criteria, result}))));
+
 
 }    
 

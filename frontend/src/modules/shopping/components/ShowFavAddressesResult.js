@@ -8,7 +8,7 @@ import * as businessSelectors from '../../business/selectors'
 import {Pager} from '../../common';
 import FavAddresses from './FavAddresses';
 
-const ShowFavAddressesResult = ({companyId}) => {
+const ShowFavAddressesResult = ({companyId, companyCityId}) => {
 
     const favouriteAddressSearch = useSelector(usersSelectors.getFavouriteAddressSearch);
     const cities = useSelector(businessSelectors.getCities);
@@ -36,10 +36,10 @@ const ShowFavAddressesResult = ({companyId}) => {
             <Pager 
                 back={{
                     enabled: favouriteAddressSearch.criteria.page >= 1,
-                    onClick: () => dispatch(usersActions.previousFindFavouriteAddressesResultPage(favouriteAddressSearch.criteria))}}
+                    onClick: () => dispatch(usersActions.previousFindFavouriteAddressesByCityResultPage(companyCityId, favouriteAddressSearch.criteria))}}
                 next={{
                     enabled: favouriteAddressSearch.result.existMoreItems,
-                    onClick: () => dispatch(usersActions.nextFindFavouriteAddressesResultPage(favouriteAddressSearch.criteria))}}/>
+                    onClick: () => dispatch(usersActions.nextFindFavouriteAddressesByCityResultPage(companyCityId, favouriteAddressSearch.criteria))}}/>
         </div>
 
     );

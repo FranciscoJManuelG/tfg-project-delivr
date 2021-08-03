@@ -9,15 +9,15 @@ const FindShoppingCartProducts = () => {
 
     const cart = useSelector(shoppingSelectors.getShoppingCart);
     const dispatch = useDispatch();
-    const {id} = useParams();
+    const {id, doReserve, cityId} = useParams();
     const history = useHistory();
 
     useEffect(() => {
 
         dispatch(shoppingActions.findShoppingCartProducts(cart.id, id));
-        history.push(`/productCatalog/find-products-by-company-to-deliver-result/${id}`);
+        history.push(`/productCatalog/find-products-by-company-to-deliver-result/${id}/${doReserve}/${cityId}`);
                        
-    }, [id, cart, dispatch, history]);
+    }, [id, cart, doReserve, cityId, dispatch, history]);
     
     return null;
 

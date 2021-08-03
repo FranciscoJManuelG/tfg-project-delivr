@@ -9,12 +9,13 @@ const ShowFavAddresses = () => {
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const {id} = useParams();
+    const {id, cityId} = useParams();
+    let companyCityId = cityId;
 
     useEffect(() => {
 
-        dispatch(usersActions.findFavouriteAddresses({page: 0}));
-        history.push(`/shopping/set-address-to-send-purchase/${id}`);
+        dispatch(usersActions.findFavouriteAddressesByCity(cityId, {page: 0}));
+        history.push(`/shopping/set-address-to-send-purchase/${id}/${companyCityId}`);
 
     });
 

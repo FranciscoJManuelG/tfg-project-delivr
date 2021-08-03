@@ -10,7 +10,7 @@ const Companies = ({companies, companyCategories, cities}) => (
         {companies.map(company => 
                 <div key={company.id} className="card col-lg-5 mt-3 mr-2 ml-2" style={{display:'inline-block'}}>
                     <div className="card-body">
-                        <h4 className="card-title"><CompanyLink id={company.id} name={company.name}/></h4>
+                        <h4 className="card-title"><CompanyLink id={company.id} name={company.name} doReserve={company.reserve} cityId={company.cityId}/></h4>
                         <h6 className="card-subtitle mb-2 text-muted">{businessSelectors.getCompanyCategoryName(companyCategories, company.companyCategoryId)}</h6>
                         <p className="card-text">
                             {company.street}, {company.cp}, {businessSelectors.getCityName(cities, company.cityId)}

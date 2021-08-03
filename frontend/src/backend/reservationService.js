@@ -43,10 +43,10 @@ export const findReserve = (reserveId, onSuccess) =>
     appFetch(`/reservation/reserves/${reserveId}`, config('GET'), onSuccess);
 
 export const findUserReserves = ({page}, onSuccess) => 
-    appFetch(`/reservation/userOrders?page=${page}`, config('GET'), onSuccess);
+    appFetch(`/reservation/userReserves?page=${page}`, config('GET'), onSuccess);
 
 export const findCompanyReserves = (companyId, reservationDate, periodType, {page}, onSuccess) => 
-    appFetch(`/reservation/companyOrders?companyId=${companyId}&reservationDate=${reservationDate}
+    appFetch(`/reservation/companyReserves?companyId=${companyId}&reservationDate=${reservationDate}
         &periodType=${periodType}&page=${page}`, config('GET'), onSuccess);
 
 export const addEventEvaluation = (eventEvaluationId, points, opinion,

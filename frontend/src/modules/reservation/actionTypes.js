@@ -7,4 +7,5 @@ export const FIND_RESERVES_COMPLETED = "project/reservation/findReservesComplete
 export const CLEAR_RESERVE = "project/reservation/clearReserve";
 export const FIND_RESERVE_COMPLETED = "project/reservation/findReserveCompleted";
 export const CHECK_CAPACITY_COMPLETED = "project/reservation/checkCapacityCompleted";
+export const CANCEL_RESERVATION_COMPLETED = "project/reservation/cancelReservationCompleted";
 

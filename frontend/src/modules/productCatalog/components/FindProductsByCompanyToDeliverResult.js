@@ -15,7 +15,7 @@ const FindProductsByCompanyToDeliverResult = () => {
     const productSearch = useSelector(selectors.getProductSearch);
     const productCategories = useSelector(selectors.getProductCategories);
     const dispatch = useDispatch();
-    const {id} = useParams();
+    const {id, doReserve, cityId} = useParams();
 
     useEffect(() => {
 
@@ -40,7 +40,7 @@ const FindProductsByCompanyToDeliverResult = () => {
     if (productSearch.result.length === 0) {
         return (
             <div>
-                <BeginReserveLink id={id}/>
+                {doReserve && <BeginReserveLink id={id}/>}
                 <FindProductsByCompany/>
                 <div className="alert alert-info" role="alert">
                     <FormattedMessage id='project.business.FindCompaniesResult.noCompanies'/>
@@ -55,7 +55,7 @@ const FindProductsByCompanyToDeliverResult = () => {
             <BeginReserveLink id={id}/>
             <FindProductsByCompany/>
             <CompanyProductsToDeliver products={productSearch.result} productCategories={productCategories} companyId={id}/>
-            <ShoppingCart companyId={id}/>
+            <ShoppingCart companyId={id} cityId={cityId}/>
         </div>
 
     );

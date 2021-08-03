@@ -8,7 +8,7 @@ import * as selectors from '../selectors';
 import * as actions from '../actions';
 import {Errors} from '../../common';
 
-const ShoppingCart = ({companyId}) => {
+const ShoppingCart = ({companyId, cityId}) => {
 
     const cart = useSelector(selectors.getShoppingCart);
     const dispatch = useDispatch();
@@ -70,12 +70,12 @@ const ShoppingCart = ({companyId}) => {
 
                     { cart.homeSale ?
                         <button type="button" className="btn btn-primary"
-                            onClick={() => history.push(`/shopping/show-fav-addresses/${companyId}`)}>
+                            onClick={() => history.push(`/shopping/show-fav-addresses/${companyId}/${cityId}`)}>
                             Entrega a domicilio
                         </button>
                     :
                         <button type="button" className="btn btn-primary"
-                            onClick={() => history.push(`/shopping/show-fav-addresses/${companyId}`)}>
+                            onClick={() => history.push(`/shopping/show-fav-addresses/${companyId}/${cityId}`)}>
                             Recoger
                         </button>
                     }

@@ -56,6 +56,14 @@ const MenuItemList = ({list, edit, companyId, onUpdateQuantity, onRemoveItem}) =
                 <FormattedMessage id='project.global.fields.totalPrice'/> 
                 : <FormattedNumber value={list.totalPrice}/>€
             </p>
+            <p className="text-center font-weight-bold">
+                Depósito por anticipado*
+                : <FormattedNumber value={list.deposit}/>€
+            </p>
+            <p className="text-center font-weight-bold">
+                * El depósito de restará del precio total para pagar la suma total del servicio.
+                El monto restante por pagar, se cobrará en el local al finalizar.
+            </p>
 
         </div>
 

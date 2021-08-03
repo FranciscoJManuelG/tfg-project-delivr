@@ -46,7 +46,7 @@ public interface PermissionChecker {
 	public ShoppingCart checkShoppingCartExistsAndBelongsToUser(Long shoppingCartId, Long userId)
 			throws PermissionException, InstanceNotFoundException;
 
-	public Order checkOrderExistsAndBelongsToUser(Long orderId, Long userId)
+	public Order checkOrderExistsAndBelongsToUserOrCompany(Long orderId, Long userId)
 			throws InstanceNotFoundException, PermissionException;
 
 	public DiscountTicket checkDiscountTicketExistsAndBelongsToUser(String code, Long userId)
@@ -63,6 +63,9 @@ public interface PermissionChecker {
 	public Company checkCompany(Long companyId) throws InstanceNotFoundException;
 
 	public Menu checkMenuExistsAndBelongsToUser(Long menuId, Long userId)
+			throws PermissionException, InstanceNotFoundException;
+
+	public Reserve checkReserveExistsAndBelongsToUserOrCompany(Long reserveId, Long userId)
 			throws PermissionException, InstanceNotFoundException;
 
 	public Reserve checkReserveExistsAndBelongsToUser(Long reserveId, Long userId)

@@ -13,6 +13,7 @@ export {default as FindCompanyReserves} from './components/FindCompanyReserves';
 export {default as FindCompanyReservesResult} from './components/FindCompanyReservesResult';
 export {default as FindUserReservesResult} from './components/FindUserReservesResult';
 export {default as SetDateAndDiners} from './components/SetDateAndDiners';
+export {default as SetCriteriaForCompanyReserves} from './components/SetCriteriaForCompanyReserves';
 
 
 export default {actions, reducer, selectors};

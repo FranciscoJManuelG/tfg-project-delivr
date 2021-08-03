@@ -37,6 +37,7 @@ import es.udc.tfgproject.backend.model.exceptions.IncorrectPasswordException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
+import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.model.services.UserService;
 import es.udc.tfgproject.backend.rest.common.ErrorsDto;
 import es.udc.tfgproject.backend.rest.common.JwtGenerator;
@@ -209,6 +210,16 @@ public class UserController {
 		JwtInfo jwtInfo = new JwtInfo(user.getId(), user.getUserName(), user.getRole().toString());
 
 		return jwtGenerator.generate(jwtInfo);
+
+	}
+
+	@GetMapping("/favouriteAddressesByCity")
+	public BlockDto<FavouriteAddressSummaryDto> findFavouriteAddressesByCity(@RequestAttribute Long userId,
+			@RequestParam Long cityId, @RequestParam(defaultValue = "0") int page) {
+
+		Block<FavouriteAddress> addressBlock = userService.findFavouriteAddressesByCity(userId, cityId, page, Constantes.SIZE);
+
+		return new BlockDto<>(toFavouriteAddressSummaryDtos(addressBlock.getItems()), addressBlock.getExistMoreItems());
 
 	}
 

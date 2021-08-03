@@ -247,7 +247,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 	}
 
 	@Override
-	public Order checkOrderExistsAndBelongsToUser(Long orderId, Long userId)
+	public Order checkOrderExistsAndBelongsToUserOrCompany(Long orderId, Long userId)
 			throws InstanceNotFoundException, PermissionException {
 		Optional<Order> order = orderDao.findById(orderId);
 
@@ -255,7 +255,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 			throw new InstanceNotFoundException("project.entities.order", orderId);
 		}
 
-		if (!order.get().getUser().getId().equals(userId)) {
+		if (!order.get().getUser().getId().equals(userId) || order.get().getCompany().getUser().getId().equals(userId)) {
 			throw new PermissionException();
 		}
 
@@ -348,6 +348,23 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return menu.get();
+	}
+
+	@Override
+	public Reserve checkReserveExistsAndBelongsToUserOrCompany(Long reserveId, Long userId)
+			throws InstanceNotFoundException, PermissionException {
+		Optional<Reserve> reserve = reserveDao.findById(reserveId);
+
+		if (!reserve.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.reserve", reserveId);
+		}
+
+		if (!reserve.get().getUser().getId().equals(userId) || reserve.get().getCompany().getUser().getId().equals(userId)) {
+			throw new PermissionException();
+		}
+
+		return reserve.get();
+
 	}
 
 	@Override

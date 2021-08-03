@@ -6,7 +6,7 @@ const ReserveLink = ({id}) => {
 
     return (
         <Link to={`/reservation/reserve-details/${id}`}>
-            Detalle de la reserva
+            Ver en detalle
         </Link>
     );
 

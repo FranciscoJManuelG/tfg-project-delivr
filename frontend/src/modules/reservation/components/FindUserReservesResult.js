@@ -4,9 +4,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
 import {Pager} from '../../common';
-import Orders from './Reserves';
+import Reserves from './Reserves';
 
-const FindOrdersResult = () => {
+const FindReservesResult = () => {
 
     const reserveSearch = useSelector(selectors.getReserveSearch);
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const FindOrdersResult = () => {
     if (reserveSearch.result.items.length === 0) {
         return (
             <div className="alert alert-info" role="alert">
-                No has realizado ningún pedido aún.
+                No has realizado ninguna reserva aún.
             </div>
         );
     }
@@ -26,7 +26,8 @@ const FindOrdersResult = () => {
     return (
 
         <div>
-            <Orders orders={reserveSearch.result.items}/>
+            <Reserves reserves={reserveSearch.result.items}
+                onCancelReservation={(...args) => dispatch(actions.cancelReservation(...args))}/>
             <Pager 
                 back={{
                     enabled: reserveSearch.criteria.page >= 1,
@@ -40,4 +41,4 @@ const FindOrdersResult = () => {
 
 }
 
-export default FindOrdersResult;
+export default FindReservesResult;

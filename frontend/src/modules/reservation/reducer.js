@@ -61,6 +61,13 @@ const reserveSearch = (state = initialState.reserveSearch, action) => {
         case actionTypes.CLEAR_RESERVE_SEARCH:
             return initialState.reserveSearch;
 
+        case actionTypes.CANCEL_RESERVATION_COMPLETED:
+            return { criteria: state.criteria, 
+                result: {
+                        items: state.result.items.filter
+                        (reserve => reserve.id !== action.reserveId), 
+                    existMoreItems : state.result.existMoreItems} };
+
         default:
             return state;
 

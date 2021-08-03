@@ -79,3 +79,7 @@ export const findFavouriteAddresses = ({page}, onSuccess) =>
 export const findFavAddress = (addressId, onSuccess) => 
     appFetch(`/users/favouriteAddress/${addressId}`, 
         config('GET'), onSuccess);
+
+export const findFavouriteAddressesByCity = (cityId, {page}, onSuccess) => 
+    appFetch(`/users/favouriteAddressesByCity?cityId=${cityId}&page=${page}`, 
+        config('GET'), onSuccess);

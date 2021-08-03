@@ -107,7 +107,7 @@ public class ProductManagementController {
 
 	private String createFile(MultipartFile file) throws IOException {
 		Path path = Paths
-		.get(File.separator + "home" + File.separator + "fran" + File.separator + "software" + File.separator + "tfg-project"
+		.get(File.separator + "home" + File.separator + "fran" + File.separator + "software" + File.separator + "tfg-project-delivr"
 		+ File.separator + "frontend" + File.separator + "public" + File.separator + "img" + File.separator + getTodayDate() + "_" + file.getOriginalFilename());
 
 		try {
