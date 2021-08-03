@@ -61,6 +61,13 @@ const Header = () => {
                             </Link>
                         </div>
                     }
+                    {userName &&
+                        <div>
+                            <Link className="dropdown-item" to="/reservation/find-user-event-evaluations">
+                                Valoraciones
+                            </Link>
+                        </div>
+                    }
                     
                 </ul>
 

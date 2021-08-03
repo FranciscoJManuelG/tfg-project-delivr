@@ -40,7 +40,7 @@ const FindProductsByCompanyToDeliverResult = () => {
     if (productSearch.result.length === 0) {
         return (
             <div>
-                {doReserve && <BeginReserveLink id={id}/>}
+                {doReserve === "true" && <BeginReserveLink id={id}/>}
                 <FindProductsByCompany/>
                 <div className="alert alert-info" role="alert">
                     <FormattedMessage id='project.business.FindCompaniesResult.noCompanies'/>
@@ -52,7 +52,7 @@ const FindProductsByCompanyToDeliverResult = () => {
     return (
 
         <div>
-            <BeginReserveLink id={id}/>
+            {doReserve === "true" && <BeginReserveLink id={id}/>}
             <FindProductsByCompany/>
             <CompanyProductsToDeliver products={productSearch.result} productCategories={productCategories} companyId={id}/>
             <ShoppingCart companyId={id} cityId={cityId}/>

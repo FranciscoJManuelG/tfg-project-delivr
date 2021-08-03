@@ -9,6 +9,8 @@ const initialState = {
     lastReserveId: null,
     reserveSearch: null,
     reserve: null,
+    userEventEvaluationSearch: null,
+    companyEventEvaluationSearch: null,
 };
 
 const menu = (state = initialState.menu, action) => {
@@ -92,12 +94,47 @@ const reserve = (state = initialState.reserve, action) => {
 
 }
 
+const userEventEvaluationSearch = (state = initialState.userEventEvaluationSearch, action) => {
+
+    switch (action.type) {
+
+        case actionTypes.FIND_USER_EVENT_EVALUATIONS_COMPLETED:
+            return action.userEventEvaluationSearch;
+
+        case actionTypes.CLEAR_USER_EVENT_EVALUATION_SEARCH:
+            return initialState.userEventEvaluationSearch;
+
+        default:
+            return state;
+
+    }
+
+}
+
+const companyEventEvaluationSearch = (state = initialState.companyEventEvaluationSearch, action) => {
+
+    switch (action.type) {
+
+        case actionTypes.FIND_COMPANY_EVENT_EVALUATIONS_COMPLETED:
+            return action.companyEventEvaluationSearch;
+
+        case actionTypes.CLEAR_COMPANY_EVENT_EVALUATION_SEARCH:
+            return initialState.companyEventEvaluationSearch;
+
+        default:
+            return state;
+
+    }
+
+}
+
 const reducer = combineReducers({
     menu,
     lastReserveId,
     reserveSearch,
-    reserve
-
+    reserve,
+    userEventEvaluationSearch,
+    companyEventEvaluationSearch
 });
 
 export default reducer;

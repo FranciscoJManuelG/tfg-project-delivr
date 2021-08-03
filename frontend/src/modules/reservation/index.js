@@ -14,6 +14,10 @@ export {default as FindCompanyReservesResult} from './components/FindCompanyRese
 export {default as FindUserReservesResult} from './components/FindUserReservesResult';
 export {default as SetDateAndDiners} from './components/SetDateAndDiners';
 export {default as SetCriteriaForCompanyReserves} from './components/SetCriteriaForCompanyReserves';
+export {default as AddEventEvaluation} from './components/AddEventEvaluation';
+export {default as EvaluationCompleted} from './components/EvaluationCompleted';
+export {default as FindUserEventEvaluations} from './components/FindUserEventEvaluations';
+export {default as FindUserEventEvaluationsResult} from './components/FindUserEventEvaluationsResult';
 
 
 export default {actions, reducer, selectors};

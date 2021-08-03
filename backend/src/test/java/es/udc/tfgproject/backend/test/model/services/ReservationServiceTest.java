@@ -38,12 +38,14 @@ import es.udc.tfgproject.backend.model.entities.ReserveDao;
 import es.udc.tfgproject.backend.model.entities.ReserveItem;
 import es.udc.tfgproject.backend.model.entities.ReserveItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesntAllowReservesException;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.exceptions.ReservationDateIsBeforeNowException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.ProductManagementService;
@@ -615,8 +617,9 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testReservationAndFindReserve() throws InstanceNotFoundException, PermissionException,
-			EmptyMenuException, MaximumCapacityExceededException {
+	public void testReservationAndFindReserve()
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -662,7 +665,7 @@ public class ReservationServiceTest {
 
 	@Test
 	public void testCancelReservation() throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException {
+			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -788,7 +791,8 @@ public class ReservationServiceTest {
 
 	@Test
 	public void testFindReserveOfAnotherUser() throws InstanceNotFoundException, PermissionException,
-			EmptyMenuException, MaximumCapacityExceededException {
+			EmptyMenuException, MaximumCapacityExceededException, ReservationDateIsBeforeNowException,
+			CompanyDoesntAllowReservesException {
 
 		User user1 = signUpUser("user1");
 		User user2 = signUpUser("user2");
@@ -819,7 +823,8 @@ public class ReservationServiceTest {
 
 	@Test
 	public void testFindReserveWithNonExistingUserId() throws InstanceNotFoundException, PermissionException,
-			EmptyMenuException, MaximumCapacityExceededException {
+			EmptyMenuException, MaximumCapacityExceededException, ReservationDateIsBeforeNowException,
+			CompanyDoesntAllowReservesException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -952,7 +957,7 @@ public class ReservationServiceTest {
 
 	@Test
 	public void testAddEventEvaluation() throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException {
+			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");

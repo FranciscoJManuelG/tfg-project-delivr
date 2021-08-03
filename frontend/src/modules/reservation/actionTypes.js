@@ -8,4 +8,9 @@ export const CLEAR_RESERVE = "project/reservation/clearReserve";
 export const FIND_RESERVE_COMPLETED = "project/reservation/findReserveCompleted";
 export const CHECK_CAPACITY_COMPLETED = "project/reservation/checkCapacityCompleted";
 export const CANCEL_RESERVATION_COMPLETED = "project/reservation/cancelReservationCompleted";
+export const ADD_EVENT_EVALUATION_COMPLETED = "project/reservation/addEventEvaluationCompleted";
+export const FIND_USER_EVENT_EVALUATIONS_COMPLETED = "project/reservation/findUserEventEvaluationsCompleted";
+export const CLEAR_USER_EVENT_EVALUATION_SEARCH = "project/reservation/clearUserEventEvaluationSearch";
+export const FIND_COMPANY_EVENT_EVALUATIONS_COMPLETED = "project/reservation/findCompanyEventEvaluationsCompleted";
+export const CLEAR_COMPANY_EVENT_EVALUATION_SEARCH = "project/reservation/clearCompanyEventEvaluationSearch";
 

@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Block<FavouriteAddress> findFavouriteAddressesByCity(Long userId, Long cityId, int page, int size) {
-		Slice<FavouriteAddress> slice = favouriteAddressDao.findByUserIdAndAddressCityId(userId, cityId, PageRequest.of(page, size));
+		Slice<FavouriteAddress> slice = favouriteAddressDao.findByUserIdAndCityId(userId, cityId, PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}

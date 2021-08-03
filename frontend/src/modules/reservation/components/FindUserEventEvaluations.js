@@ -4,15 +4,15 @@ import {useHistory} from 'react-router-dom';
 
 import * as actions from '../actions';
 
-const FindUserReserves = () => {
+const FindUserEventEvaluations = () => {
 
     const dispatch = useDispatch();
     const history = useHistory();
 
     useEffect(() => {
 
-        dispatch(actions.findUserReserves({page: 0}));
-        history.push('/reservation/find-user-reserves-result');
+        dispatch(actions.findUserEventEvaluations({page: 0}));
+        history.push('/reservation/find-user-event-evaluations-result');
 
     });
 
@@ -20,4 +20,4 @@ const FindUserReserves = () => {
 
 }
 
-export default FindUserReserves;
+export default FindUserEventEvaluations;

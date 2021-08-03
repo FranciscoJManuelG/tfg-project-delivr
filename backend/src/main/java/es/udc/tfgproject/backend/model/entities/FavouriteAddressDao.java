@@ -12,5 +12,5 @@ public interface FavouriteAddressDao extends PagingAndSortingRepository<Favourit
 
 	Slice<FavouriteAddress> findByUserId(Long userId, Pageable pageable);
 
-	Slice<FavouriteAddress> findByUserIdAndAddressCityId(Long userId, Long cityId, Pageable pageable);
+	Slice<FavouriteAddress> findByUserIdAndCityId(Long userId, Long cityId, Pageable pageable);
 }

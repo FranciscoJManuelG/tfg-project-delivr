@@ -102,10 +102,6 @@ export const findUserReserves = criteria => dispatch => {
     backend.reservationService.findUserReserves(criteria, 
         result => dispatch(findReservesCompleted({criteria, result})));
 
-    console.log(backend.reservationService.findUserReserves(criteria, 
-        result => dispatch(findReservesCompleted({criteria, result}))));
-
-
 }    
 
 export const previousFindUserReservesResultPage = criteria => 
@@ -142,3 +138,61 @@ export const findReserve = reserveId => dispatch => {
         dispatch(findReserveCompleted(reserve));
     });
 }
+
+const addEventEvaluationCompleted = () => ({
+    type: actionTypes.ADD_EVENT_EVALUATION_COMPLETED
+});
+
+export const addEventEvaluation = (eventEvaluationId, points, opinion,
+    onSuccess, onErrors) => dispatch =>
+    backend.reservationService.addEventEvaluation(eventEvaluationId,
+        points, opinion, () => {
+            dispatch(addEventEvaluationCompleted());
+            onSuccess();
+        },
+        onErrors);
+
+const findUserEventEvaluationsCompleted = userEventEvaluationSearch => ({
+    type: actionTypes.FIND_USER_EVENT_EVALUATIONS_COMPLETED,
+    userEventEvaluationSearch
+});
+
+const clearUserEventEvaluationSearch = () => ({
+    type: actionTypes.CLEAR_USER_EVENT_EVALUATION_SEARCH
+});
+
+export const findUserEventEvaluations = criteria => dispatch => {
+
+    dispatch(clearUserEventEvaluationSearch());
+    backend.reservationService.findUserEventEvaluations(criteria,
+        result => dispatch(findUserEventEvaluationsCompleted({criteria, result})));
+}    
+
+export const previousFindUserEventEvaluationsResultPage = criteria => 
+    findUserEventEvaluations({page: criteria.page-1});
+
+export const nextFindUserEventEvaluationsResultPage = criteria => 
+    findUserEventEvaluations({page: criteria.page+1});
+
+const findCompanyEventEvaluationsCompleted = companyEventEvaluationSearch => ({
+    type: actionTypes.FIND_COMPANY_EVENT_EVALUATIONS_COMPLETED,
+    companyEventEvaluationSearch
+});
+
+const clearCompanyEventEvaluationSearch = () => ({
+    type: actionTypes.CLEAR_COMPANY_EVENT_EVALUATION_SEARCH
+});
+
+export const findCompanyEventEvaluations = (companyId, criteria) => dispatch => {
+
+    dispatch(clearCompanyEventEvaluationSearch());
+    backend.reservationService.findCompanyEventEvaluations(companyId, criteria,
+        result => dispatch(findCompanyEventEvaluationsCompleted({criteria, result})));
+
+}    
+
+export const previousFindCompanyEventEvaluationsResultPage = (companyId, criteria) => 
+    findCompanyEventEvaluations(companyId, {page: criteria.page-1});
+
+export const nextFindCompanyEventEvaluationsResultPage = (companyId, criteria) => 
+    findCompanyEventEvaluations(companyId, {page: criteria.page+1});

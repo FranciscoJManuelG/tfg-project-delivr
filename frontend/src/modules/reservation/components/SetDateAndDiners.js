@@ -34,15 +34,6 @@ const SetDateAndDiners = () => {
                 errors => setBackendErrors(errors)
             ));
 
-            console.log(dispatch(actions.checkCapacity(
-                id,
-                reservationDate,
-                periodType.trim(),
-                diners,
-                () => history.push(`/reservation/find-menu-products/${id}/${reservationDate}/${periodType}/${diners}`),
-                errors => setBackendErrors(errors)
-            )));
-
         } else {
 
             setBackendErrors(null);

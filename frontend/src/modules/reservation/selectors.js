@@ -11,3 +11,9 @@ export const getReserveSearch = state =>
 
 export const getReserve = state =>
     getModuleState(state).reserve;
+
+export const getUserEventEvaluationSearch = state =>
+    getModuleState(state).userEventEvaluationSearch;
+
+export const getCompanyEventEvaluationSearch = state =>
+    getModuleState(state).companyEventEvaluationSearch;

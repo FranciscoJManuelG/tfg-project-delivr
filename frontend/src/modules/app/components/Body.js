@@ -10,7 +10,10 @@ import {FindProductsByCompanyToDeliverResult, FindProductsByCompanyForReservatio
 import {FindProductsResult, FindProducts, AddProduct, EditProduct, FindProductToEdit} from '../../productManagement';
 import {FindShoppingCartProducts, PurchaseDetails, SetAddressToSendPurchase, ShowFavAddresses, PurchaseCompleted, OrderDetails, FindUserOrdersResult, FindCompanyOrdersResult, FindCompanyOrders, FindUserOrders, FindDiscountTicketsResult, FindDiscountTickets} from '../../shopping';
 import users from '../../users';
-import {FindMenuProducts, ReservationDetails, ReservationCompleted, SetDateAndDiners, ReserveDetails, FindUserReserves, FindUserReservesResult, FindCompanyReservesResult, SetCriteriaForCompanyReserves, FindCompanyReserves } from '../../reservation';
+import {FindMenuProducts, ReservationDetails, ReservationCompleted, SetDateAndDiners, ReserveDetails, FindUserReserves, FindUserReservesResult, FindCompanyReservesResult, SetCriteriaForCompanyReserves, FindCompanyReserves, EvaluationCompleted } from '../../reservation';
+import AddEventEvaluation from '../../reservation/components/AddEventEvaluation';
+import FindUserEventEvaluations from '../../reservation/components/FindUserEventEvaluations';
+import FindUserEventEvaluationsResult from '../../reservation/components/FindUserEventEvaluationsResult';
 
 const Body = () => {
 
@@ -71,6 +74,10 @@ const Body = () => {
                 {loggedIn && <Route exact path="/reservation/find-user-reserves-result"><FindUserReservesResult/></Route>}
                 {loggedIn && <Route exact path="/reservation/find-company-reserves-result"><FindCompanyReservesResult/></Route>}
                 {loggedIn && <Route exact path="/reservation/set-criteria-for-company-reserves"><SetCriteriaForCompanyReserves/></Route>}
+                {loggedIn && <Route exact path="/reservation/add-event-evaluation/:id"><AddEventEvaluation/></Route>}
+                {loggedIn && <Route exact path="/reservation/find-user-event-evaluations"><FindUserEventEvaluations/></Route>}
+                {loggedIn && <Route exact path="/reservation/find-user-event-evaluations-result"><FindUserEventEvaluationsResult/></Route>}
+                {loggedIn && <Route exact path="/reservation/evaluation-completed"><EvaluationCompleted/></Route>}
                 {!loggedIn && <Route exact path="/users/login"><Login/></Route>}
                 {!loggedIn && <Route exact path="/users/signup"><SignUp/></Route>}
                 {!loggedIn && <Route exact path="/users/signup-businessman"><SignUpBusinessman/></Route>}
