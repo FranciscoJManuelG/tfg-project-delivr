@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 import javax.transaction.Transactional;
@@ -145,7 +146,8 @@ public class BusinessServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId(), 20);
+		Company company = businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25, category.getId(), 20,
+				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Company expectedCompany = companyDao.findById(company.getId()).get();
 
@@ -169,8 +171,10 @@ public class BusinessServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		assertThrows(InstanceNotFoundException.class, () -> businessService.addCompany(user.getId(), "Delivr", 27, true,
-				true, 25, NON_EXISTENT_COMPANY_CATEGORY_ID, 20));
+		assertThrows(InstanceNotFoundException.class,
+				() -> businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25,
+						NON_EXISTENT_COMPANY_CATEGORY_ID, 20, LocalTime.of(10, 0), LocalTime.of(23, 0),
+						LocalTime.of(14, 0), LocalTime.of(21, 0)));
 	}
 
 	@Test
@@ -189,10 +193,11 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Company modifiedCompany = businessService.modifyCompany(user.getId(), company.getId(), "VegFood", 40, false,
-				false, 15, category2.getId(), 15);
+				false, 15, category2.getId(), 15, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0),
+				LocalTime.of(21, 0));
 
 		assertEquals(modifiedCompany.getName(), "VegFood");
 		assertEquals(modifiedCompany.getCapacity(), 40);
@@ -218,7 +223,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Company blockedCompany = businessService.blockCompany(user.getId(), company.getId());
 
@@ -247,7 +252,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(), company.getId());
 		businessService.addCompanyAddress("Jorge 21", "15700", city.getId(), company.getId());
@@ -280,10 +285,13 @@ public class BusinessServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(), null);
+		businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(), null,
+				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
-		assertThrows(InstanceNotFoundException.class, () -> businessService.modifyCompany(user.getId(),
-				NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false, 15, category.getId(), null));
+		assertThrows(InstanceNotFoundException.class,
+				() -> businessService.modifyCompany(user.getId(), NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false,
+						15, category.getId(), null, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0),
+						LocalTime.of(21, 0)));
 
 	}
 
@@ -302,10 +310,12 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				null);
+				null, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
-		assertThrows(PermissionException.class, () -> businessService.modifyCompany(wrongUser.getId(), company.getId(),
-				"GreenFood", 40, true, false, 15, category.getId(), null));
+		assertThrows(PermissionException.class,
+				() -> businessService.modifyCompany(wrongUser.getId(), company.getId(), "GreenFood", 40, true, false,
+						15, category.getId(), null, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0),
+						LocalTime.of(21, 0)));
 
 	}
 
@@ -322,8 +332,8 @@ public class BusinessServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		Company actual = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				20);
+		Company actual = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(), 20,
+				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Company expected = businessService.findCompany(user.getId());
 
@@ -355,7 +365,8 @@ public class BusinessServiceTest {
 
 		long numberOfAddresses = companyAddressDao.count();
 
-		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category, 20);
+		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category, 20, LocalTime.of(10, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		companyDao.save(company);
 
 		businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(), company.getId());
@@ -373,7 +384,8 @@ public class BusinessServiceTest {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
-		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category, 20);
+		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category, 20, LocalTime.of(10, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		companyDao.save(company);
 
 		assertThrows(InstanceNotFoundException.class,
@@ -385,7 +397,8 @@ public class BusinessServiceTest {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
-		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category, null);
+		Company company = new Company(user, "Delivr", 13, true, true, 10, false, category, null, LocalTime.of(10, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		companyDao.save(company);
 		Province province = new Province("Lugo");
 		provinceDao.save(province);
@@ -409,9 +422,11 @@ public class BusinessServiceTest {
 		User user = signUpUser("user");
 		CompanyCategory category = new CompanyCategory("Tradicional");
 		companyCategoryDao.save(category);
-		Company company1 = new Company(user, "Delivr", 13, true, true, 10, false, category, 20);
+		Company company1 = new Company(user, "Delivr", 13, true, true, 10, false, category, 20, LocalTime.of(10, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		companyDao.save(company1);
-		Company company2 = new Company(user, "Delivr", 13, true, true, 10, false, category, 20);
+		Company company2 = new Company(user, "Delivr", 13, true, true, 10, false, category, 20, LocalTime.of(10, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		companyDao.save(company2);
 		Province province = new Province("Lugo");
 		provinceDao.save(province);
@@ -464,7 +479,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -505,7 +520,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -547,7 +562,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -593,7 +608,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -639,7 +654,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());

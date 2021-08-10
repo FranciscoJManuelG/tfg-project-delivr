@@ -9,11 +9,13 @@ import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.GoalTypeConversor.toGoalTypeDtos;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,7 +66,9 @@ public class BusinessController {
 
 		return toCompanyDto(businessService.addCompany(userId, params.getName(), params.getCapacity(),
 				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				params.getReserveCapacity()));
+				params.getReserveCapacity(), LocalTime.parse(params.getOpeningTime()),
+				LocalTime.parse(params.getClosingTime()), LocalTime.parse(params.getLunchTime()),
+				LocalTime.parse(params.getDinerTime())));
 
 	}
 
@@ -75,7 +79,9 @@ public class BusinessController {
 
 		return toCompanyDto(businessService.modifyCompany(userId, companyId, params.getName(), params.getCapacity(),
 				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				params.getReserveCapacity()));
+				params.getReserveCapacity(), LocalTime.parse(params.getOpeningTime()),
+				LocalTime.parse(params.getClosingTime()), LocalTime.parse(params.getLunchTime()),
+				LocalTime.parse(params.getDinerTime())));
 
 	}
 
@@ -107,6 +113,19 @@ public class BusinessController {
 	@GetMapping("/companies/company")
 	public CompanyDto findCompany(@RequestAttribute Long userId) throws InstanceNotFoundException {
 		Company company = businessService.findCompany(userId);
+
+		if (company != null) {
+			return toCompanyDto(company);
+		} else {
+			return null;
+		}
+
+	}
+
+	@GetMapping("/companies/{companyId}")
+	public CompanyDto findCompanyById(@RequestAttribute Long userId, @PathVariable Long companyId)
+			throws InstanceNotFoundException {
+		Company company = businessService.findCompanyById(userId, companyId);
 
 		if (company != null) {
 			return toCompanyDto(company);
@@ -155,6 +174,7 @@ public class BusinessController {
 		return toCityDtos(businessService.findAllCities());
 	}
 
+	@CrossOrigin
 	@GetMapping("/companyGoals")
 	public BlockDto<GoalSummaryDto> findCompanyGoals(@RequestAttribute Long userId, @RequestParam Long companyId,
 			@RequestParam(defaultValue = "0") int page) throws InstanceNotFoundException, PermissionException {

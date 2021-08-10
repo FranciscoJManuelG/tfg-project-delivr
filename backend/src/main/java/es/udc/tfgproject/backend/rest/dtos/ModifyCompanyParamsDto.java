@@ -13,6 +13,10 @@ public class ModifyCompanyParamsDto {
 	private int reservePercentage;
 	private Long companyCategoryId;
 	private Integer reserveCapacity;
+	private String openingTime;
+	private String closingTime;
+	private String lunchTime;
+	private String dinerTime;
 
 	public Integer getReserveCapacity() {
 		return reserveCapacity;
@@ -77,5 +81,39 @@ public class ModifyCompanyParamsDto {
 
 	public void setCompanyCategoryId(Long companyCategoryId) {
 		this.companyCategoryId = companyCategoryId;
+	}
+
+	@NotNull
+	public String getOpeningTime() {
+		return openingTime;
+	}
+
+	public void setOpeningTime(String openingTime) {
+		this.openingTime = openingTime;
+	}
+
+	@NotNull
+	public String getClosingTime() {
+		return closingTime;
+	}
+
+	public void setClosingTime(String closingTime) {
+		this.closingTime = closingTime;
+	}
+
+	public String getLunchTime() {
+		return lunchTime;
+	}
+
+	public void setLunchTime(String lunchTime) {
+		this.lunchTime = lunchTime;
+	}
+
+	public String getDinerTime() {
+		return dinerTime;
+	}
+
+	public void setDinerTime(String dinerTime) {
+		this.dinerTime = dinerTime;
 	}
 }

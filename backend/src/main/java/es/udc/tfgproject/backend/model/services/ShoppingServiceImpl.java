@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -395,13 +394,11 @@ public class ShoppingServiceImpl implements ShoppingService {
 			throws InstanceNotFoundException {
 		permissionChecker.checkUserExists(userId);
 
-		Slice<DiscountTicket> slice = discountTicketDao.findByUserIdWhereUsedIsFalseOrderByExpirationDateDesc(userId,
-				PageRequest.of(page, size));
+		Slice<DiscountTicket> slice = discountTicketDao
+				.findByUserIdWhereUsedIsFalseAndExpirationDateOrderByExpirationDateDesc(userId, LocalDateTime.now(),
+						PageRequest.of(page, size));
 
-		List<DiscountTicket> discountTickets = slice.getContent().stream()
-				.filter(dt -> dt.getExpirationDate().isAfter(LocalDateTime.now())).collect(Collectors.toList());
-
-		return new Block<>(discountTickets, slice.hasNext());
+		return new Block<>(slice.getContent(), slice.hasNext());
 	}
 
 }

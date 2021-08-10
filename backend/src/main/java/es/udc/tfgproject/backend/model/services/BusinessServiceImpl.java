@@ -1,6 +1,8 @@
 package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,14 +57,15 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId, Integer reserveCapacity) throws InstanceNotFoundException {
+			int reservePercentage, Long companyCategoryId, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+			LocalTime lunchTime, LocalTime dinerTime) throws InstanceNotFoundException {
 
 		User user = permissionChecker.checkUser(userId);
 
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
 		Company company = new Company(user, name, capacity, reserve, homeSale, reservePercentage, false,
-				companyCategory, reserveCapacity);
+				companyCategory, reserveCapacity, openingTime, closingTime, lunchTime, dinerTime);
 		companyDao.save(company);
 
 		return company;
@@ -70,7 +73,8 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	public Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve,
-			Boolean homeSale, int reservePercentage, Long companyCategoryId, Integer reserveCapacity)
+			Boolean homeSale, int reservePercentage, Long companyCategoryId, Integer reserveCapacity, 
+			LocalTime openingTime, LocalTime closingTime, LocalTime lunchTime, LocalTime dinerTime)
 			throws InstanceNotFoundException, PermissionException {
 
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
@@ -83,6 +87,10 @@ public class BusinessServiceImpl implements BusinessService {
 		company.setHomeSale(homeSale);
 		company.setReservePercentage(reservePercentage);
 		company.setCompanyCategory(companyCategory);
+		company.setOpeningTime(openingTime);
+		company.setClosingTime(closingTime);
+		company.setLunchTime(lunchTime);
+		company.setDinerTime(dinerTime);
 		if (reserveCapacity != null) {
 			company.setReserveCapacity(reserveCapacity);
 		}
@@ -144,6 +152,16 @@ public class BusinessServiceImpl implements BusinessService {
 		User user = permissionChecker.checkUser(userId);
 
 		Company company = companyDao.findByUserId(user.getId());
+
+		return company;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Company findCompanyById(Long userId, Long companyId) throws InstanceNotFoundException {
+		permissionChecker.checkUser(userId);
+
+		Company company = companyDao.findById(companyId).get();
 
 		return company;
 	}

@@ -255,7 +255,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 			throw new InstanceNotFoundException("project.entities.order", orderId);
 		}
 
-		if (!order.get().getUser().getId().equals(userId) || order.get().getCompany().getUser().getId().equals(userId)) {
+		if (!order.get().getUser().getId().equals(userId) && !order.get().getCompany().getUser().getId().equals(userId)) {
 			throw new PermissionException();
 		}
 
@@ -359,7 +359,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 			throw new InstanceNotFoundException("project.entities.reserve", reserveId);
 		}
 
-		if (!reserve.get().getUser().getId().equals(userId) || reserve.get().getCompany().getUser().getId().equals(userId)) {
+		if (!reserve.get().getUser().getId().equals(userId) && !reserve.get().getCompany().getUser().getId().equals(userId)) {
 			throw new PermissionException();
 		}
 

@@ -3,10 +3,8 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -129,7 +127,7 @@ public class ReservationServiceImpl implements ReservationService {
 		User user = permissionChecker.checkUser(userId);
 		Company company = permissionChecker.checkCompany(companyId);
 
-		if(!company.getReserve()){
+		if (!company.getReserve()) {
 			throw new CompanyDoesntAllowReservesException();
 		}
 
@@ -188,10 +186,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public Block<Reserve> findUserReserves(Long userId, int page, int size) {
 		Slice<Reserve> slice = reserveDao.findByUserIdOrderByDateDesc(userId, PageRequest.of(page, size));
 
-		List<Reserve> reserves = slice.getContent().stream()
-				.filter(r -> !r.getDate().isBefore(LocalDate.now())).collect(Collectors.toList());
-
-		return new Block<>(reserves, slice.hasNext());
+		return new Block<>(slice.getContent(), slice.hasNext());
 	}
 
 	@Override
@@ -231,7 +226,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public Boolean checkCapacity(Long companyId, LocalDate reservationDate, PeriodType periodType, Integer diners)
 			throws MaximumCapacityExceededException, InstanceNotFoundException, ReservationDateIsBeforeNowException {
 
-		if(reservationDate.isBefore(LocalDate.now())){
+		if (reservationDate.isBefore(LocalDate.now())) {
 			throw new ReservationDateIsBeforeNowException();
 		}
 
@@ -290,13 +285,10 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public Block<EventEvaluation> findUserEventEvaluations(Long userId, int page, int size)
 			throws PermissionException, InstanceNotFoundException {
-		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveUserIdAndDoneOrderByDateEvaluation(userId, false,
-				PageRequest.of(page, size));
+		Slice<EventEvaluation> slice = eventEvaluationDao.findByReserveUserIdAndDoneOrderByDateEvaluation(userId,
+				LocalDate.now(), PageRequest.of(page, size));
 
-		List<EventEvaluation> evaluations = slice.getContent().stream()
-				.filter(e -> e.getDateEvaluation().isBefore(LocalDate.now())).collect(Collectors.toList());
-
-		return new Block<>(evaluations, slice.hasNext());
+		return new Block<>(slice.getContent(), slice.hasNext());
 	}
 
 }

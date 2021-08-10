@@ -72,8 +72,8 @@ INSERT INTO User (userName, password, firstName, lastName, email, phone, role)
 INSERT INTO User (userName, password, firstName, lastName, email, phone, role)
 	VALUES ('business', '$2a$10$B6DS8oiZ0fUXNC7HlNRe0.0FpNTWstct2SEujaJYX83Abupq6ptOO', 'nameb', 'lastnameb', 'business@business.com', 345176824, 1); 
 	
-INSERT INTO Company (name, capacity, reserve, homeSale, reservePercentage, userId, companyCategoryId, block, reserveCapacity)
-	VALUES ('Delivr', 25, true, true, 20, 2, 3, false, 20);
+INSERT INTO Company (name, capacity, reserve, homeSale, reservePercentage, openingTime, closingTime, lunchTime, dinerTime, userId, companyCategoryId, block, reserveCapacity) 
+	VALUES ('Delivr', 25, true, true, 20, TIME('10:00'), TIME('23:00'), TIME('14:00'), TIME('21:00'), 2, 3, false, 20);
 	
 INSERT INTO Address (street, cp, cityId)
 	VALUES ('Rosalia 23', 15400, 1);

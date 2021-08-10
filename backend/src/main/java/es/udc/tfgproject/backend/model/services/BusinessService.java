@@ -1,6 +1,7 @@
 package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.List;
 
 import es.udc.tfgproject.backend.model.entities.City;
@@ -16,10 +17,12 @@ import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 public interface BusinessService {
 
 	Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			Long companyCategoryId, Integer reserveCapacity) throws InstanceNotFoundException;
+			Long companyCategoryId, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+			LocalTime lunchTime, LocalTime dinerTime) throws InstanceNotFoundException;
 
 	Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId, Integer reserveCapacity)
+			int reservePercentage, Long companyCategoryId, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+			LocalTime lunchTime, LocalTime dinerTime)
 			throws InstanceNotFoundException, PermissionException;
 
 	Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
@@ -29,6 +32,8 @@ public interface BusinessService {
 	void deregister(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
 
 	Company findCompany(Long userId) throws InstanceNotFoundException;
+
+	Company findCompanyById(Long userId, Long companyId) throws InstanceNotFoundException;
 
 	List<CompanyCategory> findAllCompanyCategories();
 

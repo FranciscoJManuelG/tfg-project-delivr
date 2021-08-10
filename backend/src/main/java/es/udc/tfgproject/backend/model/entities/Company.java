@@ -1,5 +1,7 @@
 package es.udc.tfgproject.backend.model.entities;
 
+import java.time.LocalTime;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 
 @Entity
 public class Company {
@@ -17,6 +20,10 @@ public class Company {
 	private Boolean reserve;
 	private Boolean homeSale;
 	private int reservePercentage;
+	private LocalTime openingTime;
+	private LocalTime closingTime;
+	private LocalTime lunchTime;
+	private LocalTime dinerTime; 
 	private Boolean block;
 	private User user;
 	private CompanyCategory companyCategory;
@@ -26,7 +33,8 @@ public class Company {
 	}
 
 	public Company(User user, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			Boolean block, CompanyCategory companyCategory, Integer reserveCapacity) {
+			Boolean block, CompanyCategory companyCategory, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+			LocalTime lunchTime, LocalTime dinerTime) {
 		this.user = user;
 		this.name = name;
 		this.capacity = capacity;
@@ -36,6 +44,10 @@ public class Company {
 		this.block = block;
 		this.companyCategory = companyCategory;
 		this.reserveCapacity = reserveCapacity;
+		this.openingTime = openingTime;
+		this.closingTime = closingTime;
+		this.lunchTime = lunchTime;
+		this.dinerTime = dinerTime;
 	}
 
 	@Id
@@ -86,6 +98,38 @@ public class Company {
 
 	public void setReservePercentage(int reservePercentage) {
 		this.reservePercentage = reservePercentage;
+	}
+
+	public LocalTime getOpeningTime() {
+		return openingTime;
+	}
+
+	public void setOpeningTime(LocalTime openingTime) {
+		this.openingTime = openingTime;
+	}
+
+	public LocalTime getClosingTime() {
+		return closingTime;
+	}
+
+	public void setClosingTime(LocalTime closingTime) {
+		this.closingTime = closingTime;
+	}
+
+	public LocalTime getLunchTime() {
+		return lunchTime;
+	}
+
+	public void setLunchTime(LocalTime lunchTime) {
+		this.lunchTime = lunchTime;
+	}
+
+	public LocalTime getDinerTime() {
+		return dinerTime;
+	}
+
+	public void setDinerTime(LocalTime dinerTime) {
+		this.dinerTime = dinerTime;
 	}
 
 	public Boolean getBlock() {

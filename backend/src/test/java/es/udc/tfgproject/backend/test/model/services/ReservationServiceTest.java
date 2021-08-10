@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,6 @@ import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
-import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.MenuItem;
 import es.udc.tfgproject.backend.model.entities.MenuItemDao;
@@ -136,7 +135,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -168,7 +167,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product1 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -215,7 +214,7 @@ public class ReservationServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -247,7 +246,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -270,7 +269,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(InstanceNotFoundException.class, () -> reservationService.addToMenu(user.getId(),
 				user.getMenu().getId(), NON_EXISTENT_ID, company.getId(), 1));
@@ -293,7 +292,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -318,7 +317,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -346,7 +345,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -377,7 +376,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -400,7 +399,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(InstanceNotFoundException.class, () -> reservationService.updateMenuItemQuantity(user.getId(),
 				user.getMenu().getId(), NON_EXISTENT_ID, company.getId(), 1));
@@ -423,7 +422,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -449,7 +448,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -476,7 +475,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product1 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -508,7 +507,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(InstanceNotFoundException.class, () -> reservationService.removeMenuItem(user.getId(),
 				user.getMenu().getId(), NON_EXISTENT_ID, company.getId()));
@@ -530,7 +529,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -556,7 +555,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -587,9 +586,9 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company1 = businessService.addCompany(user.getId(), "TradFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		Company company2 = businessService.addCompany(user2.getId(), "TexasFood", 24, true, true, 5, category2.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product1 = productManagementService.addProduct(user.getId(), company1.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -633,7 +632,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -643,7 +642,7 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
 
 		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 07, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
 
 		Reserve expectedReserve = reservationService.findReserve(user.getId(), reserve.getId());
 
@@ -679,7 +678,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -689,7 +688,7 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
 
 		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 07, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
 
 		reservationService.cancelReservation(user.getId(), reserve.getId());
 		Block<Reserve> expectedBlock = new Block<>(Arrays.asList(), false);
@@ -709,7 +708,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(InstanceNotFoundException.class, () -> reservationService.reservation(user.getId(),
 				NON_EXISTENT_ID, company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
@@ -731,7 +730,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(PermissionException.class, () -> reservationService.reservation(user1.getId(),
 				user2.getMenu().getId(), company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
@@ -752,7 +751,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(InstanceNotFoundException.class, () -> reservationService.reservation(NON_EXISTENT_ID,
 				user.getMenu().getId(), company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
@@ -772,7 +771,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(EmptyMenuException.class, () -> reservationService.reservation(user.getId(),
 				user.getMenu().getId(), company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
@@ -790,9 +789,9 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testFindReserveOfAnotherUser() throws InstanceNotFoundException, PermissionException,
-			EmptyMenuException, MaximumCapacityExceededException, ReservationDateIsBeforeNowException,
-			CompanyDoesntAllowReservesException {
+	public void testFindReserveOfAnotherUser()
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		User user1 = signUpUser("user1");
 		User user2 = signUpUser("user2");
@@ -807,7 +806,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user1.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -815,16 +814,16 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user1.getId(), user1.getMenu().getId(), product.getId(), company.getId(), 2);
 
 		Reserve reserve = reservationService.reservation(user1.getId(), user1.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 07, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 11, 23), 15, PeriodType.DINER);
 
 		assertThrows(PermissionException.class, () -> reservationService.findReserve(user2.getId(), reserve.getId()));
 
 	}
 
 	@Test
-	public void testFindReserveWithNonExistingUserId() throws InstanceNotFoundException, PermissionException,
-			EmptyMenuException, MaximumCapacityExceededException, ReservationDateIsBeforeNowException,
-			CompanyDoesntAllowReservesException {
+	public void testFindReserveWithNonExistingUserId()
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -838,7 +837,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -846,7 +845,7 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), 2);
 
 		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 07, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
 
 		assertThrows(PermissionException.class, () -> reservationService.findReserve(NON_EXISTENT_ID, reserve.getId()));
 
@@ -863,38 +862,6 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testFindUserReserves() throws InstanceNotFoundException, PermissionException {
-
-		User user = signUpUser("user");
-		CompanyCategory category1 = new CompanyCategory("Tradicional");
-		companyCategoryDao.save(category1);
-		ProductCategory pCategory = new ProductCategory("Bocadillos");
-		productCategoryDao.save(pCategory);
-
-		Province province = new Province("Lugo");
-		provinceDao.save(province);
-		City city = new City("Lugo", province);
-		cityDao.save(city);
-
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
-
-		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
-				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
-
-		Reserve reserve1 = addReserve(user, company, product, LocalDate.of(2021, 07, 25), 3, PeriodType.DINER);
-		Reserve reserve2 = addReserve(user, company, product, LocalDate.of(2021, 07, 28), 3, PeriodType.LUNCH);
-		Reserve reserve3 = addReserve(user, company, product, LocalDate.of(2021, 07, 30), 3, PeriodType.DINER);
-
-		Block<Reserve> expectedBlock = new Block<>(Arrays.asList(reserve3, reserve2), true);
-		assertEquals(expectedBlock, reservationService.findUserReserves(user.getId(), 0, 2));
-
-		expectedBlock = new Block<>(Arrays.asList(reserve1), false);
-		assertEquals(expectedBlock, reservationService.findUserReserves(user.getId(), 1, 2));
-
-	}
-
-	@Test
 	public void testFindNoCompanyReserves() throws InstanceNotFoundException, PermissionException {
 
 		User user = signUpUser("user");
@@ -907,7 +874,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 		Block<Reserve> expectedOrders = new Block<>(new ArrayList<>(), false);
 
 		assertEquals(expectedOrders, reservationService.findCompanyReserves(user.getId(), company.getId(),
@@ -931,7 +898,7 @@ public class ReservationServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
+				20, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
@@ -953,46 +920,6 @@ public class ReservationServiceTest {
 				LocalDate.of(2021, 07, 28), PeriodType.DINER, 0, 2));
 		assertEquals(expectedBlock, reservationService.findCompanyReserves(user.getId(), company.getId(),
 				LocalDate.of(2021, 07, 27), PeriodType.LUNCH, 0, 2));
-	}
-
-	@Test
-	public void testAddEventEvaluation() throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
-
-		User user = signUpUser("user");
-		CompanyCategory category1 = new CompanyCategory("Tradicional");
-		companyCategoryDao.save(category1);
-		ProductCategory pCategory = new ProductCategory("Bocadillos");
-		productCategoryDao.save(pCategory);
-
-		Province province = new Province("Lugo");
-		provinceDao.save(province);
-		City city = new City("Lugo", province);
-		cityDao.save(city);
-
-		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				20);
-
-		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
-				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
-
-		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), 3);
-
-		reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 07, 19), 3, PeriodType.DINER);
-
-		Block<EventEvaluation> block = reservationService.findUserEventEvaluations(user.getId(), 0, 2);
-
-		EventEvaluation evaluation = block.getItems().get(0);
-		reservationService.addEventEvaluation(user.getId(), evaluation.getId(), 5, "Buena comida");
-
-		Block<EventEvaluation> blockCompany = reservationService.findCompanyEventEvaluations(user.getId(),
-				company.getId(), 0, 2);
-		List<EventEvaluation> evaluations = blockCompany.getItems();
-
-		assertEquals(1, evaluations.size());
-		assertEquals("Buena comida", evaluations.get(0).getOpinion());
-		assertEquals(5, evaluations.get(0).getPoints());
 	}
 
 }

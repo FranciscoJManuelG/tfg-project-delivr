@@ -29,7 +29,6 @@ public class BuyParamsDto {
 		this.homeSale = homeSale;
 	}
 
-	@NotNull
 	@Size(min = 1, max = 200)
 	public String getStreet() {
 		return street;
@@ -39,7 +38,6 @@ public class BuyParamsDto {
 		this.street = street;
 	}
 
-	@NotNull
 	@Size(min = 1, max = 20)
 	public String getCp() {
 		return cp;

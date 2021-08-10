@@ -2,6 +2,7 @@ package es.udc.tfgproject.backend.test.model.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +72,8 @@ public class BusinessCatalogServiceTest {
 	}
 
 	private Company createCompany(User user, String name, CompanyCategory companyCategory) {
-		return new Company(user, name, 20, true, true, 15, false, companyCategory, 20);
+		return new Company(user, name, 20, true, true, 15, false, companyCategory, 20, LocalTime.of(7, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 	}
 
 	@Test
