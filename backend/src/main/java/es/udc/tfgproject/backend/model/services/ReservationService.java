@@ -1,5 +1,6 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
@@ -28,11 +29,14 @@ public interface ReservationService {
 			throws InstanceNotFoundException, PermissionException;
 
 	Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
-			PeriodType periodType)
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException, 
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException;
+			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
+			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException;
 
 	void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException;
+
+	void removeReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException;
+
+	BigDecimal calculateDepositFromPercentage(Long companyId, BigDecimal totalPrice) throws InstanceNotFoundException;
 
 	Boolean checkCapacity(Long companyId, LocalDate reservationDate, PeriodType periodType, Integer diners)
 			throws MaximumCapacityExceededException, InstanceNotFoundException, ReservationDateIsBeforeNowException;
@@ -46,6 +50,9 @@ public interface ReservationService {
 
 	Block<Reserve> findCompanyReserves(Long userId, Long companyId, LocalDate date, PeriodType periodType, int page,
 			int size) throws InstanceNotFoundException, PermissionException;
+
+	Block<Reserve> findCompanyReservesCanceled(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException;
 
 	void addEventEvaluation(Long userId, Long eventEvaluationId, Integer points, String opinion)
 			throws PermissionException, InstanceNotFoundException;

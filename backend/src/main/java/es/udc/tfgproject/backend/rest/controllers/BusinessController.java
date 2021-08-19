@@ -66,9 +66,8 @@ public class BusinessController {
 
 		return toCompanyDto(businessService.addCompany(userId, params.getName(), params.getCapacity(),
 				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				params.getReserveCapacity(), LocalTime.parse(params.getOpeningTime()),
-				LocalTime.parse(params.getClosingTime()), LocalTime.parse(params.getLunchTime()),
-				LocalTime.parse(params.getDinerTime())));
+				LocalTime.parse(params.getOpeningTime()), LocalTime.parse(params.getClosingTime()), 
+				LocalTime.parse(params.getLunchTime()), LocalTime.parse(params.getDinerTime())));
 
 	}
 
@@ -79,9 +78,8 @@ public class BusinessController {
 
 		return toCompanyDto(businessService.modifyCompany(userId, companyId, params.getName(), params.getCapacity(),
 				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				params.getReserveCapacity(), LocalTime.parse(params.getOpeningTime()),
-				LocalTime.parse(params.getClosingTime()), LocalTime.parse(params.getLunchTime()),
-				LocalTime.parse(params.getDinerTime())));
+				LocalTime.parse(params.getOpeningTime()), LocalTime.parse(params.getClosingTime()), 
+				LocalTime.parse(params.getLunchTime()), LocalTime.parse(params.getDinerTime())));
 
 	}
 

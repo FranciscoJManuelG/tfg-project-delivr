@@ -36,6 +36,7 @@ public class Reserve {
 	private EventEvaluation eventEvaluation;
 	private BigDecimal totalPrice;
 	private BigDecimal deposit;
+	private Boolean canceled;
 
 	public Reserve() {
 		super();
@@ -51,6 +52,7 @@ public class Reserve {
 		this.periodType = periodType;
 		this.totalPrice = totalPrice;
 		this.deposit = deposit;
+		this.canceled = false;
 	}
 
 	@Id
@@ -98,6 +100,14 @@ public class Reserve {
 
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+
+	public Boolean getCanceled() {
+		return canceled;
+	}
+
+	public void setCanceled(Boolean canceled) {
+		this.canceled = canceled;
 	}
 
 	public Integer getDiners() {

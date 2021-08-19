@@ -1,7 +1,6 @@
 package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +55,8 @@ public class BusinessServiceImpl implements BusinessService {
 	private GoalTypeDao goalTypeDao;
 
 	@Override
-	public Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+	public Company addCompany(Long userId, String name, Integer capacity, Boolean reserve, Boolean homeSale,
+			Integer reservePercentage, Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
 			LocalTime lunchTime, LocalTime dinerTime) throws InstanceNotFoundException {
 
 		User user = permissionChecker.checkUser(userId);
@@ -65,15 +64,15 @@ public class BusinessServiceImpl implements BusinessService {
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
 		Company company = new Company(user, name, capacity, reserve, homeSale, reservePercentage, false,
-				companyCategory, reserveCapacity, openingTime, closingTime, lunchTime, dinerTime);
+				companyCategory, openingTime, closingTime, lunchTime, dinerTime);
 		companyDao.save(company);
 
 		return company;
 	}
 
 	@Override
-	public Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve,
-			Boolean homeSale, int reservePercentage, Long companyCategoryId, Integer reserveCapacity, 
+	public Company modifyCompany(Long userId, Long companyId, String name, Integer capacity, Boolean reserve,
+			Boolean homeSale, Integer reservePercentage, Long companyCategoryId, 
 			LocalTime openingTime, LocalTime closingTime, LocalTime lunchTime, LocalTime dinerTime)
 			throws InstanceNotFoundException, PermissionException {
 
@@ -82,17 +81,22 @@ public class BusinessServiceImpl implements BusinessService {
 		CompanyCategory companyCategory = checkCompanyCategory(companyCategoryId);
 
 		company.setName(name);
-		company.setCapacity(capacity);
 		company.setReserve(reserve);
 		company.setHomeSale(homeSale);
-		company.setReservePercentage(reservePercentage);
 		company.setCompanyCategory(companyCategory);
 		company.setOpeningTime(openingTime);
 		company.setClosingTime(closingTime);
-		company.setLunchTime(lunchTime);
-		company.setDinerTime(dinerTime);
-		if (reserveCapacity != null) {
-			company.setReserveCapacity(reserveCapacity);
+		if (capacity != null) {
+			company.setCapacity(capacity);
+		}
+		if (reservePercentage != null) {
+			company.setReservePercentage(reservePercentage);
+		}
+		if (lunchTime != null) {
+			company.setLunchTime(lunchTime);
+		}
+		if (dinerTime != null) {
+			company.setDinerTime(dinerTime);
 		}
 
 		return company;

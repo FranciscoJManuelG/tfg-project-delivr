@@ -6,6 +6,7 @@ import static es.udc.tfgproject.backend.rest.dtos.MenuConversor.toMenuDto;
 import static es.udc.tfgproject.backend.rest.dtos.ReserveConversor.toReserveDto;
 import static es.udc.tfgproject.backend.rest.dtos.ReserveConversor.toReserveSummaryDtos;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -48,6 +49,7 @@ import es.udc.tfgproject.backend.rest.dtos.CompanyEventEvaluationSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.DinersDto;
 import es.udc.tfgproject.backend.rest.dtos.IdDto;
 import es.udc.tfgproject.backend.rest.dtos.MenuDto;
+import es.udc.tfgproject.backend.rest.dtos.PriceDto;
 import es.udc.tfgproject.backend.rest.dtos.RemoveMenuItemParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ReservationParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ReserveDto;
@@ -96,7 +98,8 @@ public class ReservationController {
 	@ExceptionHandler(ReservationDateIsBeforeNowException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorsDto handleReservationDateIsBeforeNowException(ReservationDateIsBeforeNowException exception, Locale locale) {
+	public ErrorsDto handleReservationDateIsBeforeNowException(ReservationDateIsBeforeNowException exception,
+			Locale locale) {
 
 		String errorMessage = messageSource.getMessage(RESERVATION_DATE_IS_BEFORE_NOW_EXCEPTION, null,
 				RESERVATION_DATE_IS_BEFORE_NOW_EXCEPTION, locale);
@@ -108,10 +111,11 @@ public class ReservationController {
 	@ExceptionHandler(CompanyDoesntAllowReservesException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorsDto handleCompanyDoesntAllowReservesException(CompanyDoesntAllowReservesException exception, Locale locale) {
+	public ErrorsDto handleCompanyDoesntAllowReservesException(CompanyDoesntAllowReservesException exception,
+			Locale locale) {
 
 		String errorMessage = messageSource.getMessage(COMPANY_DOESNT_ALLOW_RESERVES, null,
-		COMPANY_DOESNT_ALLOW_RESERVES, locale);
+				COMPANY_DOESNT_ALLOW_RESERVES, locale);
 
 		return new ErrorsDto(errorMessage);
 
@@ -160,16 +164,32 @@ public class ReservationController {
 			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 
 		LocalDate reservationDate = LocalDate.parse(params.getReservationDate().trim());
-		return new IdDto(reservationService.reservation(userId, menuId, params.getCompanyId(),
-			reservationDate, params.getDiners(), PeriodType.valueOf(params.getPeriodType())).getId());
+		return new IdDto(reservationService.reservation(userId, menuId, params.getCompanyId(), reservationDate,
+				params.getDiners(), PeriodType.valueOf(params.getPeriodType())).getId());
 	}
 
-	@DeleteMapping("/reserves/{reserveId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PostMapping("/reserves/{reserveId}/cancelReservation")
 	public void cancelReservation(@RequestAttribute Long userId, @PathVariable Long reserveId)
 			throws InstanceNotFoundException, PermissionException {
 
 		reservationService.cancelReservation(userId, reserveId);
+
+	}
+
+	@DeleteMapping("/reserves/{reserveId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeReservation(@RequestAttribute Long userId, @PathVariable Long reserveId)
+			throws InstanceNotFoundException, PermissionException {
+
+		reservationService.removeReservation(userId, reserveId);
+
+	}
+
+	@GetMapping("/menus/calculateDeposit")
+	public PriceDto calculateDepositFromPercentage(@RequestAttribute Long userId, @RequestParam Long companyId,
+			@RequestParam BigDecimal totalPrice) throws InstanceNotFoundException {
+
+		return new PriceDto(reservationService.calculateDepositFromPercentage(companyId, totalPrice));
 
 	}
 
@@ -186,8 +206,8 @@ public class ReservationController {
 
 	@GetMapping("/menus/obtainMaxDinersAllowed")
 	public DinersDto obtainMaxDinersAllowed(@RequestAttribute Long userId, @RequestParam Long companyId,
-			@RequestParam String reservationDate,
-			@RequestParam String periodType) throws InstanceNotFoundException, PermissionException {
+			@RequestParam String reservationDate, @RequestParam String periodType)
+			throws InstanceNotFoundException, PermissionException {
 
 		LocalDate date = LocalDate.parse(reservationDate.trim());
 		return new DinersDto(
@@ -215,13 +235,24 @@ public class ReservationController {
 
 	@GetMapping("/companyReserves")
 	public BlockDto<ReserveSummaryDto> findCompanyReserves(@RequestAttribute Long userId, @RequestParam Long companyId,
-			@RequestParam String reservationDate,
-			@RequestParam String periodType, @RequestParam(defaultValue = "0") int page)
-			throws InstanceNotFoundException, PermissionException {
+			@RequestParam String reservationDate, @RequestParam String periodType,
+			@RequestParam(defaultValue = "0") int page) throws InstanceNotFoundException, PermissionException {
 
 		LocalDate date = LocalDate.parse(reservationDate.trim());
 		Block<Reserve> reserveBlock = reservationService.findCompanyReserves(userId, companyId, date,
 				PeriodType.valueOf(periodType), page, Constantes.SIZE);
+
+		return new BlockDto<>(toReserveSummaryDtos(reserveBlock.getItems()), reserveBlock.getExistMoreItems());
+
+	}
+
+	@GetMapping("/companyReservesCanceled")
+	public BlockDto<ReserveSummaryDto> companyReservesCanceled(@RequestAttribute Long userId,
+			@RequestParam Long companyId, @RequestParam(defaultValue = "0") int page)
+			throws InstanceNotFoundException, PermissionException {
+
+		Block<Reserve> reserveBlock = reservationService.findCompanyReservesCanceled(userId, companyId, page,
+				Constantes.SIZE);
 
 		return new BlockDto<>(toReserveSummaryDtos(reserveBlock.getItems()), reserveBlock.getExistMoreItems());
 

@@ -16,4 +16,8 @@ public class Constantes {
 
 	public static final int NUMERO_CERO = 0;
 
+	public static final String HH_MM = "HH:mm";
+
+	public static final int SCALE = 2;
+
 }

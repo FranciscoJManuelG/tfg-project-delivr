@@ -89,10 +89,10 @@ CREATE INDEX CompanyCategoryIndexByName ON CompanyCategory (name);
 CREATE TABLE Company(
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(60) COLLATE latin1_bin NOT NULL,
-    capacity SMALLINT NOT NULL,
+    capacity SMALLINT,
     reserve BOOLEAN NOT NULL,
     homeSale BOOLEAN NOT NULL,
-    reservePercentage SMALLINT NOT NULL,
+    reservePercentage SMALLINT,
     openingTime TIME NOT NULL,
     closingTime TIME NOT NULL,
     lunchTime TIME,
@@ -100,7 +100,6 @@ CREATE TABLE Company(
     userId BIGINT NOT NULL,
     companyCategoryId BIGINT NOT NULL,
     block BOOLEAN NOT NULL,
-    reserveCapacity SMALLINT,
     CONSTRAINT CompanyIdPK PRIMARY KEY (id),
     CONSTRAINT CompanyUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
@@ -297,6 +296,7 @@ CREATE TABLE ReserveTable (
     periodType TINYINT NOT NULL,
     totalPrice DECIMAL(11, 2) NOT NULL,
     deposit DECIMAL(11, 2) NOT NULL,
+    canceled BOOLEAN NOT NULL,
     CONSTRAINT ReservePK PRIMARY KEY (id),
     CONSTRAINT ReserveUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),

@@ -9,6 +9,7 @@ public class MenuDto {
 	private List<MenuItemDto> items;
 	private int totalQuantity;
 	private BigDecimal totalPrice;
+	private BigDecimal deposit;
 
 	public MenuDto() {
 	}
@@ -53,4 +54,11 @@ public class MenuDto {
 		this.totalPrice = totalPrice;
 	}
 
+	public BigDecimal getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(BigDecimal deposit) {
+		this.deposit = deposit;
+	}
 }

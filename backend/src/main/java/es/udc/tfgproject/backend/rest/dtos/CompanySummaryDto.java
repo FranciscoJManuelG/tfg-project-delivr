@@ -12,12 +12,17 @@ public class CompanySummaryDto {
 	private Boolean homeSale;
 	private int reservePercentage;
 	private Long companyCategoryId;
+	private String openingTime;
+	private String closingTime;
+	private String lunchTime;
+	private String dinerTime;
 
 	public CompanySummaryDto() {
 	}
 
 	public CompanySummaryDto(Long id, String street, String cp, Long cityId, String name, int capacity, Boolean reserve,
-			Boolean homeSale, int reservePercentage, Long companyCategoryId) {
+			Boolean homeSale, int reservePercentage, Long companyCategoryId, String openingTime,
+			String closingTime, String lunchTime, String dinerTime) {
 		this.id = id;
 		this.street = street;
 		this.cp = cp;
@@ -28,6 +33,10 @@ public class CompanySummaryDto {
 		this.homeSale = homeSale;
 		this.reservePercentage = reservePercentage;
 		this.companyCategoryId = companyCategoryId;
+		this.openingTime = openingTime;
+		this.closingTime = closingTime;
+		this.lunchTime = lunchTime;
+		this.dinerTime = dinerTime;
 	}
 
 	public Long getId() {
@@ -109,5 +118,39 @@ public class CompanySummaryDto {
 	public void setCompanyCategoryId(Long companyCategoryId) {
 		this.companyCategoryId = companyCategoryId;
 	}
+
+	public String getOpeningTime() {
+		return openingTime;
+	}
+
+	public void setOpeningTime(String openingTime) {
+		this.openingTime = openingTime;
+	}
+
+	public String getClosingTime() {
+		return closingTime;
+	}
+
+	public void setClosingTime(String closingTime) {
+		this.closingTime = closingTime;
+	}
+
+	public String getLunchTime() {
+		return lunchTime;
+	}
+
+	public void setLunchTime(String lunchTime) {
+		this.lunchTime = lunchTime;
+	}
+
+	public String getDinerTime() {
+		return dinerTime;
+	}
+
+	public void setDinerTime(String dinerTime) {
+		this.dinerTime = dinerTime;
+	}
+
+	
 
 }

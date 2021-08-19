@@ -7,12 +7,11 @@ import javax.validation.constraints.Size;
 public class AddCompanyParamsDto {
 
 	private String name;
-	private int capacity;
+	private Integer capacity;
 	private Boolean reserve;
 	private Boolean homeSale;
-	private int reservePercentage;
+	private Integer reservePercentage;
 	private Long companyCategoryId;
-	private Integer reserveCapacity;
 	private String openingTime;
 	private String closingTime;
 	private String lunchTime;
@@ -28,13 +27,12 @@ public class AddCompanyParamsDto {
 		this.name = name;
 	}
 
-	@NotNull
 	@Min(value = 1)
-	public int getCapacity() {
+	public Integer getCapacity() {
 		return capacity;
 	}
 
-	public void setCapacity(int capacity) {
+	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
 
@@ -56,13 +54,12 @@ public class AddCompanyParamsDto {
 		this.homeSale = homeSale;
 	}
 
-	@NotNull
 	@Min(value = 0)
-	public int getReservePercentage() {
+	public Integer getReservePercentage() {
 		return reservePercentage;
 	}
 
-	public void setReservePercentage(int reservePercentage) {
+	public void setReservePercentage(Integer reservePercentage) {
 		this.reservePercentage = reservePercentage;
 	}
 
@@ -73,14 +70,6 @@ public class AddCompanyParamsDto {
 
 	public void setCompanyCategoryId(Long companyCategoryId) {
 		this.companyCategoryId = companyCategoryId;
-	}
-
-	public Integer getReserveCapacity() {
-		return reserveCapacity;
-	}
-
-	public void setReserveCapacity(Integer reserveCapacity) {
-		this.reserveCapacity = reserveCapacity;
 	}
 
 	@NotNull

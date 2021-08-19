@@ -82,7 +82,7 @@ public class ProductCatalogServiceTest {
 	}
 
 	private Company createCompany(User user, String name, CompanyCategory companyCategory) {
-		return new Company(user, name, 20, true, true, 15, false, companyCategory, 20, LocalTime.of(10, 0),
+		return new Company(user, name, 20, true, true, 15, false, companyCategory, LocalTime.of(10, 0),
 				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 	}
 

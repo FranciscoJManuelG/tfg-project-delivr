@@ -1,6 +1,7 @@
 package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -377,7 +378,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 		default:
 		}
 
-		return discountedPrice;
+		return discountedPrice.setScale(Constantes.SCALE, RoundingMode.FLOOR);
 	}
 
 	private BigDecimal calculatePriceFromPercentage(int discountPercentage, BigDecimal totalPrice) {
@@ -385,7 +386,7 @@ public class ShoppingServiceImpl implements ShoppingService {
 		BigDecimal valorToDiscount = totalPrice.multiply(new BigDecimal(percentage));
 		BigDecimal discountedPrice = totalPrice.subtract(valorToDiscount);
 
-		return discountedPrice;
+		return discountedPrice.setScale(Constantes.SCALE, RoundingMode.FLOOR);
 	}
 
 	@Override

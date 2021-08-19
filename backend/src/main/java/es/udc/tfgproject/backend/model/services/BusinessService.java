@@ -16,12 +16,12 @@ import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 public interface BusinessService {
 
-	Company addCompany(Long userId, String name, int capacity, Boolean reserve, Boolean homeSale, int reservePercentage,
-			Long companyCategoryId, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+	Company addCompany(Long userId, String name, Integer capacity, Boolean reserve, Boolean homeSale, Integer reservePercentage,
+			Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
 			LocalTime lunchTime, LocalTime dinerTime) throws InstanceNotFoundException;
 
-	Company modifyCompany(Long userId, Long companyId, String name, int capacity, Boolean reserve, Boolean homeSale,
-			int reservePercentage, Long companyCategoryId, Integer reserveCapacity, LocalTime openingTime, LocalTime closingTime,
+	Company modifyCompany(Long userId, Long companyId, String name, Integer capacity, Boolean reserve, Boolean homeSale,
+			Integer reservePercentage, Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
 			LocalTime lunchTime, LocalTime dinerTime)
 			throws InstanceNotFoundException, PermissionException;
 

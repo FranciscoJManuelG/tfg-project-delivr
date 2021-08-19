@@ -1,6 +1,7 @@
 package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
@@ -139,7 +140,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		checkCapacity(company.getId(), reservationDate, periodType, diners);
 
-		BigDecimal deposit = calculateDepositFromPercentage(company.getReservePercentage(), menu.getTotalPrice());
+		BigDecimal deposit = calculateDepositFromPercentage(companyId, menu.getTotalPrice());
 
 		Reserve reserve = new Reserve(menu.getUser(), company, reservationDate, diners, periodType,
 				menu.getTotalPrice(), deposit);
@@ -168,11 +169,15 @@ public class ReservationServiceImpl implements ReservationService {
 		return reserve;
 	}
 
-	private BigDecimal calculateDepositFromPercentage(int reservePercentage, BigDecimal totalPrice) {
-		double percentage = (double) reservePercentage / 100;
+	@Override
+	public BigDecimal calculateDepositFromPercentage(Long companyId, BigDecimal totalPrice)
+			throws InstanceNotFoundException {
+		Company company = permissionChecker.checkCompany(companyId);
+
+		double percentage = (double) company.getReservePercentage() / 100;
 		BigDecimal valorToDiscount = totalPrice.multiply(new BigDecimal(percentage));
 
-		return valorToDiscount;
+		return valorToDiscount.setScale(Constantes.SCALE, RoundingMode.FLOOR);
 	}
 
 	@Override
@@ -184,7 +189,8 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	@Transactional(readOnly = true)
 	public Block<Reserve> findUserReserves(Long userId, int page, int size) {
-		Slice<Reserve> slice = reserveDao.findByUserIdOrderByDateDesc(userId, PageRequest.of(page, size));
+		Slice<Reserve> slice = reserveDao.findByUserIdAndCanceledIsFalseOrderByDateDesc(userId,
+				PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}
@@ -197,6 +203,18 @@ public class ReservationServiceImpl implements ReservationService {
 
 		Slice<Reserve> slice = reserveDao.findByCompanyIdAndDateAndPeriodTypeOrderByDateDesc(company.getId(), date,
 				periodType, PageRequest.of(page, size));
+
+		return new Block<>(slice.getContent(), slice.hasNext());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Block<Reserve> findCompanyReservesCanceled(Long userId, Long companyId, int page, int size)
+			throws InstanceNotFoundException, PermissionException {
+		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
+
+		Slice<Reserve> slice = reserveDao.findByCompanyIdAndCanceledOrderByDateDesc(company.getId(), true,
+				PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}
@@ -217,7 +235,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		Integer dinersNow = reserveDao.getSumDinersByReservationDateAndPeriodType(reservationDate, periodType);
 
-		Integer dinersAllowed = company.getReserveCapacity() - dinersNow;
+		Integer dinersAllowed = company.getCapacity() - dinersNow;
 
 		return dinersAllowed;
 	}
@@ -242,11 +260,22 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException {
 		Reserve reserve = permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, userId);
+
+		// Si la cancelación se realia el mismo día, se elimina la reserva
+		// Sino, se marcará como cancelada y se eliminará cuando la compañía reembolse
+		// la señal
+		if (reserve.getDate().equals(LocalDate.now())) {
+			removeReservation(userId, reserve.getId());
+		} else {
+			reserve.setCanceled(true);
+		}
+
+	}
+
+	@Override
+	public void removeReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException {
+		Reserve reserve = permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, userId);
 		EventEvaluation eventEvaluation = permissionChecker.checkEventEvaluationBelongsToReserve(reserveId);
-		// Cuando implemente lo de PayPal, hacer comprobación de que cuando cancela es
-		// antes que el día anterior del evento.
-		// Si se cancela el mismo día, no se realiza el reembolso del depoito por
-		// adelantado.
 
 		for (ReserveItem reserveItem : reserve.getItems()) {
 			reserveItemDao.delete(reserveItem);
