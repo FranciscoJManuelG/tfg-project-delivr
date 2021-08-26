@@ -33,7 +33,7 @@ public class CustomizedCompanyAddressDaoImpl implements CustomizedCompanyAddress
 		LocalTime now = LocalTime.now();
 		String[] tokens = getTokens(keywords);
 		String[] streetTokens = getTokens(street);
-		String queryString = "SELECT ca FROM CompanyAddress ca WHERE ca.company.block = false AND (ca.company.openingTime <= :now AND ca.company.closingTime >= :now)";
+		String queryString = "SELECT ca FROM CompanyAddress ca WHERE ca.company.user.feePaid = true AND ca.company.block = false AND (ca.company.openingTime <= :now AND ca.company.closingTime >= :now)";
 
 		if (companyCategoryId != null) {
 			queryString += " AND ca.company.companyCategory.id = :companyCategoryId";

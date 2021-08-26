@@ -12,13 +12,12 @@ import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
 
 public interface ReserveDao extends PagingAndSortingRepository<Reserve, Long> {
 
-	@Query("SELECT r FROM Reserve r WHERE r.user.id = ?1 AND r.canceled = false ORDER BY r.date DESC")
-	Slice<Reserve> findByUserIdAndCanceledIsFalseOrderByDateDesc(Long userId, Pageable pageable);
+	Slice<Reserve> findByUserIdOrderByDateAsc(Long userId, Pageable pageable);
 
 	Slice<Reserve> findByCompanyIdAndDateAndPeriodTypeOrderByDateDesc(Long companyId, LocalDate date,
 			PeriodType periodType, Pageable pageable);
 
-	Slice<Reserve> findByCompanyIdAndCanceledOrderByDateDesc(Long companyId, Boolean canceled, Pageable pageable);
+	Slice<Reserve> findByCompanyIdOrderByDateDesc(Long companyId, Pageable pageable);
 
 	List<Reserve> findByUserIdAndCompanyId(Long userId, Long companyId);
 

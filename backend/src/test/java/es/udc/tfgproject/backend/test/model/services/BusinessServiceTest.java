@@ -172,8 +172,8 @@ public class BusinessServiceTest {
 
 		assertThrows(InstanceNotFoundException.class,
 				() -> businessService.addCompany(user.getId(), "Delivr", 27, true, true, 25,
-						NON_EXISTENT_COMPANY_CATEGORY_ID, LocalTime.of(10, 0), LocalTime.of(23, 0),
-						LocalTime.of(14, 0), LocalTime.of(21, 0)));
+						NON_EXISTENT_COMPANY_CATEGORY_ID, LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0),
+						LocalTime.of(21, 0)));
 	}
 
 	@Test
@@ -192,7 +192,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
-				 LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
+				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Company modifiedCompany = businessService.modifyCompany(user.getId(), company.getId(), "VegFood", 40, false,
 				false, 15, category2.getId(), LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0),
@@ -220,7 +220,7 @@ public class BusinessServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				 LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
+				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Company blockedCompany = businessService.blockCompany(user.getId(), company.getId());
 
@@ -282,8 +282,8 @@ public class BusinessServiceTest {
 		City city = new City("Lugo", province);
 		cityDao.save(city);
 
-		businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
+		businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(), LocalTime.of(10, 0),
+				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		assertThrows(InstanceNotFoundException.class,
 				() -> businessService.modifyCompany(user.getId(), NON_EXISTENT_COMPANY_ID, "GreenFood", 40, true, false,

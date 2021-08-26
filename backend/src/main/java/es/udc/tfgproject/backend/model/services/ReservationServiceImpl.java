@@ -3,7 +3,9 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.paypal.base.rest.PayPalRESTException;
 
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
@@ -27,6 +31,8 @@ import es.udc.tfgproject.backend.model.entities.ReserveDao;
 import es.udc.tfgproject.backend.model.entities.ReserveItem;
 import es.udc.tfgproject.backend.model.entities.ReserveItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.entities.WeeklyBalance;
+import es.udc.tfgproject.backend.model.entities.WeeklyBalanceDao;
 import es.udc.tfgproject.backend.model.exceptions.CompanyDoesntAllowReservesException;
 import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
@@ -55,6 +61,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Autowired
 	private EventEvaluationDao eventEvaluationDao;
+
+	@Autowired
+	private WeeklyBalanceDao weeklyBalanceDao;
 
 	@Override
 	public Menu addToMenu(Long userId, Long menuId, Long productId, Long companyId, int quantity)
@@ -123,8 +132,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
-			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
+			PeriodType periodType, String saleId)
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
 		User user = permissionChecker.checkUser(userId);
 		Company company = permissionChecker.checkCompany(companyId);
 
@@ -138,16 +148,18 @@ public class ReservationServiceImpl implements ReservationService {
 			throw new EmptyMenuException();
 		}
 
+		menu = filterMenu(menu, company.getId());
+
 		checkCapacity(company.getId(), reservationDate, periodType, diners);
 
 		BigDecimal deposit = calculateDepositFromPercentage(companyId, menu.getTotalPrice());
 
 		Reserve reserve = new Reserve(menu.getUser(), company, reservationDate, diners, periodType,
-				menu.getTotalPrice(), deposit);
+				menu.getTotalPrice(), deposit, saleId);
 
 		reserveDao.save(reserve);
 
-		menu = filterMenu(menu, company.getId());
+		setWeeklyBalance(company.getUser(), reserve.getDeposit());
 
 		for (MenuItem menuItem : menu.getItems()) {
 
@@ -167,6 +179,27 @@ public class ReservationServiceImpl implements ReservationService {
 		eventEvaluationDao.save(eventEvaluation);
 
 		return reserve;
+	}
+
+	private void setWeeklyBalance(User user, BigDecimal deposit) {
+		Integer year = LocalDate.now().getYear();
+		WeekFields weekFields = WeekFields.of(Locale.getDefault());
+		Integer weekNumber = LocalDate.now().get(weekFields.weekOfWeekBasedYear());
+
+		BigDecimal balanceToCompany = deposit.multiply(Constantes.RELIVRY_PERCENTAGE);
+
+		Optional<WeeklyBalance> weeklyBalanceOptional = weeklyBalanceDao.findByWeekNumberAndYearAndUserId(weekNumber,
+				year, user.getId());
+
+		if (!weeklyBalanceOptional.isPresent()) {
+			WeeklyBalance balance = new WeeklyBalance(balanceToCompany, weekNumber, year, user);
+			weeklyBalanceDao.save(balance);
+		} else {
+			WeeklyBalance weeklyBalance = weeklyBalanceOptional.get();
+			BigDecimal newBalance = balanceToCompany.add(weeklyBalance.getBalance());
+			weeklyBalance.setBalance(newBalance);
+		}
+
 	}
 
 	@Override
@@ -189,8 +222,7 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	@Transactional(readOnly = true)
 	public Block<Reserve> findUserReserves(Long userId, int page, int size) {
-		Slice<Reserve> slice = reserveDao.findByUserIdAndCanceledIsFalseOrderByDateDesc(userId,
-				PageRequest.of(page, size));
+		Slice<Reserve> slice = reserveDao.findByUserIdOrderByDateAsc(userId, PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}
@@ -203,18 +235,6 @@ public class ReservationServiceImpl implements ReservationService {
 
 		Slice<Reserve> slice = reserveDao.findByCompanyIdAndDateAndPeriodTypeOrderByDateDesc(company.getId(), date,
 				periodType, PageRequest.of(page, size));
-
-		return new Block<>(slice.getContent(), slice.hasNext());
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Block<Reserve> findCompanyReservesCanceled(Long userId, Long companyId, int page, int size)
-			throws InstanceNotFoundException, PermissionException {
-		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
-
-		Slice<Reserve> slice = reserveDao.findByCompanyIdAndCanceledOrderByDateDesc(company.getId(), true,
-				PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}
@@ -259,24 +279,33 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException {
-		Reserve reserve = permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, userId);
+		User user = permissionChecker.checkUser(userId);
+		Reserve reserve = permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, user.getId());
+		EventEvaluation eventEvaluation = permissionChecker.checkEventEvaluationBelongsToReserve(reserve.getId());
 
-		// Si la cancelación se realia el mismo día, se elimina la reserva
-		// Sino, se marcará como cancelada y se eliminará cuando la compañía reembolse
-		// la señal
-		if (reserve.getDate().equals(LocalDate.now())) {
-			removeReservation(userId, reserve.getId());
-		} else {
-			reserve.setCanceled(true);
+		// Si la cancelación se realiza el mismo día, se elimina la reserva y no se
+		// reembolsa la señal
+		// Sino, se eliminia y reembolsa la señal
+		if (!reserve.getDate().equals(LocalDate.now())) {
+			user.setGlobalBalance(user.getGlobalBalance().add(reserve.getDeposit()));
+
+			Integer year = LocalDate.now().getYear();
+			WeekFields weekFields = WeekFields.of(Locale.getDefault());
+			Integer weekNumber = LocalDate.now().get(weekFields.weekOfWeekBasedYear());
+			BigDecimal balanceToCompany = reserve.getDeposit().multiply(Constantes.RELIVRY_PERCENTAGE);
+			Optional<WeeklyBalance> weeklyBalanceOptional = weeklyBalanceDao
+					.findByWeekNumberAndYearAndUserId(weekNumber, year, reserve.getCompany().getUser().getId());
+
+			if (!weeklyBalanceOptional.isPresent()) {
+				balanceToCompany = new BigDecimal(0).subtract(balanceToCompany);
+				WeeklyBalance weeklyBalance = new WeeklyBalance(balanceToCompany, weekNumber, year,
+						reserve.getCompany().getUser());
+				weeklyBalanceDao.save(weeklyBalance);
+			} else {
+				WeeklyBalance weeklyBalance = weeklyBalanceOptional.get();
+				weeklyBalance.setBalance(weeklyBalance.getBalance().subtract(balanceToCompany));
+			}
 		}
-
-	}
-
-	@Override
-	public void removeReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException {
-		Reserve reserve = permissionChecker.checkReserveExistsAndBelongsToUser(reserveId, userId);
-		EventEvaluation eventEvaluation = permissionChecker.checkEventEvaluationBelongsToReserve(reserveId);
-
 		for (ReserveItem reserveItem : reserve.getItems()) {
 			reserveItemDao.delete(reserveItem);
 		}

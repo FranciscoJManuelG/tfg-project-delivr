@@ -1,5 +1,6 @@
 package es.udc.tfgproject.backend.model.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
 		user.setRole(RoleType.CLIENT);
 		user.setShoppingCart(shoppingCart);
 		user.setMenu(menu);
+		user.setRenewDate(LocalDate.now().plusDays(Constantes.THREE_MONTHS_IN_DAYS));
 
 		userDao.save(user);
 		shoppingCartDao.save(shoppingCart);
@@ -84,6 +86,7 @@ public class UserServiceImpl implements UserService {
 		user.setRole(RoleType.BUSINESSMAN);
 		user.setShoppingCart(shoppingCart);
 		user.setMenu(menu);
+		user.setRenewDate(LocalDate.now().plusDays(Constantes.THREE_MONTHS_IN_DAYS));
 
 		userDao.save(user);
 		shoppingCartDao.save(shoppingCart);
@@ -95,17 +98,22 @@ public class UserServiceImpl implements UserService {
 	@Transactional(readOnly = true)
 	public User login(String userName, String password) throws IncorrectLoginException {
 
-		Optional<User> user = userDao.findByUserName(userName);
+		Optional<User> userOptional = userDao.findByUserName(userName);
 
-		if (!user.isPresent()) {
+		if (!userOptional.isPresent()) {
 			throw new IncorrectLoginException(userName, password);
 		}
 
-		if (!passwordEncoder.matches(password, user.get().getPassword())) {
+		if (!passwordEncoder.matches(password, userOptional.get().getPassword())) {
 			throw new IncorrectLoginException(userName, password);
 		}
 
-		return user.get();
+		User user = userOptional.get();
+		if (user.getRenewDate().isBefore(LocalDate.now())) {
+			user.setFeePaid(false);
+		}
+
+		return user;
 
 	}
 
@@ -204,7 +212,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Block<FavouriteAddress> findFavouriteAddressesByCity(Long userId, Long cityId, int page, int size) {
-		Slice<FavouriteAddress> slice = favouriteAddressDao.findByUserIdAndCityId(userId, cityId, PageRequest.of(page, size));
+		Slice<FavouriteAddress> slice = favouriteAddressDao.findByUserIdAndCityId(userId, cityId,
+				PageRequest.of(page, size));
 
 		return new Block<>(slice.getContent(), slice.hasNext());
 	}

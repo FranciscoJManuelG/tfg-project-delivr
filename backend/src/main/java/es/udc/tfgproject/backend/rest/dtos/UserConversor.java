@@ -12,7 +12,7 @@ public class UserConversor {
 
 	public final static UserDto toUserDto(User user) {
 		return new UserDto(user.getId(), user.getUserName(), user.getFirstName(), user.getLastName(), user.getEmail(),
-				user.getPhone(), user.getRole().toString());
+				user.getPhone(), user.getRole().toString(), user.getFeePaid());
 	}
 
 	public final static User toUser(UserDto userDto) {

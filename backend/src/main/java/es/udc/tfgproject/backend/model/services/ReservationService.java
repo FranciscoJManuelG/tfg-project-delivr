@@ -3,6 +3,8 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.paypal.base.rest.PayPalRESTException;
+
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.Reserve;
@@ -29,12 +31,11 @@ public interface ReservationService {
 			throws InstanceNotFoundException, PermissionException;
 
 	Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
-			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException;
+			PeriodType periodType, String saleId)
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException;
 
 	void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException;
-
-	void removeReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException;
 
 	BigDecimal calculateDepositFromPercentage(Long companyId, BigDecimal totalPrice) throws InstanceNotFoundException;
 
@@ -50,9 +51,6 @@ public interface ReservationService {
 
 	Block<Reserve> findCompanyReserves(Long userId, Long companyId, LocalDate date, PeriodType periodType, int page,
 			int size) throws InstanceNotFoundException, PermissionException;
-
-	Block<Reserve> findCompanyReservesCanceled(Long userId, Long companyId, int page, int size)
-			throws InstanceNotFoundException, PermissionException;
 
 	void addEventEvaluation(Long userId, Long eventEvaluationId, Integer points, String opinion)
 			throws PermissionException, InstanceNotFoundException;

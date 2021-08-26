@@ -2,11 +2,14 @@ package es.udc.tfgproject.backend.model.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.WeekFields;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -35,6 +38,8 @@ import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
 import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.entities.WeeklyBalance;
+import es.udc.tfgproject.backend.model.entities.WeeklyBalanceDao;
 import es.udc.tfgproject.backend.model.exceptions.CompanyDoesNotAllowHomeSaleException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
 import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
@@ -73,6 +78,9 @@ public class ShoppingServiceImpl implements ShoppingService {
 
 	@Autowired
 	private DiscountTicketDao discountTicketDao;
+
+	@Autowired
+	private WeeklyBalanceDao weeklyBalanceDao;
 
 	@Override
 	public ShoppingCart addToShoppingCart(Long userId, Long shoppingCartId, Long productId, Long companyId,
@@ -177,12 +185,14 @@ public class ShoppingServiceImpl implements ShoppingService {
 			throw new EmptyShoppingCartException();
 		}
 
+		shoppingCart = filterShoppingCart(shoppingCart, company.getId());
+
 		// Comprobamos si el codigo del ticket descuento introducido es el correcto o
 		// no, si se ha introducido algún código
 		if (!StringUtils.isEmpty(codeDiscount)) {
-
 			DiscountTicket discountTicket = checkDiscountTicket(userId, companyId, codeDiscount);
 			BigDecimal totalPrice = getDiscountedPrice(discountTicket, shoppingCart);
+			setWeeklyBalance(company.getUser(), totalPrice);
 			order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp,
 					discountTicket, totalPrice);
 			discountTicket.setUsed(true);
@@ -191,11 +201,10 @@ public class ShoppingServiceImpl implements ShoppingService {
 		} else {
 			order = new Order(shoppingCart.getUser(), company, LocalDateTime.now(), homeSale, street, cp,
 					shoppingCart.getTotalPrice());
+			setWeeklyBalance(company.getUser(), shoppingCart.getTotalPrice());
 		}
 
 		orderDao.save(order);
-
-		shoppingCart = filterShoppingCart(shoppingCart, company.getId());
 
 		for (ShoppingCartItem shoppingCartItem : shoppingCart.getItems()) {
 
@@ -227,6 +236,29 @@ public class ShoppingServiceImpl implements ShoppingService {
 		}
 
 		return order;
+	}
+
+	private void setWeeklyBalance(User user, BigDecimal totalPrice) {
+		Integer year = LocalDate.now().getYear();
+		WeekFields weekFields = WeekFields.of(Locale.getDefault());
+		Integer weekNumber = LocalDate.now().get(weekFields.weekOfWeekBasedYear());
+
+		BigDecimal balanceToCompany = totalPrice.multiply(Constantes.RELIVRY_PERCENTAGE);
+
+		System.out.println("WeekNumber = " + weekNumber + ", year = " + year + ", userId = " + user.getId());
+
+		Optional<WeeklyBalance> weeklyBalanceOptional = weeklyBalanceDao.findByWeekNumberAndYearAndUserId(weekNumber,
+				year, user.getId());
+
+		if (!weeklyBalanceOptional.isPresent()) {
+			WeeklyBalance balance = new WeeklyBalance(balanceToCompany, weekNumber, year, user);
+			weeklyBalanceDao.save(balance);
+		} else {
+			WeeklyBalance weeklyBalance = weeklyBalanceOptional.get();
+			BigDecimal newBalance = balanceToCompany.add(weeklyBalance.getBalance());
+			weeklyBalance.setBalance(newBalance);
+		}
+
 	}
 
 	private void checkNumberOfOrdersGoalAndSendEmail(User user, Company company, Goal goal) {

@@ -255,7 +255,7 @@ public class ProductManagementServiceTest {
 		cityDao.save(city);
 
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category.getId(),
-				 LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
+				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
 		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
 				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());

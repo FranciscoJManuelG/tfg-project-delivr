@@ -21,10 +21,6 @@ public class BusinessCatalogServiceImpl implements BusinessCatalogService {
 
 		Slice<CompanyAddress> slice = companyAddressDao.find(companyCategoryId, cityId, street, keywords, page, size);
 
-		// List<CompanyAddress> companies = slice.getContent().stream().filter(ca ->
-		// LocalTime.now().isAfter(ca.getCompany().getOpeningTime()) &&
-		// LocalTime.now().isBefore(ca.getCompany().getClosingTime())).collect(Collectors.toList());
-
 		return new Block<>(slice.getContent(), slice.hasNext());
 
 	}

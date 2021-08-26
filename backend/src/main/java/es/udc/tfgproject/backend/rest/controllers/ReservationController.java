@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.paypal.base.rest.PayPalRESTException;
+
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
@@ -161,27 +163,19 @@ public class ReservationController {
 	public IdDto reservation(@RequestAttribute Long userId, @PathVariable Long menuId,
 			@Validated @RequestBody ReservationParamsDto params)
 			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
 
 		LocalDate reservationDate = LocalDate.parse(params.getReservationDate().trim());
 		return new IdDto(reservationService.reservation(userId, menuId, params.getCompanyId(), reservationDate,
-				params.getDiners(), PeriodType.valueOf(params.getPeriodType())).getId());
-	}
-
-	@PostMapping("/reserves/{reserveId}/cancelReservation")
-	public void cancelReservation(@RequestAttribute Long userId, @PathVariable Long reserveId)
-			throws InstanceNotFoundException, PermissionException {
-
-		reservationService.cancelReservation(userId, reserveId);
-
+				params.getDiners(), PeriodType.valueOf(params.getPeriodType()), params.getSaleId()).getId());
 	}
 
 	@DeleteMapping("/reserves/{reserveId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeReservation(@RequestAttribute Long userId, @PathVariable Long reserveId)
+	public void cancelReservation(@RequestAttribute Long userId, @PathVariable Long reserveId)
 			throws InstanceNotFoundException, PermissionException {
 
-		reservationService.removeReservation(userId, reserveId);
+		reservationService.cancelReservation(userId, reserveId);
 
 	}
 
@@ -241,18 +235,6 @@ public class ReservationController {
 		LocalDate date = LocalDate.parse(reservationDate.trim());
 		Block<Reserve> reserveBlock = reservationService.findCompanyReserves(userId, companyId, date,
 				PeriodType.valueOf(periodType), page, Constantes.SIZE);
-
-		return new BlockDto<>(toReserveSummaryDtos(reserveBlock.getItems()), reserveBlock.getExistMoreItems());
-
-	}
-
-	@GetMapping("/companyReservesCanceled")
-	public BlockDto<ReserveSummaryDto> companyReservesCanceled(@RequestAttribute Long userId,
-			@RequestParam Long companyId, @RequestParam(defaultValue = "0") int page)
-			throws InstanceNotFoundException, PermissionException {
-
-		Block<Reserve> reserveBlock = reservationService.findCompanyReservesCanceled(userId, companyId, page,
-				Constantes.SIZE);
 
 		return new BlockDto<>(toReserveSummaryDtos(reserveBlock.getItems()), reserveBlock.getExistMoreItems());
 

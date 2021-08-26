@@ -1,5 +1,6 @@
 -- Indexes for primary keys have been explicitly created.
 
+DROP TABLE WeeklyBalance;
 DROP TABLE EventEvaluation;
 DROP TABLE ReserveItem;
 DROP TABLE ReserveTable;
@@ -33,6 +34,9 @@ CREATE TABLE User (
     email VARCHAR(60) NOT NULL,
     phone VARCHAR(60) NOT NULL,
     role TINYINT NOT NULL,
+    globalBalance DECIMAL(11, 2) NOT NULL,
+    renewDate DATE NOT NULL,
+    feePaid BOOLEAN NOT NULL,
     CONSTRAINT UserPK PRIMARY KEY (id),
     CONSTRAINT UserNameUniqueKey UNIQUE (userName)
 ) ENGINE = InnoDB;
@@ -296,7 +300,7 @@ CREATE TABLE ReserveTable (
     periodType TINYINT NOT NULL,
     totalPrice DECIMAL(11, 2) NOT NULL,
     deposit DECIMAL(11, 2) NOT NULL,
-    canceled BOOLEAN NOT NULL,
+    saleId VARCHAR(60) COLLATE latin1_bin NOT NULL,
     CONSTRAINT ReservePK PRIMARY KEY (id),
     CONSTRAINT ReserveUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),
@@ -327,6 +331,17 @@ CREATE TABLE EventEvaluation (
     CONSTRAINT EventEvaluationPK PRIMARY KEY (id),
     CONSTRAINT EventEvaluationReserveIdFK FOREIGN KEY(reserveId)
         REFERENCES ReserveTable (id)
+) ENGINE = InnoDB;
+
+CREATE TABLE WeeklyBalance (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    balance DECIMAL(11, 2) NOT NULL,
+    weekNumber SMALLINT NOT NULL,
+    year SMALLINT NOT NULL,
+    userId BIGINT NOT NULL,
+    CONSTRAINT WeeklyBalancePK PRIMARY KEY (id),
+    CONSTRAINT WeeklyBalanceUserIdFK FOREIGN KEY(userId)
+        REFERENCES User (id)
 ) ENGINE = InnoDB;
 
 

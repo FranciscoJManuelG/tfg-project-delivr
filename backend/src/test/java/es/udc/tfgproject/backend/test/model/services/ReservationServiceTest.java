@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.paypal.base.rest.PayPalRESTException;
+
 import es.udc.tfgproject.backend.model.entities.City;
 import es.udc.tfgproject.backend.model.entities.CityDao;
 import es.udc.tfgproject.backend.model.entities.Company;
@@ -108,7 +110,8 @@ public class ReservationServiceTest {
 	private Reserve addReserve(User user, Company company, Product product, LocalDate date, Integer diners,
 			PeriodType periodType) {
 
-		Reserve reserve = new Reserve(user, company, date, diners, periodType, new BigDecimal(20), new BigDecimal(10));
+		Reserve reserve = new Reserve(user, company, date, diners, periodType, new BigDecimal(20), new BigDecimal(10),
+				"7DY409201T7922549");
 		ReserveItem item = new ReserveItem(product, product.getPrice(), 1);
 
 		reserveDao.save(reserve);
@@ -618,7 +621,7 @@ public class ReservationServiceTest {
 	@Test
 	public void testReservationAndFindReserve()
 			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -642,7 +645,7 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
 
 		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER, "7DY409201T7922549");
 
 		Reserve expectedReserve = reservationService.findReserve(user.getId(), reserve.getId());
 
@@ -663,8 +666,9 @@ public class ReservationServiceTest {
 	}
 
 	@Test
-	public void testCancelReservation() throws InstanceNotFoundException, PermissionException, EmptyMenuException,
-			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
+	public void testCancelReservation()
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -688,11 +692,10 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
 
 		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER, "7DY409201T7922549");
 
 		reservationService.cancelReservation(user.getId(), reserve.getId());
-		Block<Reserve> expectedBlock = new Block<>(Arrays.asList(), false);
-		assertEquals(expectedBlock, reservationService.findUserReserves(user.getId(), 0, 2));
+
 	}
 
 	@Test
@@ -710,8 +713,9 @@ public class ReservationServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
 				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
-		assertThrows(InstanceNotFoundException.class, () -> reservationService.reservation(user.getId(),
-				NON_EXISTENT_ID, company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
+		assertThrows(InstanceNotFoundException.class,
+				() -> reservationService.reservation(user.getId(), NON_EXISTENT_ID, company.getId(),
+						LocalDate.of(2021, 07, 23), 15, PeriodType.DINER, "7DY409201T7922549"));
 
 	}
 
@@ -732,8 +736,9 @@ public class ReservationServiceTest {
 		Company company = businessService.addCompany(user1.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
 				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
-		assertThrows(PermissionException.class, () -> reservationService.reservation(user1.getId(),
-				user2.getMenu().getId(), company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
+		assertThrows(PermissionException.class,
+				() -> reservationService.reservation(user1.getId(), user2.getMenu().getId(), company.getId(),
+						LocalDate.of(2021, 07, 23), 15, PeriodType.DINER, "7DY409201T7922549"));
 
 	}
 
@@ -753,8 +758,9 @@ public class ReservationServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
 				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
-		assertThrows(InstanceNotFoundException.class, () -> reservationService.reservation(NON_EXISTENT_ID,
-				user.getMenu().getId(), company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
+		assertThrows(InstanceNotFoundException.class,
+				() -> reservationService.reservation(NON_EXISTENT_ID, user.getMenu().getId(), company.getId(),
+						LocalDate.of(2021, 07, 23), 15, PeriodType.DINER, "7DY409201T7922549"));
 
 	}
 
@@ -773,8 +779,9 @@ public class ReservationServiceTest {
 		Company company = businessService.addCompany(user.getId(), "GreenFood", 36, true, true, 10, category1.getId(),
 				LocalTime.of(10, 0), LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 
-		assertThrows(EmptyMenuException.class, () -> reservationService.reservation(user.getId(),
-				user.getMenu().getId(), company.getId(), LocalDate.of(2021, 07, 23), 15, PeriodType.DINER));
+		assertThrows(EmptyMenuException.class,
+				() -> reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
+						LocalDate.of(2021, 07, 23), 15, PeriodType.DINER, "7DY409201T7922549"));
 
 	}
 
@@ -791,7 +798,7 @@ public class ReservationServiceTest {
 	@Test
 	public void testFindReserveOfAnotherUser()
 			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
 
 		User user1 = signUpUser("user1");
 		User user2 = signUpUser("user2");
@@ -814,7 +821,7 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user1.getId(), user1.getMenu().getId(), product.getId(), company.getId(), 2);
 
 		Reserve reserve = reservationService.reservation(user1.getId(), user1.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 11, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 11, 23), 15, PeriodType.DINER, "7DY409201T7922549");
 
 		assertThrows(PermissionException.class, () -> reservationService.findReserve(user2.getId(), reserve.getId()));
 
@@ -823,7 +830,7 @@ public class ReservationServiceTest {
 	@Test
 	public void testFindReserveWithNonExistingUserId()
 			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
 
 		User user = signUpUser("user");
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
@@ -845,7 +852,7 @@ public class ReservationServiceTest {
 		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), 2);
 
 		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
-				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER, "7DY409201T7922549");
 
 		assertThrows(PermissionException.class, () -> reservationService.findReserve(NON_EXISTENT_ID, reserve.getId()));
 

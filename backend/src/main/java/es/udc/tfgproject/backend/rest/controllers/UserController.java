@@ -92,8 +92,7 @@ public class UserController {
 	}
 
 	@PostMapping("/signUp")
-	public ResponseEntity<AuthenticatedUserDto> signUp(
-			@Validated({ UserDto.AllValidations.class }) @RequestBody UserDto userDto)
+	public ResponseEntity<AuthenticatedUserDto> signUp(@Validated @RequestBody UserDto userDto)
 			throws DuplicateInstanceException {
 
 		User user = toUser(userDto);
@@ -108,8 +107,7 @@ public class UserController {
 	}
 
 	@PostMapping("/signUpBusinessman")
-	public ResponseEntity<AuthenticatedUserDto> signUpBusinessman(
-			@Validated({ UserDto.AllValidations.class }) @RequestBody UserDto userDto)
+	public ResponseEntity<AuthenticatedUserDto> signUpBusinessman(@Validated @RequestBody UserDto userDto)
 			throws DuplicateInstanceException {
 
 		User user = toUser(userDto);
@@ -144,8 +142,7 @@ public class UserController {
 
 	@PutMapping("/{id}")
 	public UserDto updateProfile(@RequestAttribute Long userId, @PathVariable Long id,
-			@Validated({ UserDto.UpdateValidations.class }) @RequestBody UserDto userDto)
-			throws InstanceNotFoundException, PermissionException {
+			@Validated @RequestBody UserDto userDto) throws InstanceNotFoundException, PermissionException {
 
 		if (!id.equals(userId)) {
 			throw new PermissionException();
@@ -217,7 +214,8 @@ public class UserController {
 	public BlockDto<FavouriteAddressSummaryDto> findFavouriteAddressesByCity(@RequestAttribute Long userId,
 			@RequestParam Long cityId, @RequestParam(defaultValue = "0") int page) {
 
-		Block<FavouriteAddress> addressBlock = userService.findFavouriteAddressesByCity(userId, cityId, page, Constantes.SIZE);
+		Block<FavouriteAddress> addressBlock = userService.findFavouriteAddressesByCity(userId, cityId, page,
+				Constantes.SIZE);
 
 		return new BlockDto<>(toFavouriteAddressSummaryDtos(addressBlock.getItems()), addressBlock.getExistMoreItems());
 

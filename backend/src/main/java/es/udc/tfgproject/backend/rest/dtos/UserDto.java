@@ -6,12 +6,6 @@ import javax.validation.constraints.Size;
 
 public class UserDto {
 
-	public interface AllValidations {
-	}
-
-	public interface UpdateValidations {
-	}
-
 	private Long id;
 	private String userName;
 	private String password;
@@ -20,12 +14,13 @@ public class UserDto {
 	private String email;
 	private String phone;
 	private String role;
+	private Boolean feePaid;
 
 	public UserDto() {
 	}
 
-	public UserDto(Long id, String userName, String firstName, String lastName, String email, String phone,
-			String role) {
+	public UserDto(Long id, String userName, String firstName, String lastName, String email, String phone, String role,
+			Boolean feePaid) {
 
 		this.id = id;
 		this.userName = userName != null ? userName.trim() : null;
@@ -34,6 +29,7 @@ public class UserDto {
 		this.email = email.trim();
 		this.phone = phone.trim();
 		this.role = role;
+		this.feePaid = feePaid;
 
 	}
 
@@ -45,8 +41,8 @@ public class UserDto {
 		this.id = id;
 	}
 
-	@NotNull(groups = { AllValidations.class })
-	@Size(min = 1, max = 60, groups = { AllValidations.class })
+	@NotNull
+	@Size(min = 1, max = 60)
 	public String getUserName() {
 		return userName;
 	}
@@ -55,8 +51,8 @@ public class UserDto {
 		this.userName = userName.trim();
 	}
 
-	@NotNull(groups = { AllValidations.class })
-	@Size(min = 1, max = 60, groups = { AllValidations.class })
+	@NotNull
+	@Size(min = 1, max = 60)
 	public String getPassword() {
 		return password;
 	}
@@ -65,8 +61,8 @@ public class UserDto {
 		this.password = password;
 	}
 
-	@NotNull(groups = { AllValidations.class, UpdateValidations.class })
-	@Size(min = 1, max = 60, groups = { AllValidations.class, UpdateValidations.class })
+	@NotNull
+	@Size(min = 1, max = 60)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -75,8 +71,8 @@ public class UserDto {
 		this.firstName = firstName.trim();
 	}
 
-	@NotNull(groups = { AllValidations.class, UpdateValidations.class })
-	@Size(min = 1, max = 60, groups = { AllValidations.class, UpdateValidations.class })
+	@NotNull
+	@Size(min = 1, max = 60)
 	public String getLastName() {
 		return lastName;
 	}
@@ -85,9 +81,9 @@ public class UserDto {
 		this.lastName = lastName.trim();
 	}
 
-	@NotNull(groups = { AllValidations.class, UpdateValidations.class })
-	@Size(min = 1, max = 60, groups = { AllValidations.class, UpdateValidations.class })
-	@Email(groups = { AllValidations.class, UpdateValidations.class })
+	@NotNull
+	@Size(min = 1, max = 60)
+	@Email
 	public String getEmail() {
 		return email;
 	}
@@ -96,6 +92,7 @@ public class UserDto {
 		this.email = email.trim();
 	}
 
+	@NotNull
 	public String getRole() {
 		return role;
 	}
@@ -104,14 +101,23 @@ public class UserDto {
 		this.role = role;
 	}
 
-	@NotNull(groups = { AllValidations.class, UpdateValidations.class })
-	@Size(min = 1, max = 60, groups = { AllValidations.class, UpdateValidations.class })
+	@NotNull
+	@Size(min = 1, max = 60)
 	public String getPhone() {
 		return phone;
 	}
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	@NotNull
+	public Boolean getFeePaid() {
+		return feePaid;
+	}
+
+	public void setFeePaid(Boolean feePaid) {
+		this.feePaid = feePaid;
 	}
 
 }

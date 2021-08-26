@@ -1,11 +1,16 @@
 package es.udc.tfgproject.backend.model.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+
+import es.udc.tfgproject.backend.model.services.Constantes;
 
 @Entity
 public class User {
@@ -24,6 +29,9 @@ public class User {
 	private RoleType role;
 	private ShoppingCart shoppingCart;
 	private Menu menu;
+	private BigDecimal globalBalance;
+	private LocalDate renewDate;
+	private Boolean feePaid;
 
 	public User() {
 	}
@@ -36,6 +44,9 @@ public class User {
 		this.lastName = lastName;
 		this.email = email;
 		this.phone = phone;
+		this.globalBalance = new BigDecimal(0);
+		this.renewDate = LocalDate.now().plusDays(Constantes.THREE_MONTHS_IN_DAYS);
+		this.feePaid = true;
 
 	}
 
@@ -121,6 +132,30 @@ public class User {
 
 	public void setMenu(Menu menu) {
 		this.menu = menu;
+	}
+
+	public BigDecimal getGlobalBalance() {
+		return globalBalance;
+	}
+
+	public void setGlobalBalance(BigDecimal globalBalance) {
+		this.globalBalance = globalBalance;
+	}
+
+	public LocalDate getRenewDate() {
+		return renewDate;
+	}
+
+	public void setRenewDate(LocalDate renewDate) {
+		this.renewDate = renewDate;
+	}
+
+	public Boolean getFeePaid() {
+		return feePaid;
+	}
+
+	public void setFeePaid(Boolean feePaid) {
+		this.feePaid = feePaid;
 	}
 
 }
