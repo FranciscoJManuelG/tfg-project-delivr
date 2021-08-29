@@ -20,12 +20,39 @@ import es.udc.tfgproject.backend.model.entities.CompanyAddressDao;
 import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.CompanyCategoryDao;
 import es.udc.tfgproject.backend.model.entities.CompanyDao;
+import es.udc.tfgproject.backend.model.entities.DiscountTicket;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
+import es.udc.tfgproject.backend.model.entities.DiscountTicketDao;
+import es.udc.tfgproject.backend.model.entities.EventEvaluation;
+import es.udc.tfgproject.backend.model.entities.EventEvaluationDao;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalDao;
 import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
+import es.udc.tfgproject.backend.model.entities.Menu;
+import es.udc.tfgproject.backend.model.entities.MenuDao;
+import es.udc.tfgproject.backend.model.entities.MenuItem;
+import es.udc.tfgproject.backend.model.entities.MenuItemDao;
+import es.udc.tfgproject.backend.model.entities.Order;
+import es.udc.tfgproject.backend.model.entities.OrderDao;
+import es.udc.tfgproject.backend.model.entities.OrderItem;
+import es.udc.tfgproject.backend.model.entities.OrderItemDao;
+import es.udc.tfgproject.backend.model.entities.Product;
+import es.udc.tfgproject.backend.model.entities.ProductDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
+import es.udc.tfgproject.backend.model.entities.Reserve;
+import es.udc.tfgproject.backend.model.entities.ReserveDao;
+import es.udc.tfgproject.backend.model.entities.ReserveItem;
+import es.udc.tfgproject.backend.model.entities.ReserveItemDao;
+import es.udc.tfgproject.backend.model.entities.ShoppingCart;
+import es.udc.tfgproject.backend.model.entities.ShoppingCartDao;
+import es.udc.tfgproject.backend.model.entities.ShoppingCartItem;
+import es.udc.tfgproject.backend.model.entities.ShoppingCartItemDao;
 import es.udc.tfgproject.backend.model.entities.User;
+import es.udc.tfgproject.backend.model.entities.UserDao;
+import es.udc.tfgproject.backend.model.entities.WeeklyBalance;
+import es.udc.tfgproject.backend.model.entities.WeeklyBalanceDao;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
@@ -54,6 +81,48 @@ public class BusinessServiceImpl implements BusinessService {
 	@Autowired
 	private GoalTypeDao goalTypeDao;
 
+	@Autowired
+	private DiscountTicketDao discountTicketDao;
+
+	@Autowired
+	private UserDao userDao;
+
+	@Autowired
+	private OrderDao orderDao;
+
+	@Autowired
+	private OrderItemDao orderItemDao;
+
+	@Autowired
+	private ReserveDao reserveDao;
+
+	@Autowired
+	private ReserveItemDao reserveItemDao;
+
+	@Autowired
+	private EventEvaluationDao eventEvaluationDao;
+
+	@Autowired
+	private ProductDao productDao;
+
+	@Autowired
+	private MenuDao menuDao;
+
+	@Autowired
+	private ShoppingCartDao shoppingCartDao;
+
+	@Autowired
+	private MenuItemDao menuItemDao;
+
+	@Autowired
+	private ShoppingCartItemDao shoppingCartItemDao;
+
+	@Autowired
+	private WeeklyBalanceDao weeklyBalanceDao;
+
+	@Autowired
+	private ProvinceDao provinceDao;
+
 	@Override
 	public Company addCompany(Long userId, String name, Integer capacity, Boolean reserve, Boolean homeSale,
 			Integer reservePercentage, Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
@@ -72,8 +141,8 @@ public class BusinessServiceImpl implements BusinessService {
 
 	@Override
 	public Company modifyCompany(Long userId, Long companyId, String name, Integer capacity, Boolean reserve,
-			Boolean homeSale, Integer reservePercentage, Long companyCategoryId, 
-			LocalTime openingTime, LocalTime closingTime, LocalTime lunchTime, LocalTime dinerTime)
+			Boolean homeSale, Integer reservePercentage, Long companyCategoryId, LocalTime openingTime,
+			LocalTime closingTime, LocalTime lunchTime, LocalTime dinerTime)
 			throws InstanceNotFoundException, PermissionException {
 
 		Company company = permissionChecker.checkCompanyExistsAndBelongsToUser(companyId, userId);
@@ -136,18 +205,100 @@ public class BusinessServiceImpl implements BusinessService {
 	public void deregister(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException {
 
 		permissionChecker.checkCompanyExistsAndOnlyAdminCanModify(userId, companyId);
+		Company company = permissionChecker.checkCompany(companyId);
 		List<CompanyAddress> companyAddresses = companyAddressDao.findByCompanyId(companyId);
+		List<Goal> goals = goalDao.findByCompanyId(companyId);
+		List<Order> orders = orderDao.findByCompanyId(company.getId());
+		List<Reserve> reserves = reserveDao.findByCompanyId(company.getId());
+		List<Product> products = productDao.findByCompanyId(companyId);
 
-		/*
-		 * Cuando eliminamos una empresa, también debemos eliminar las direcciones a las
-		 * cuales estaba asignada
-		 */
+		deleteCompanyAdresses(companyAddresses);
+		deleteOrdersAndOrderItems(orders);
+		deleteReservesAndReserveItemsAndEvaluations(reserves);
+		deleteGoalsAndDiscountTicket(goals);
+		deleteMenuAndMenuItems(company);
+		deleteCartAndCartItems(company);
+		deleteProducts(products);
+		companyDao.delete(company);
+		deleteWeeklyBalances(company);
+		userDao.delete(company.getUser());
+
+	}
+
+	private void deleteWeeklyBalances(Company company) {
+		List<WeeklyBalance> balances = weeklyBalanceDao.findByUserId(company.getUser().getId());
+		for (WeeklyBalance weeklyBalance : balances) {
+			weeklyBalanceDao.delete(weeklyBalance);
+		}
+
+	}
+
+	private void deleteProducts(List<Product> products) {
+		for (Product product : products) {
+			productDao.delete(product);
+		}
+
+	}
+
+	private void deleteCartAndCartItems(Company company) {
+		ShoppingCart cart = shoppingCartDao.findByUserId(company.getUser().getId());
+		List<ShoppingCartItem> itemsCart = shoppingCartItemDao.findByShoppingCartId(cart.getId());
+		for (ShoppingCartItem shoppingCartItem : itemsCart) {
+			shoppingCartItemDao.delete(shoppingCartItem);
+		}
+		shoppingCartDao.delete(cart);
+	}
+
+	private void deleteMenuAndMenuItems(Company company) {
+		Menu menu = menuDao.findByUserId(company.getUser().getId());
+		List<MenuItem> itemsMenu = menuItemDao.findByMenuId(menu.getId());
+		for (MenuItem menuItem : itemsMenu) {
+			System.out.println("LLego aqui");
+			menuItemDao.delete(menuItem);
+			System.out.println("LLego aqui");
+
+		}
+		menuDao.delete(menu);
+	}
+
+	private void deleteGoalsAndDiscountTicket(List<Goal> goals) {
+		for (Goal goal : goals) {
+			List<DiscountTicket> tickets = discountTicketDao.findByGoalId(goal.getId());
+			for (DiscountTicket ticket : tickets) {
+				discountTicketDao.delete(ticket);
+			}
+			goalDao.delete(goal);
+		}
+
+	}
+
+	private void deleteReservesAndReserveItemsAndEvaluations(List<Reserve> reserves) {
+		for (Reserve reserve : reserves) {
+			List<ReserveItem> items = reserveItemDao.findByReserveId(reserve.getId());
+			for (ReserveItem item : items) {
+				reserveItemDao.delete(item);
+			}
+			EventEvaluation evaluation = eventEvaluationDao.findByReserveId(reserve.getId()).get();
+			eventEvaluationDao.delete(evaluation);
+			reserveDao.delete(reserve);
+		}
+	}
+
+	private void deleteOrdersAndOrderItems(List<Order> orders) {
+		for (Order order : orders) {
+			List<OrderItem> items = orderItemDao.findByOrderId(order.getId());
+			for (OrderItem item : items) {
+				orderItemDao.delete(item);
+			}
+			orderDao.delete(order);
+		}
+
+	}
+
+	private void deleteCompanyAdresses(List<CompanyAddress> companyAddresses) {
 		for (CompanyAddress companyAddress : companyAddresses) {
 			companyAddressDao.delete(companyAddress);
 		}
-
-		companyDao.deleteById(companyId);
-
 	}
 
 	@Override
@@ -181,6 +332,37 @@ public class BusinessServiceImpl implements BusinessService {
 
 		return categoriesList;
 
+	}
+
+	@Override
+	public CompanyCategory addCompanyCategory(Long userId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+
+		CompanyCategory category = new CompanyCategory(name);
+		companyCategoryDao.save(category);
+
+		return category;
+
+	}
+
+	@Override
+	public CompanyCategory modifyCompanyCategory(Long userId, Long companyCategoryId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Optional<CompanyCategory> category = companyCategoryDao.findById(companyCategoryId);
+
+		if (!category.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.companyCategory", companyCategoryId);
+
+		}
+
+		CompanyCategory companyCategory = category.get();
+		companyCategory.setName(name);
+
+		return companyCategory;
 	}
 
 	@Override
@@ -236,6 +418,106 @@ public class BusinessServiceImpl implements BusinessService {
 
 		return citiesList;
 
+	}
+
+	@Override
+	public City addCity(Long userId, Long provinceId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Province province = permissionChecker.checkProvinceExists(provinceId);
+
+		City city = new City(name, province);
+		cityDao.save(city);
+
+		return city;
+
+	}
+
+	@Override
+	public City modifyCity(Long userId, Long cityId, Long provinceId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Province province = permissionChecker.checkProvinceExists(provinceId);
+		Optional<City> cityOptional = cityDao.findById(cityId);
+
+		if (!cityOptional.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.city", cityId);
+
+		}
+
+		City city = cityOptional.get();
+		city.setName(name);
+		city.setProvince(province);
+
+		return city;
+	}
+
+	@Override
+	public void removeCity(Long userId, Long cityId) throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Optional<City> cityOptional = cityDao.findById(cityId);
+
+		if (!cityOptional.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.city", cityId);
+
+		}
+
+		City city = cityOptional.get();
+		cityDao.delete(city);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Province> findAllProvinces() {
+
+		Iterable<Province> cities = provinceDao.findAll();
+		List<Province> provincesList = new ArrayList<>();
+
+		cities.forEach(province -> provincesList.add(province));
+
+		return provincesList;
+
+	}
+
+	@Override
+	public Province addProvince(Long userId, String name) throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+
+		Province province = new Province(name);
+		provinceDao.save(province);
+
+		return province;
+
+	}
+
+	@Override
+	public Province modifyProvince(Long userId, Long provinceId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Province province = permissionChecker.checkProvinceExists(provinceId);
+
+		province.setName(name);
+
+		return province;
+	}
+
+	@Override
+	public void removeProvince(Long userId, Long provinceId) throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Province province = permissionChecker.checkProvinceExists(provinceId);
+
+		List<City> cities = cityDao.findByProvinceId(provinceId);
+
+		for (City city : cities) {
+			cityDao.delete(city);
+		}
+		provinceDao.delete(province);
 	}
 
 	/*

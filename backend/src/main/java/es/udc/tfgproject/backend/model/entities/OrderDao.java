@@ -14,4 +14,6 @@ public interface OrderDao extends PagingAndSortingRepository<Order, Long> {
 
 	List<Order> findByUserIdAndCompanyId(Long userId, Long companyId);
 
+	List<Order> findByCompanyId(Long companyId);
+
 }

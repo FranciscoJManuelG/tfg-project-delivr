@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.udc.tfgproject.backend.model.entities.CompanyAddress;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessCatalogService;
+import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.rest.dtos.BlockDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanySummaryDto;
 
@@ -27,7 +28,19 @@ public class BusinessCatalogController {
 			@RequestParam(required = false) String keywords, @RequestParam(defaultValue = "0") int page) {
 
 		Block<CompanyAddress> companyBlock = businessCatalogService.findCompanies(companyCategoryId, cityId,
-				street != null ? street.trim() : null, keywords != null ? keywords.trim() : null, page, 10);
+				street != null ? street.trim() : null, keywords != null ? keywords.trim() : null, page,
+				Constantes.SIZE);
+
+		return new BlockDto<>(toCompanySummaryDtos(companyBlock.getItems()), companyBlock.getExistMoreItems());
+
+	}
+
+	@GetMapping("/companies/findAllCompanies")
+	public BlockDto<CompanySummaryDto> findAllCompanies(@RequestParam(required = false) String keywords,
+			@RequestParam(defaultValue = "0") int page) {
+
+		Block<CompanyAddress> companyBlock = businessCatalogService
+				.findAllCompanies(keywords != null ? keywords.trim() : null, page, Constantes.SIZE);
 
 		return new BlockDto<>(toCompanySummaryDtos(companyBlock.getItems()), companyBlock.getExistMoreItems());
 

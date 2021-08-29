@@ -4,4 +4,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface MenuDao extends PagingAndSortingRepository<Menu, Long> {
 
+	Menu findByUserId(Long userId);
+
 }

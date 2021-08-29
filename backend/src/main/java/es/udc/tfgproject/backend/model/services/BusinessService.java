@@ -11,19 +11,19 @@ import es.udc.tfgproject.backend.model.entities.CompanyCategory;
 import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalType;
+import es.udc.tfgproject.backend.model.entities.Province;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 
 public interface BusinessService {
 
-	Company addCompany(Long userId, String name, Integer capacity, Boolean reserve, Boolean homeSale, Integer reservePercentage,
-			Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
+	Company addCompany(Long userId, String name, Integer capacity, Boolean reserve, Boolean homeSale,
+			Integer reservePercentage, Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
 			LocalTime lunchTime, LocalTime dinerTime) throws InstanceNotFoundException;
 
 	Company modifyCompany(Long userId, Long companyId, String name, Integer capacity, Boolean reserve, Boolean homeSale,
 			Integer reservePercentage, Long companyCategoryId, LocalTime openingTime, LocalTime closingTime,
-			LocalTime lunchTime, LocalTime dinerTime)
-			throws InstanceNotFoundException, PermissionException;
+			LocalTime lunchTime, LocalTime dinerTime) throws InstanceNotFoundException, PermissionException;
 
 	Company blockCompany(Long userId, Long companyId) throws InstanceNotFoundException, PermissionException;
 
@@ -37,6 +37,11 @@ public interface BusinessService {
 
 	List<CompanyCategory> findAllCompanyCategories();
 
+	CompanyCategory addCompanyCategory(Long userId, String name) throws InstanceNotFoundException, PermissionException;
+
+	CompanyCategory modifyCompanyCategory(Long userId, Long companyCategoryId, String name)
+			throws InstanceNotFoundException, PermissionException;
+
 	CompanyAddress addCompanyAddress(String street, String cp, Long cityId, Long companyId)
 			throws InstanceNotFoundException;
 
@@ -46,6 +51,22 @@ public interface BusinessService {
 			throws InstanceNotFoundException, PermissionException;
 
 	List<City> findAllCities();
+
+	City addCity(Long userId, Long provinceId, String name) throws InstanceNotFoundException, PermissionException;
+
+	City modifyCity(Long userId, Long cityId, Long provinceId, String name)
+			throws InstanceNotFoundException, PermissionException;
+
+	void removeCity(Long userId, Long cityId) throws InstanceNotFoundException, PermissionException;
+
+	List<Province> findAllProvinces();
+
+	Province addProvince(Long userId, String name) throws InstanceNotFoundException, PermissionException;
+
+	Province modifyProvince(Long userId, Long provinceId, String name)
+			throws InstanceNotFoundException, PermissionException;
+
+	void removeProvince(Long userId, Long provinceId) throws InstanceNotFoundException, PermissionException;
 
 	Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
 			Integer discountPercentage, Long goalTypeId, int goalQuantity)

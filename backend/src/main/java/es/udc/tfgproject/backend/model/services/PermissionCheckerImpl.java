@@ -26,6 +26,8 @@ import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.OrderDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductDao;
+import es.udc.tfgproject.backend.model.entities.Province;
+import es.udc.tfgproject.backend.model.entities.ProvinceDao;
 import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.ReserveDao;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
@@ -78,6 +80,9 @@ public class PermissionCheckerImpl implements PermissionChecker {
 
 	@Autowired
 	private EventEvaluationDao eventEvaluationDao;
+
+	@Autowired
+	private ProvinceDao provinceDao;
 
 	@Override
 	public void checkUserExists(Long userId) throws InstanceNotFoundException {
@@ -255,7 +260,8 @@ public class PermissionCheckerImpl implements PermissionChecker {
 			throw new InstanceNotFoundException("project.entities.order", orderId);
 		}
 
-		if (!order.get().getUser().getId().equals(userId) && !order.get().getCompany().getUser().getId().equals(userId)) {
+		if (!order.get().getUser().getId().equals(userId)
+				&& !order.get().getCompany().getUser().getId().equals(userId)) {
 			throw new PermissionException();
 		}
 
@@ -359,7 +365,8 @@ public class PermissionCheckerImpl implements PermissionChecker {
 			throw new InstanceNotFoundException("project.entities.reserve", reserveId);
 		}
 
-		if (!reserve.get().getUser().getId().equals(userId) && !reserve.get().getCompany().getUser().getId().equals(userId)) {
+		if (!reserve.get().getUser().getId().equals(userId)
+				&& !reserve.get().getCompany().getUser().getId().equals(userId)) {
 			throw new PermissionException();
 		}
 
@@ -409,6 +416,32 @@ public class PermissionCheckerImpl implements PermissionChecker {
 		}
 
 		return eventEvaluation.get();
+	}
+
+	@Override
+	public User checkUserExistsAndIsAdmin(Long userId) throws InstanceNotFoundException, PermissionException {
+		Optional<User> user = userDao.findById(userId);
+
+		if (!user.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.user", userId);
+		}
+
+		if (RoleType.ADMIN.equals(user.get().getRole())) {
+			throw new PermissionException();
+		}
+
+		return user.get();
+	}
+
+	@Override
+	public Province checkProvinceExists(Long provinceId) throws InstanceNotFoundException {
+		Optional<Province> province = provinceDao.findById(provinceId);
+
+		if (!province.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.province", provinceId);
+		}
+
+		return province.get();
 	}
 
 }

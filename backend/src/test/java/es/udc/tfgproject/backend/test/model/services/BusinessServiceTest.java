@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -29,21 +30,37 @@ import es.udc.tfgproject.backend.model.entities.DiscountTicket.DiscountType;
 import es.udc.tfgproject.backend.model.entities.Goal;
 import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.GoalTypeDao;
+import es.udc.tfgproject.backend.model.entities.Menu;
+import es.udc.tfgproject.backend.model.entities.MenuDao;
 import es.udc.tfgproject.backend.model.entities.Product;
 import es.udc.tfgproject.backend.model.entities.ProductCategory;
 import es.udc.tfgproject.backend.model.entities.ProductCategoryDao;
+import es.udc.tfgproject.backend.model.entities.ProductDao;
 import es.udc.tfgproject.backend.model.entities.Province;
 import es.udc.tfgproject.backend.model.entities.ProvinceDao;
+import es.udc.tfgproject.backend.model.entities.Reserve;
+import es.udc.tfgproject.backend.model.entities.Reserve.PeriodType;
+import es.udc.tfgproject.backend.model.entities.ShoppingCart;
+import es.udc.tfgproject.backend.model.entities.ShoppingCartDao;
 import es.udc.tfgproject.backend.model.entities.User;
 import es.udc.tfgproject.backend.model.entities.User.RoleType;
 import es.udc.tfgproject.backend.model.entities.UserDao;
+import es.udc.tfgproject.backend.model.exceptions.CompanyDoesntAllowReservesException;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketHasExpiredException;
+import es.udc.tfgproject.backend.model.exceptions.DiscountTicketUsedException;
 import es.udc.tfgproject.backend.model.exceptions.DuplicateInstanceException;
+import es.udc.tfgproject.backend.model.exceptions.EmptyMenuException;
+import es.udc.tfgproject.backend.model.exceptions.EmptyShoppingCartException;
+import es.udc.tfgproject.backend.model.exceptions.IncorrectDiscountCodeException;
 import es.udc.tfgproject.backend.model.exceptions.InstanceNotFoundException;
+import es.udc.tfgproject.backend.model.exceptions.MaximumCapacityExceededException;
 import es.udc.tfgproject.backend.model.exceptions.PermissionException;
+import es.udc.tfgproject.backend.model.exceptions.ReservationDateIsBeforeNowException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.Constantes;
 import es.udc.tfgproject.backend.model.services.ProductManagementService;
+import es.udc.tfgproject.backend.model.services.ReservationService;
 import es.udc.tfgproject.backend.model.services.ShoppingService;
 import es.udc.tfgproject.backend.model.services.UserService;
 
@@ -92,6 +109,18 @@ public class BusinessServiceTest {
 	@Autowired
 	private GoalTypeDao goalTypeDao;
 
+	@Autowired
+	private ReservationService reservationService;
+
+	@Autowired
+	private MenuDao menuDao;
+
+	@Autowired
+	private ShoppingCartDao shoppingCartDao;
+
+	@Autowired
+	private ProductDao productDao;
+
 	private User signUpUser(String userName) {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
@@ -110,6 +139,13 @@ public class BusinessServiceTest {
 
 		User user = new User(userName, "passwd", "firstName", "lastName", "email@gmail.com", "123456789");
 		user.setRole(role);
+		ShoppingCart cart = new ShoppingCart(user);
+		Menu menu = new Menu(user);
+		user.setShoppingCart(cart);
+		user.setMenu(menu);
+		userDao.save(user);
+		menuDao.save(menu);
+		shoppingCartDao.save(cart);
 		return user;
 
 	}
@@ -235,13 +271,17 @@ public class BusinessServiceTest {
 	}
 
 	@Test
-	public void testDeregisterCompany() throws InstanceNotFoundException, PermissionException {
+	public void testDeregisterCompany()
+			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
+			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, EmptyShoppingCartException,
+			IncorrectDiscountCodeException, DiscountTicketHasExpiredException, DiscountTicketUsedException {
 
 		User user = createUser("user", RoleType.ADMIN);
-		userDao.save(user);
 
 		CompanyCategory category = new CompanyCategory("Vegetariano");
 		companyCategoryDao.save(category);
+		ProductCategory pCategory = new ProductCategory("Bocadillos");
+		productCategoryDao.save(pCategory);
 
 		Province province = new Province("Lugo");
 		provinceDao.save(province);
@@ -254,11 +294,44 @@ public class BusinessServiceTest {
 		businessService.addCompanyAddress("Rosalia 18", "15700", city.getId(), company.getId());
 		businessService.addCompanyAddress("Jorge 21", "15700", city.getId(), company.getId());
 
+		Product product = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de tortilla",
+				"Tortilla con cebolla", new BigDecimal(3.50), "path", pCategory.getId());
+		Product product2 = productManagementService.addProduct(user.getId(), company.getId(), "Bocadillo de jamón",
+				"Jamón serrano de bellota", new BigDecimal(5.50), "otherpath", pCategory.getId());
+
+		productDao.save(product);
+		productDao.save(product2);
+		int quantity1 = 1;
+		int quantity2 = 2;
+		String postalAddress = "Postal Address";
+		String postalCode = "12345";
+
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product2.getId(),
+				company.getId(), quantity2);
+
+		GoalType goalType = addGoalType();
+		Goal goal = businessService.addGoal(user.getId(), company.getId(), DiscountType.PERCENTAGE, new BigDecimal(0),
+				10, goalType.getId(), 1);
+
+		shoppingService.buy(user.getId(), user.getShoppingCart().getId(), company.getId(), true, postalAddress,
+				postalCode, "");
+
+		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
+
+		Reserve reserve = reservationService.reservation(user.getId(), user.getMenu().getId(), company.getId(),
+				LocalDate.of(2021, 10, 23), 15, PeriodType.DINER);
+
 		long numberOfCompanies = companyDao.count();
 		long numberOfCompanyAddresses = companyAddressDao.count();
 
-		businessService.deregister(user.getId(), company.getId());
+		shoppingService.addToShoppingCart(user.getId(), user.getShoppingCart().getId(), product.getId(),
+				company.getId(), quantity1);
 
+		reservationService.addToMenu(user.getId(), user.getMenu().getId(), product.getId(), company.getId(), quantity1);
+
+		businessService.deregister(user.getId(), company.getId());
 		/* Comprobamos que hay una fila menos en Company */
 		assertEquals(numberOfCompanies - 1, companyDao.count());
 		/*

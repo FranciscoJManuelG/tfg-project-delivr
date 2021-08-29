@@ -153,6 +153,37 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 	}
 
 	@Override
+	public ProductCategory addProductCategory(Long userId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+
+		ProductCategory category = new ProductCategory(name);
+		productCategoryDao.save(category);
+
+		return category;
+
+	}
+
+	@Override
+	public ProductCategory modifyProductCategory(Long userId, Long productCategoryId, String name)
+			throws InstanceNotFoundException, PermissionException {
+
+		permissionChecker.checkUserExistsAndIsAdmin(userId);
+		Optional<ProductCategory> category = productCategoryDao.findById(productCategoryId);
+
+		if (!category.isPresent()) {
+			throw new InstanceNotFoundException("project.entities.productCategory", productCategoryId);
+
+		}
+
+		ProductCategory productCategory = category.get();
+		productCategory.setName(name);
+
+		return productCategory;
+	}
+
+	@Override
 	public List<Product> findAllCompanyProducts(Long userId, Long companyId)
 			throws InstanceNotFoundException, PermissionException {
 
@@ -176,13 +207,5 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 		return productCategory;
 
 	}
-
-	/*
-	 * private void deleteFile(String filename) { try { Path path =
-	 * Paths.get(File.separator + "img" + File.separator + filename);
-	 * 
-	 * Files.delete(path); } catch (Exception e) { throw new
-	 * RuntimeException("Internal error"); } }
-	 */
 
 }

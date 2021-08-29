@@ -10,6 +10,7 @@ import es.udc.tfgproject.backend.model.entities.GoalType;
 import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.Order;
 import es.udc.tfgproject.backend.model.entities.Product;
+import es.udc.tfgproject.backend.model.entities.Province;
 import es.udc.tfgproject.backend.model.entities.Reserve;
 import es.udc.tfgproject.backend.model.entities.ShoppingCart;
 import es.udc.tfgproject.backend.model.entities.User;
@@ -75,5 +76,9 @@ public interface PermissionChecker {
 
 	public EventEvaluation checkEventEvaluationExistsAndBelongsToUser(Long eventEvaluationId, Long userId)
 			throws InstanceNotFoundException, PermissionException;
+
+	public User checkUserExistsAndIsAdmin(Long userId) throws InstanceNotFoundException, PermissionException;
+
+	public Province checkProvinceExists(Long provinceId) throws InstanceNotFoundException;
 
 }

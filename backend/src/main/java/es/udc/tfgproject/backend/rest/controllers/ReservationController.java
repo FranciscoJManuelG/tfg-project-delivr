@@ -167,7 +167,7 @@ public class ReservationController {
 
 		LocalDate reservationDate = LocalDate.parse(params.getReservationDate().trim());
 		return new IdDto(reservationService.reservation(userId, menuId, params.getCompanyId(), reservationDate,
-				params.getDiners(), PeriodType.valueOf(params.getPeriodType()), params.getSaleId()).getId());
+				params.getDiners(), PeriodType.valueOf(params.getPeriodType())).getId());
 	}
 
 	@DeleteMapping("/reserves/{reserveId}")

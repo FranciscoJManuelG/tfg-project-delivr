@@ -29,6 +29,11 @@ public interface ProductManagementService {
 
 	List<ProductCategory> findAllProductCategories();
 
+	ProductCategory addProductCategory(Long userId, String name) throws InstanceNotFoundException, PermissionException;
+
+	ProductCategory modifyProductCategory(Long userId, Long productCategoryId, String name)
+			throws InstanceNotFoundException, PermissionException;
+
 	List<Product> findAllCompanyProducts(Long userId, Long companyId)
 			throws InstanceNotFoundException, PermissionException;
 

@@ -6,4 +6,6 @@ public interface CustomizedCompanyAddressDao {
 
 	Slice<CompanyAddress> find(Long companyCategoryId, Long cityId, String street, String keywords, int page, int size);
 
+	Slice<CompanyAddress> findByKeywords(String keywords, int page, int size);
+
 }

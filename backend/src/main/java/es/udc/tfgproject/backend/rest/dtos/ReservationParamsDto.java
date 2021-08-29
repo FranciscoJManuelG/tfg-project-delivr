@@ -9,7 +9,6 @@ public class ReservationParamsDto {
 	private String reservationDate;
 	private Integer diners;
 	private String periodType;
-	private String saleId;
 
 	@NotNull
 	public Long getCompanyId() {
@@ -46,15 +45,6 @@ public class ReservationParamsDto {
 
 	public void setPeriodType(String periodType) {
 		this.periodType = periodType;
-	}
-
-	@NotNull
-	public String getSaleId() {
-		return saleId;
-	}
-
-	public void setSaleId(String saleId) {
-		this.saleId = saleId;
 	}
 
 }

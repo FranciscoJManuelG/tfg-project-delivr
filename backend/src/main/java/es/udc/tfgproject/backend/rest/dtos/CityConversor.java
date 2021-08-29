@@ -11,7 +11,7 @@ public class CityConversor {
 	}
 
 	public final static CityDto toCityDto(City city) {
-		return new CityDto(city.getId(), city.getName());
+		return new CityDto(city.getId(), city.getName(), city.getProvince().getName());
 	}
 
 	public final static List<CityDto> toCityDtos(List<City> cities) {

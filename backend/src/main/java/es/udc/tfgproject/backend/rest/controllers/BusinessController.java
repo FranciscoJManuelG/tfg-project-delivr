@@ -1,13 +1,17 @@
 package es.udc.tfgproject.backend.rest.controllers;
 
+import static es.udc.tfgproject.backend.rest.dtos.CityConversor.toCityDto;
 import static es.udc.tfgproject.backend.rest.dtos.CityConversor.toCityDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressDto;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyAddressConversor.toCompanyAddressSummaryDtos;
+import static es.udc.tfgproject.backend.rest.dtos.CompanyCategoryConversor.toCompanyCategoryDto;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyCategoryConversor.toCompanyCategoryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.CompanyConversor.toCompanyDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalDto;
 import static es.udc.tfgproject.backend.rest.dtos.GoalConversor.toGoalSummaryDtos;
 import static es.udc.tfgproject.backend.rest.dtos.GoalTypeConversor.toGoalTypeDtos;
+import static es.udc.tfgproject.backend.rest.dtos.ProvinceConversor.toProvinceDto;
+import static es.udc.tfgproject.backend.rest.dtos.ProvinceConversor.toProvinceDtos;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -37,9 +41,12 @@ import es.udc.tfgproject.backend.model.exceptions.PermissionException;
 import es.udc.tfgproject.backend.model.services.Block;
 import es.udc.tfgproject.backend.model.services.BusinessService;
 import es.udc.tfgproject.backend.model.services.Constantes;
+import es.udc.tfgproject.backend.rest.dtos.AddCityParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddCompanyAddressParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.AddCompanyCategoryParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddCompanyParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.AddGoalParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.AddProvinceParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.BlockDto;
 import es.udc.tfgproject.backend.rest.dtos.CityDto;
 import es.udc.tfgproject.backend.rest.dtos.CompanyAddressDto;
@@ -49,9 +56,13 @@ import es.udc.tfgproject.backend.rest.dtos.CompanyDto;
 import es.udc.tfgproject.backend.rest.dtos.GoalDto;
 import es.udc.tfgproject.backend.rest.dtos.GoalSummaryDto;
 import es.udc.tfgproject.backend.rest.dtos.GoalTypeDto;
+import es.udc.tfgproject.backend.rest.dtos.ModifyCityParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.ModifyCompanyCategoryParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyCompanyParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyGoalParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.ModifyProvinceParamsDto;
 import es.udc.tfgproject.backend.rest.dtos.ModifyStateGoalParamsDto;
+import es.udc.tfgproject.backend.rest.dtos.ProvinceDto;
 
 @RestController
 @RequestMapping("/business")
@@ -66,7 +77,7 @@ public class BusinessController {
 
 		return toCompanyDto(businessService.addCompany(userId, params.getName(), params.getCapacity(),
 				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				LocalTime.parse(params.getOpeningTime()), LocalTime.parse(params.getClosingTime()), 
+				LocalTime.parse(params.getOpeningTime()), LocalTime.parse(params.getClosingTime()),
 				LocalTime.parse(params.getLunchTime()), LocalTime.parse(params.getDinerTime())));
 
 	}
@@ -78,7 +89,7 @@ public class BusinessController {
 
 		return toCompanyDto(businessService.modifyCompany(userId, companyId, params.getName(), params.getCapacity(),
 				params.getReserve(), params.getHomeSale(), params.getReservePercentage(), params.getCompanyCategoryId(),
-				LocalTime.parse(params.getOpeningTime()), LocalTime.parse(params.getClosingTime()), 
+				LocalTime.parse(params.getOpeningTime()), LocalTime.parse(params.getClosingTime()),
 				LocalTime.parse(params.getLunchTime()), LocalTime.parse(params.getDinerTime())));
 
 	}
@@ -138,6 +149,24 @@ public class BusinessController {
 		return toCompanyCategoryDtos(businessService.findAllCompanyCategories());
 	}
 
+	@PostMapping("/companyCategories")
+	public CompanyCategoryDto addCompanyCategory(@RequestAttribute Long userId,
+			@Validated @RequestBody AddCompanyCategoryParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+
+		return toCompanyCategoryDto(businessService.addCompanyCategory(userId, params.getName()));
+
+	}
+
+	@PutMapping("/companyCategories/{companyCategoryId}")
+	public CompanyCategoryDto modifyCompanyCategory(@RequestAttribute Long userId, @PathVariable Long companyCategoryId,
+			@Validated @RequestBody ModifyCompanyCategoryParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+
+		return toCompanyCategoryDto(businessService.modifyCompanyCategory(userId, companyCategoryId, params.getName()));
+
+	}
+
 	@PostMapping("/companyAddresses")
 	public CompanyAddressDto addCompanyAddress(@Validated @RequestBody AddCompanyAddressParamsDto params)
 			throws InstanceNotFoundException {
@@ -170,6 +199,54 @@ public class BusinessController {
 	@GetMapping("/cities")
 	public List<CityDto> findAllCities() {
 		return toCityDtos(businessService.findAllCities());
+	}
+
+	@PostMapping("/cities")
+	public CityDto addCity(@RequestAttribute Long userId, @Validated @RequestBody AddCityParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+		return toCityDto(businessService.addCity(userId, params.getProvinceId(), params.getName()));
+	}
+
+	@PutMapping("/cities/{cityId}")
+	public CityDto modifyCity(@RequestAttribute Long userId, @PathVariable Long cityId,
+			@Validated @RequestBody ModifyCityParamsDto params) throws InstanceNotFoundException, PermissionException {
+		return toCityDto(businessService.modifyCity(userId, cityId, params.getProvinceId(), params.getName()));
+	}
+
+	@DeleteMapping("/cities/{cityId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeCity(@RequestAttribute Long userId, @PathVariable Long cityId)
+			throws InstanceNotFoundException, PermissionException {
+
+		businessService.removeCity(userId, cityId);
+
+	}
+
+	@GetMapping("/provinces")
+	public List<ProvinceDto> findAllProvinces() {
+		return toProvinceDtos(businessService.findAllProvinces());
+	}
+
+	@PostMapping("/provinces")
+	public ProvinceDto addProvince(@RequestAttribute Long userId, @Validated @RequestBody AddProvinceParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+		return toProvinceDto(businessService.addProvince(userId, params.getName()));
+	}
+
+	@PutMapping("/provinces/{provinceId}")
+	public ProvinceDto modifyProvince(@RequestAttribute Long userId, @PathVariable Long provinceId,
+			@Validated @RequestBody ModifyProvinceParamsDto params)
+			throws InstanceNotFoundException, PermissionException {
+		return toProvinceDto(businessService.modifyProvince(userId, provinceId, params.getName()));
+	}
+
+	@DeleteMapping("/provinces/{provinceId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeProvince(@RequestAttribute Long userId, @PathVariable Long provinceId)
+			throws InstanceNotFoundException, PermissionException {
+
+		businessService.removeProvince(userId, provinceId);
+
 	}
 
 	@CrossOrigin

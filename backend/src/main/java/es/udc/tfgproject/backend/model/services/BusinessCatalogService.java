@@ -7,4 +7,6 @@ public interface BusinessCatalogService {
 	Block<CompanyAddress> findCompanies(Long companyCategoryId, Long cityId, String street, String keywords, int page,
 			int size);
 
+	Block<CompanyAddress> findAllCompanies(String keywords, int page, int size);
+
 }

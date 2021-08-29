@@ -8,4 +8,6 @@ public interface MenuItemDao extends PagingAndSortingRepository<MenuItem, Long> 
 
 	List<MenuItem> findByProductCompanyId(Long companyId);
 
+	List<MenuItem> findByMenuId(Long menuId);
+
 }

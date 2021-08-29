@@ -1,19 +1,17 @@
 package es.udc.tfgproject.backend.rest.dtos;
 
-public class CityDto {
+public class ProvinceDto {
 
 	private Long id;
 	private String name;
-	private String provinceName;
 
-	public CityDto() {
+	public ProvinceDto() {
 	}
 
-	public CityDto(Long id, String name, String provinceName) {
+	public ProvinceDto(Long id, String name) {
 
 		this.id = id;
 		this.name = name;
-		this.provinceName = provinceName;
 
 	}
 
@@ -31,14 +29,6 @@ public class CityDto {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getProvinceName() {
-		return provinceName;
-	}
-
-	public void setProvinceName(String provinceName) {
-		this.provinceName = provinceName;
 	}
 
 }

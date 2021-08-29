@@ -25,4 +25,13 @@ public class BusinessCatalogServiceImpl implements BusinessCatalogService {
 
 	}
 
+	@Override
+	public Block<CompanyAddress> findAllCompanies(String keywords, int page, int size) {
+
+		Slice<CompanyAddress> slice = companyAddressDao.findByKeywords(keywords, page, size);
+
+		return new Block<>(slice.getContent(), slice.hasNext());
+
+	}
+
 }

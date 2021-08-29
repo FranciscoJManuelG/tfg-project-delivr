@@ -15,8 +15,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.paypal.base.rest.PayPalRESTException;
-
 import es.udc.tfgproject.backend.model.entities.Company;
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.EventEvaluationDao;
@@ -132,9 +130,8 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
-			PeriodType periodType, String saleId)
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException {
+			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
+			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException {
 		User user = permissionChecker.checkUser(userId);
 		Company company = permissionChecker.checkCompany(companyId);
 
@@ -155,7 +152,7 @@ public class ReservationServiceImpl implements ReservationService {
 		BigDecimal deposit = calculateDepositFromPercentage(companyId, menu.getTotalPrice());
 
 		Reserve reserve = new Reserve(menu.getUser(), company, reservationDate, diners, periodType,
-				menu.getTotalPrice(), deposit, saleId);
+				menu.getTotalPrice(), deposit);
 
 		reserveDao.save(reserve);
 

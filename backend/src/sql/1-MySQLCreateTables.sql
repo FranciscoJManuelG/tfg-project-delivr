@@ -300,7 +300,6 @@ CREATE TABLE ReserveTable (
     periodType TINYINT NOT NULL,
     totalPrice DECIMAL(11, 2) NOT NULL,
     deposit DECIMAL(11, 2) NOT NULL,
-    saleId VARCHAR(60) COLLATE latin1_bin NOT NULL,
     CONSTRAINT ReservePK PRIMARY KEY (id),
     CONSTRAINT ReserveUserIdFK FOREIGN KEY(userId)
         REFERENCES User (id),

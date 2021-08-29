@@ -7,4 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface ShoppingCartItemDao extends PagingAndSortingRepository<ShoppingCartItem, Long> {
 
 	List<ShoppingCartItem> findByProductCompanyId(Long companyId);
+
+	List<ShoppingCartItem> findByShoppingCartId(Long shoppingCartId);
 }

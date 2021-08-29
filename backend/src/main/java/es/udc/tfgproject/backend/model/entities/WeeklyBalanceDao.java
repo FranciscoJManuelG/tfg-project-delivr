@@ -1,5 +1,6 @@
 package es.udc.tfgproject.backend.model.entities;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -8,4 +9,5 @@ public interface WeeklyBalanceDao extends PagingAndSortingRepository<WeeklyBalan
 
 	Optional<WeeklyBalance> findByWeekNumberAndYearAndUserId(Integer weekNumber, Integer year, Long userId);
 
+	List<WeeklyBalance> findByUserId(Long userId);
 }

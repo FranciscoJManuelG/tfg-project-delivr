@@ -36,14 +36,13 @@ public class Reserve {
 	private EventEvaluation eventEvaluation;
 	private BigDecimal totalPrice;
 	private BigDecimal deposit;
-	private String saleId;
 
 	public Reserve() {
 		super();
 	}
 
 	public Reserve(User user, Company company, LocalDate date, Integer diners, PeriodType periodType,
-			BigDecimal totalPrice, BigDecimal deposit, String saleId) {
+			BigDecimal totalPrice, BigDecimal deposit) {
 		super();
 		this.user = user;
 		this.company = company;
@@ -52,7 +51,6 @@ public class Reserve {
 		this.periodType = periodType;
 		this.totalPrice = totalPrice;
 		this.deposit = deposit;
-		this.saleId = saleId;
 	}
 
 	@Id
@@ -100,14 +98,6 @@ public class Reserve {
 
 	public void setDate(LocalDate date) {
 		this.date = date;
-	}
-
-	public String getSaleId() {
-		return saleId;
-	}
-
-	public void setSaleId(String saleId) {
-		this.saleId = saleId;
 	}
 
 	public Integer getDiners() {

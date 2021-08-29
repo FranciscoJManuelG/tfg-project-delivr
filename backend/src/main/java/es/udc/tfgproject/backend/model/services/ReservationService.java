@@ -3,8 +3,6 @@ package es.udc.tfgproject.backend.model.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.paypal.base.rest.PayPalRESTException;
-
 import es.udc.tfgproject.backend.model.entities.EventEvaluation;
 import es.udc.tfgproject.backend.model.entities.Menu;
 import es.udc.tfgproject.backend.model.entities.Reserve;
@@ -31,9 +29,8 @@ public interface ReservationService {
 			throws InstanceNotFoundException, PermissionException;
 
 	Reserve reservation(Long userId, Long menuId, Long companyId, LocalDate reservationDate, Integer diners,
-			PeriodType periodType, String saleId)
-			throws InstanceNotFoundException, PermissionException, EmptyMenuException, MaximumCapacityExceededException,
-			ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException, PayPalRESTException;
+			PeriodType periodType) throws InstanceNotFoundException, PermissionException, EmptyMenuException,
+			MaximumCapacityExceededException, ReservationDateIsBeforeNowException, CompanyDoesntAllowReservesException;
 
 	void cancelReservation(Long userId, Long reserveId) throws InstanceNotFoundException, PermissionException;
 
