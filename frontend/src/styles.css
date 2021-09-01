@@ -5,3 +5,63 @@
 .form-group > label > span {
     font-weight: bold;
 }
+
+body{
+    background-image: url(https://i.pinimg.com/originals/41/1d/27/411d27bfe10d002858740bb326af9a3c.png)
+}
+
+.sidebar{
+    height: 100%;
+    position: absolute;
+    left: 0;
+}
+
+.sidebar-heading {
+    font-size: 22px;
+    text-align: center;
+}
+
+.sidebar div {
+    padding: 1px;
+    display: block;
+}
+
+.sidebar a {
+    background-color: transparent;
+    padding: 30px;
+}
+
+.vertical-center{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.table.table-striped.table-hover {
+    margin-left: 150px;
+}
+
+.table.table-hover {
+    width:70%;
+    background-color: white;
+    border: 3px solid beige;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+footer{
+    margin-top: 25%;
+}
+
+.card-goal{
+    margin-left: 150px;
+}
+
+.card{
+    border: 2px solid antiquewhite
+}
+
+input#keywords {
+    border: 1px solid antiquewhite;
+}

@@ -87,6 +87,13 @@ const cities = (state = initialState.cities, action) => {
         case actionTypes.FIND_ALL_CITIES_COMPLETED:
             return action.cities;
 
+        case actionTypes.REMOVE_CITY_COMPLETED:
+            return { criteria: state.criteria, 
+                result: {
+                     items: state.result.items.filter
+                        (city => city.id !== action.cityId), 
+                    existMoreItems : state.result.existMoreItems} };
+
         default:
             return state;
 

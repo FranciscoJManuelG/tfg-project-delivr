@@ -50,8 +50,8 @@ const FindCompanyAddressesResult = () => {
                     enabled: companyAddressSearch.result.existMoreItems,
                     onClick: () => dispatch(actions.nextFindCompanyAddressesResultPage(company.id, companyAddressSearch.criteria))}}/>
             <Link to='/business/add-company-address'>
-                <div className="form-group">
-                    <button type="submit" className="btn btn-primary">Añadir</button>
+                <div className="vertical-center">
+                    <button type="submit" className="btn btn-dark">Añadir</button>
                 </div> 
             </Link>
         </div>

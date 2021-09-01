@@ -31,6 +31,9 @@ const menu = (state = initialState.menu, action) => {
 
         case actionTypes.RESERVATION_COMPLETED:
             return {id: state.id, items: [], totalPrice: 0, totalQuantity: 0};
+
+        case actionTypes.CALCULATE_DEPOSIT_COMPLETED:
+            return {id: state.id, items: state.items, deposit: action.price, totalPrice: state.totalPrice, totalQuantity: state.totalQuantity};
         
         default:
             return state;
@@ -64,6 +67,13 @@ const reserveSearch = (state = initialState.reserveSearch, action) => {
             return initialState.reserveSearch;
 
         case actionTypes.CANCEL_RESERVATION_COMPLETED:
+            return { criteria: state.criteria, 
+                result: {
+                        items: state.result.items.filter
+                        (reserve => reserve.id !== action.reserveId), 
+                    existMoreItems : state.result.existMoreItems} };
+
+        case actionTypes.REMOVE_RESERVATION_COMPLETED:
             return { criteria: state.criteria, 
                 result: {
                         items: state.result.items.filter

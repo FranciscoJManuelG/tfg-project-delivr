@@ -5,7 +5,7 @@ import {FormattedMessage} from 'react-intl';
 const UserSidebar = () => {
     
     return (
-        <div>
+        <div className="sidebar">
             <div className="sidebar-heading">Ajustes de usuario</div>
                 <div className="list-group list-group-flush">
                     <Link className="list-group-item list-group-item-action" to="/users/change-password">

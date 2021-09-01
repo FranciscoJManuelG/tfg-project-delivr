@@ -1,11 +1,16 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import * as selectors from '../selectors';
 import AddToShoppingCart from '../../shopping/components/AddToShoppingCart';
+import users from '../../users';
 
-const CompanyProductsToDeliver = ({products, productCategories, companyId}) => (
+const CompanyProductsToDeliver = ({products, productCategories, companyId}) => {
 
+    const userName = useSelector(users.selectors.getUserName);
+
+    return(
     <div className="container-fluid">
         {products.map(product => 
                 <div key={product.id} className="card col-lg-5 mt-3 mr-2 ml-2" style={{display:'inline-block'}}>
@@ -19,13 +24,15 @@ const CompanyProductsToDeliver = ({products, productCategories, companyId}) => (
                         <div class="price text-success">
                             <h5 class="mt-4">{product.price}€</h5>
                         </div>
-                        <AddToShoppingCart productId={product.id} companyId={companyId}/>
+                        {userName &&
+                        <AddToShoppingCart productId={product.id} companyId={companyId}/>}
                     </div>
                 </div>
         )}
     </div>
+    );
 
-);
+};
 
 CompanyProductsToDeliver.propTypes = {
     products: PropTypes.array.isRequired,

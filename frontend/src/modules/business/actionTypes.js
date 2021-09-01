@@ -17,3 +17,5 @@ export const MODIFIED_GOAL_STATE_COMPLETED = "project/business/modifiedGoalState
 export const EDIT_GOAL_COMPLETED = "project/business/editGoalCompleted";
 export const CLEAR_GOAL = "project/business/clearGoal";
 export const FIND_GOAL_COMPLETED = "project/business/findGoalCompleted";
+export const COMPANY_DELETED = "project/business/companyDeleted";
+export const REMOVE_CITY_COMPLETED = "project/business/removeCityCompleted";

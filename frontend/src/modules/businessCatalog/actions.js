@@ -24,3 +24,17 @@ export const previousFindCompaniesResultPage = criteria =>
 export const nextFindCompaniesResultPage = criteria =>
     findCompanies({...criteria, page: criteria.page+1});
 
+
+export const findAllCompanies = criteria => dispatch => {
+    dispatch(clearCompanySearch());
+    backend.businessCatalogService.findAllCompanies(criteria,
+        result => dispatch(findCompaniesCompleted({criteria, result})));
+
+}
+
+export const previousFindAllCompaniesResultPage = criteria =>
+    findAllCompanies({...criteria, page: criteria.page-1});
+
+export const nextFindAllCompaniesResultPage = criteria =>
+    findAllCompanies({...criteria, page: criteria.page+1});
+

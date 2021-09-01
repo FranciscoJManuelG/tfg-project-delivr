@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 
 import ReserveLink from './ReserveLink';
 
-const CompanyAddress = ({reserve, role, onCancelReservation, onBackendErrors}) => {
+const Reserve = ({reserve, role, onCancelReservation, onBackendErrors}) => {
 
     const handleCancelReservation = () => {
 
         onCancelReservation(reserve.id, 
             () => onBackendErrors(null), 
             backendErrors => onBackendErrors(backendErrors));
-
     }
 
     return (
@@ -48,11 +47,11 @@ const CompanyAddress = ({reserve, role, onCancelReservation, onBackendErrors}) =
 
 }
 
-CompanyAddress.propTypes = {
+Reserve.propTypes = {
     reserve: PropTypes.object.isRequired,
     role: PropTypes.object.isRequired,
     onCancelReservation: PropTypes.func,
     onBackendErrors: PropTypes.func
 }
 
-export default CompanyAddress;
+export default Reserve;

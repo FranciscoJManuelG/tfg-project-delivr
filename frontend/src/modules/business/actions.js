@@ -8,8 +8,9 @@ const addedCompanyCompleted = company => ({
 });
 
 export const addCompany = (name, capacity, reserve, homeSale, reservePercentage, companyCategoryId, 
-    onSuccess, onErrors) => dispatch =>
+    openingTime, closingTime, lunchTime, dinerTime, onSuccess, onErrors) => dispatch =>
     backend.businessService.addCompany(name, capacity, reserve, homeSale, reservePercentage, companyCategoryId, 
+        openingTime, closingTime, lunchTime, dinerTime,
         company => {
             dispatch(addedCompanyCompleted(company));
             onSuccess();
@@ -142,10 +143,27 @@ export const findAllCities = () => (dispatch, getState) => {
 
 }
 
+const removeCityCompleted = cityId => ({
+    type: actionTypes.REMOVE_CITY_COMPLETED,
+    cityId
+});
+
+export const removeCity = (cityId, onSuccess, onErrors) => dispatch => 
+    backend.businessService.removeCity(cityId, 
+        () => {
+            dispatch(removeCityCompleted(cityId));
+            onSuccess();
+        },
+        onErrors);   
+
 export const findCompanyCompleted = company => ({
     type: actionTypes.FIND_COMPANY_COMPLETED,
     company
 })
+
+export const findCompanyById = (companyId, onSuccess) => dispatch => 
+    backend.businessService.findCompanyById(companyId, 
+        company => dispatch(findCompanyCompleted(company)));
 
 const addedGoalCompleted = goal => ({
     type: actionTypes.ADDED_GOAL_COMPLETED,
@@ -244,5 +262,21 @@ export const findGoal = (goalId, companyId) => dispatch => {
         goal => {
             dispatch(findGoalCompleted(goal))
         });
+        console.log("acabo");
 }
+
+const companyDeleted = (companyId) => ({
+    type: actionTypes.COMPANY_DELETED,
+    companyId
+});
+
+export const deleteCompany = (companyId, onSuccess, 
+    onErrors) => dispatch => 
+    backend.businessService.deregister(companyId,
+        () => {
+            dispatch(companyDeleted(companyId));
+            onSuccess();
+        },
+        onErrors);
+
         

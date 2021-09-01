@@ -83,3 +83,11 @@ export const findFavAddress = (addressId, onSuccess) =>
 export const findFavouriteAddressesByCity = (cityId, {page}, onSuccess) => 
     appFetch(`/users/favouriteAddressesByCity?cityId=${cityId}&page=${page}`, 
         config('GET'), onSuccess);
+
+export const payQuarterlyFee = (onSuccess, onErrors) => 
+    appFetch(`/users/payFee`, 
+        config('POST', {}), onSuccess, onErrors);
+
+export const payWeeklyBalance = (onSuccess, onErrors) => 
+    appFetch(`/users/payWeeklyBalance`, 
+        config('POST', {}), onSuccess, onErrors);

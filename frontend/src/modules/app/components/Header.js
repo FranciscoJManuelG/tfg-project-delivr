@@ -15,7 +15,7 @@ const Header = () => {
     return (
 
         <nav className="navbar navbar-expand-lg navbar-light">
-            <Link className="navbar-brand" to="/">Delivr</Link>
+            <Link className="navbar-brand" to="/">Relivry</Link>
             <button className="navbar-toggler" type="button" 
                 data-toggle="collapse" data-target="#navbarSupportedContent" 
                 aria-controls="navbarSupportedContent" aria-expanded="false" 
@@ -40,31 +40,59 @@ const Header = () => {
                             </Link>
                         </div>
                     }
-                    {userName &&
+                    {role !== "ADMIN" && userName &&
                         <div>
                             <Link className="dropdown-item" to="/shopping/find-user-orders">
                                 Pedidos realizados
                             </Link>
                         </div>
                     }
-                    {userName &&
+                    {role !== "ADMIN" && userName &&
                         <div>
                             <Link className="dropdown-item" to="/reservation/find-user-reserves">
                                 Reservas realizadas
                             </Link>
                         </div>
                     }
-                    {userName &&
+                    {role !== "ADMIN" && userName &&
                         <div>
                             <Link className="dropdown-item" to="/shopping/find-discount-tickets">
                                 Tickets descuento
                             </Link>
                         </div>
                     }
-                    {userName &&
+                    {role !== "ADMIN" &&userName &&
                         <div>
                             <Link className="dropdown-item" to="/reservation/find-user-event-evaluations">
                                 Valoraciones
+                            </Link>
+                        </div>
+                    }
+                    {role === "ADMIN" &&
+                        <div>
+                            <Link className="dropdown-item" to="/businessCatalog/find-all-companies-criteria">
+                                Compañías
+                            </Link>
+                        </div>
+                    }
+                    {role === "ADMIN" &&
+                        <div>
+                            <Link className="dropdown-item" to="/business/find-company-categories-result">
+                                Categorias de compañías
+                            </Link>
+                        </div>
+                    }
+                    {role === "ADMIN" &&
+                        <div>
+                            <Link className="dropdown-item" to="/management/find-product-categories-result">
+                                Categorias de productos
+                            </Link>
+                        </div>
+                    }
+                    {role === "ADMIN" &&
+                        <div>
+                            <Link className="dropdown-item" to="/business/find-cities-result">
+                                Ciudades
                             </Link>
                         </div>
                     }
@@ -84,9 +112,11 @@ const Header = () => {
                         </a>
                         
                         <div className="dropdown-menu dropdown-menu-right">
-                            <Link className="dropdown-item" to="/users/change-password">
-                                <FormattedMessage id="project.users.UserSettings.title"/>
-                            </Link>
+                            {role !== "ADMIN" &&
+                                <Link className="dropdown-item" to="/users/change-password">
+                                    <FormattedMessage id="project.users.UserSettings.title"/>
+                                </Link>
+                            }
 
                             {role === "BUSINESSMAN" && existsCompany &&
                                 <div>

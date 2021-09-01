@@ -10,7 +10,7 @@ const Goals = ({goalList, goalTypes, company, onChangeStateItem}) => {
 
     return(
 
-        <div>
+        <div className="card-goal">
 
             <Errors errors={backendErrors}
                 onClose={() => setBackendErrors(null)}/>

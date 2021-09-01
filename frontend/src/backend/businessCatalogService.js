@@ -13,3 +13,14 @@ export const findCompanies = ({companyCategoryId, cityId, street, keywords, page
     appFetch(path, config('GET'), onSuccess);
 
 }
+
+export const findAllCompanies = ({keywords, page}, 
+    onSuccess) => {
+
+    let path = `/businessCatalog/companies/findAllCompanies?page=${page}`;
+
+    path += keywords.length > 0 ? `&keywords=${keywords}` : "";
+
+    appFetch(path, config('GET'), onSuccess);
+
+}

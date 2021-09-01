@@ -6,7 +6,7 @@ import * as selectors from '../selectors';
 import {Pager} from '../../common';
 import Reserves from './Reserves';
 
-const FindReservesResult = () => {
+const FindUserReservesResult = () => {
 
     const reserveSearch = useSelector(selectors.getReserveSearch);
     const dispatch = useDispatch();
@@ -41,4 +41,4 @@ const FindReservesResult = () => {
 
 }
 
-export default FindReservesResult;
+export default FindUserReservesResult;

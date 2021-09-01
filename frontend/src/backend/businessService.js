@@ -1,9 +1,10 @@
 import {config, appFetch} from './appFetch';
 
-export const addCompany = (name, capacity, reserve, homeSale, reservePercentage, companyCategoryId, 
-    onSuccess, onErrors) =>
+export const addCompany = (name, capacity, reserve, homeSale, reservePercentage, companyCategoryId,
+    openingTime, closingTime, lunchTime, dinerTime, onSuccess, onErrors) =>
     appFetch(`/business/companies`,
-        config('POST', {name, capacity, reserve, homeSale, reservePercentage, companyCategoryId}),
+        config('POST', {name, capacity, reserve, homeSale, reservePercentage, companyCategoryId,
+            openingTime, closingTime, lunchTime, dinerTime}),
         onSuccess, onErrors);
 
 export const modifyCompany = (company, onSuccess, onErrors) =>
@@ -26,9 +27,21 @@ export const findCompany = (onSuccess) =>
     appFetch('/business/companies/company', 
         config('GET'), onSuccess);
 
+export const findCompanyById = (companyId, onSuccess) => 
+    appFetch(`/business/companies/${companyId}`, 
+        config('GET'), onSuccess);
+    
 export const findAllCompanyCategories = (onSuccess) => 
     appFetch('/business/companies/categories', 
         config('GET'), onSuccess);
+
+export const addCompanyCategory = (name, onSuccess, onErrors) =>
+    appFetch(`/business/companyCategories`,
+        config('POST', {name}), onSuccess, onErrors);
+
+export const modifyCompanyCategory = (companyCategory, onSuccess, onErrors) =>
+    appFetch(`/business/companyCategories/${companyCategory.id}`, config('PUT', companyCategory),
+        onSuccess, onErrors);
 
 export const addCompanyAddress = (street, cp, cityId, companyId, onSuccess, onErrors) =>
     appFetch(`/business/companyAddresses`,
@@ -46,6 +59,26 @@ export const findCompanyAddresses = (companyId, {page}, onSuccess) =>
 export const findAllCities = (onSuccess) => 
     appFetch('/business/cities', 
         config('GET'), onSuccess);
+
+export const addCity = (name, provinceId, onSuccess, onErrors) =>
+    appFetch(`/business/cities`,
+        config('POST', {name, provinceId}), onSuccess, onErrors);
+
+export const modifyCity = (city, onSuccess, onErrors) =>
+    appFetch(`/business/cities/${city.id}`, config('PUT', city),
+        onSuccess, onErrors);
+
+export const findAllProvinces = (onSuccess) => 
+    appFetch('/business/provinces', 
+        config('GET'), onSuccess);
+
+export const addProvince = (name, onSuccess, onErrors) =>
+    appFetch(`/business/provinces`,
+        config('POST', {name}), onSuccess, onErrors);
+
+export const modifyProvince = (province, onSuccess, onErrors) =>
+    appFetch(`/business/provinces/${province.id}`, config('PUT', province),
+        onSuccess, onErrors);
 
 export const findCompanyGoals = (companyId, {page}, onSuccess) => 
     appFetch(`/business/companyGoals?companyId=${companyId}&page=${page}`, 

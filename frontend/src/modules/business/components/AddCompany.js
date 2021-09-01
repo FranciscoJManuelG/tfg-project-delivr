@@ -16,6 +16,10 @@ const AddCompany = () => {
     const [reserve, setReserve] = useState(true);
     const [homeSale, setHomeSale] = useState(true);
     const [reservePercentage, setReservePercentage] = useState(0);
+    const [openingTime, setOpeningTime]  = useState('10:00');
+    const [closingTime, setClosingTime]  = useState('23:00');
+    const [lunchTime, setLunchTime]  = useState('14:00');
+    const [dinerTime, setDinerTime]  = useState('21:00');
     const [companyCategoryId, setCompanyCategoryId]  = useState(0);
     const [backendErrors, setBackendErrors] = useState(null);
     let form;
@@ -29,7 +33,9 @@ const AddCompany = () => {
             dispatch(actions.addCompany(name.trim(),
                 capacity, reserve, homeSale,
                 reservePercentage, toNumber(companyCategoryId),
-                () => history.push('/users/login'),
+                openingTime.trim(), closingTime.trim(), 
+                lunchTime.trim(), dinerTime.trim(),
+                () => history.push('/users/pay-fee'),
                 errors => setBackendErrors(errors)));
 
         } else {
@@ -112,6 +118,54 @@ const AddCompany = () => {
                                             required/>
                                         <label className="form-check-label" htmlFor="reserve2">No</label>
                                     </div>
+                                    <div className="invalid-feedback">
+                                        <FormattedMessage id='project.global.validator.required'/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="openingTime">Hora de apertura: </label>
+                                    <input type="time" id="openingTime" className="form-control" 
+                                        value={openingTime}
+                                        onChange={e => setOpeningTime(e.target.value)}
+                                        autoFocus
+                                        autoComplete
+                                        required/>
+                                    <div className="invalid-feedback">
+                                        <FormattedMessage id='project.global.validator.required'/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="closingTime">Hora de cierre: </label>
+                                    <input type="time" id="closingTime" className="form-control" 
+                                        value={closingTime}
+                                        onChange={e => setClosingTime(e.target.value)}
+                                        autoFocus
+                                        autoComplete
+                                        required/>
+                                    <div className="invalid-feedback">
+                                        <FormattedMessage id='project.global.validator.required'/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="lunchTime">Hora de las comidas: </label>
+                                    <input type="time" id="lunchTime" className="form-control" 
+                                        value={lunchTime}
+                                        onChange={e => setLunchTime(e.target.value)}
+                                        autoFocus
+                                        autoComplete
+                                        required/>
+                                    <div className="invalid-feedback">
+                                        <FormattedMessage id='project.global.validator.required'/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="dinerTime">Hora de las cenas: </label>
+                                    <input type="time" id="dinerTime" className="form-control" 
+                                        value={dinerTime}
+                                        onChange={e => setDinerTime(e.target.value)}
+                                        autoFocus
+                                        autoComplete
+                                        required/>
                                     <div className="invalid-feedback">
                                         <FormattedMessage id='project.global.validator.required'/>
                                     </div>

@@ -19,21 +19,24 @@ export const findMenuProducts = (menuId, companyId,  onSuccess) =>
     appFetch(`/reservation/menus/${menuId}?companyId=${companyId}`, 
         config('GET'), onSuccess);
 
-export const reservation = (menuId, companyId, reservationDate, diners, periodType,
+export const reservation = (menuId, companyId, reservationDate, diners, periodType, saleId,
     onSuccess, onErrors) =>
     appFetch(`/reservation/menus/${menuId}/reservation`, 
-        config('POST', {companyId, reservationDate, diners, periodType}), onSuccess, onErrors);
+        config('POST', {companyId, reservationDate, diners, periodType, saleId}), onSuccess, onErrors);
 
 export const cancelReservation = (reserveId, onSuccess, onErrors) =>
     appFetch(`/reservation/reserves/${reserveId}`,
         config('DELETE'), onSuccess, onErrors);
+
+export const calculateDepositFromPercentage = (companyId, totalPrice, onSuccess) => 
+    appFetch(`/reservation/menus/calculateDeposit?companyId=${companyId}&totalPrice=${totalPrice}`, 
+        config('GET'), onSuccess);
 
 export const checkCapacity = (companyId, reservationDate, periodType, diners, onSuccess, onErrors) => 
     appFetch(`/reservation/menus/checkCapacity?companyId=${companyId}&reservationDate=${reservationDate}
         &periodType=${periodType}&diners=${diners}`, 
         config('GET'), onSuccess, onErrors);
         
-
 export const obtainMaxDinersAllowed = (companyId, reservationDate, periodType, onSuccess) => 
     appFetch(`/reservation/menus/obtainMaxDinersAllowed?companyId=${companyId}&reservationDate=${reservationDate}
         &periodType=${periodType}`, 
@@ -48,6 +51,10 @@ export const findUserReserves = ({page}, onSuccess) =>
 export const findCompanyReserves = (companyId, reservationDate, periodType, {page}, onSuccess) => 
     appFetch(`/reservation/companyReserves?companyId=${companyId}&reservationDate=${reservationDate}
         &periodType=${periodType}&page=${page}`, config('GET'), onSuccess);
+
+export const findCompanyReservesCanceled = (companyId, {page}, onSuccess) => 
+    appFetch(`/reservation/companyReservesCanceled?companyId=${companyId}&page=${page}`, 
+    config('GET'), onSuccess);
 
 export const addEventEvaluation = (eventEvaluationId, points, opinion,
     onSuccess, onErrors) =>

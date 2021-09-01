@@ -12,5 +12,7 @@ export {default as Logout} from './components/Logout';
 export {default as AddFavouriteAddress} from './components/AddFavouriteAddress';
 export {default as FindFavouriteAddresses} from './components/FindFavouriteAddresses';
 export {default as FindFavouriteAddressesResult} from './components/FindFavouriteAddressesResult';
+export {default as PayFee} from './components/PayFee';
+export {default as CheckPayFee} from './components/CheckPayFee';
 
 export default {actions, actionTypes, reducer, selectors};

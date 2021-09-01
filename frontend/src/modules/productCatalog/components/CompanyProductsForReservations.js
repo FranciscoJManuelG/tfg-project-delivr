@@ -1,11 +1,17 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import * as selectors from '../selectors';
 import AddToMenu from '../../reservation/components/AddToMenu';
+import users from '../../users';
 
-const CompanyProductsForReservations = ({products, productCategories, companyId}) => (
 
+const CompanyProductsForReservations = ({products, productCategories, companyId}) => {
+
+    const userName = useSelector(users.selectors.getUserName);
+
+    return(
     <div className="container-fluid">
         {products.map(product => 
                 <div key={product.id} className="card col-lg-5 mt-3 mr-2 ml-2" style={{display:'inline-block'}}>
@@ -19,13 +25,14 @@ const CompanyProductsForReservations = ({products, productCategories, companyId}
                         <div class="price text-success">
                             <h5 class="mt-4">{product.price}€</h5>
                         </div>
-                        <AddToMenu productId={product.id} companyId={companyId}/>
+                        {userName &&
+                        <AddToMenu productId={product.id} companyId={companyId}/>}
                     </div>
                 </div>
         )}
     </div>
-
-);
+    );
+};
 
 CompanyProductsForReservations.propTypes = {
     products: PropTypes.array.isRequired,

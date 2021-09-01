@@ -38,7 +38,7 @@ export default {
     'project.users.UserSettings.title': 'Ajustes de usuario',
     'project.users.Login.title': 'Autenticarse',
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contraseña',
-    'project.users.SignUpCompany.title': 'Únete a Delivr',
+    'project.users.SignUpCompany.title': 'Únete a Relivry',
     'project.users.SignUpClient.title': 'Registrarse',
     'project.users.UpdateProfile.title': 'Actualizar perfil',
     'project.users.FindFavouriteAddressesResult.noFavouriteAddresses': 'No hay añadida ninguna dirección favorita',

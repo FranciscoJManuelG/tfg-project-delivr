@@ -7,5 +7,6 @@ export {default as FindProductsResult} from "./components/FindProductsResult";
 export {default as AddProduct} from "./components/AddProduct";
 export {default as FindProductToEdit} from "./components/FindProductToEdit";
 export {default as EditProduct} from "./components/EditProduct";
+export {default as FindProductCategoriesResult} from "./components/FindProductCategoriesResult";
 
 export default {actions, reducer, selectors};

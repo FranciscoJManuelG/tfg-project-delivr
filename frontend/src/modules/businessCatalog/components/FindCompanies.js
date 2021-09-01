@@ -31,7 +31,7 @@ const FindCompanies = () => {
 
     return (
 
-        <form className="form-inline" onSubmit={e => handleSubmit(e)}>
+        <form className="form-inline justify-content-center" onSubmit={e => handleSubmit(e)}>
 
             <div className="card">
                 <article className="card-body">

@@ -23,6 +23,9 @@ const user = (state = initialState.user, action) => {
         case actionTypes.UPDATE_PROFILE_COMPLETED:
             return action.user;
 
+        case actionTypes.PAY_FEE_COMPLETED:
+            return action.user;
+
         default:
             return state;
 

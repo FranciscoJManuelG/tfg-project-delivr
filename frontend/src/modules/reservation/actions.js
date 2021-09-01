@@ -53,15 +53,15 @@ const reservationCompleted = (reserveId) => ({
     reserveId
 });
 
-export const reservation = (menuId, companyId, reservationDate, periodType, diners,
+export const reservation = (menuId, companyId, reservationDate, periodType, diners, saleId,
     onSuccess, onErrors) => dispatch =>
-    backend.reservationService.reservation(menuId, companyId, reservationDate, diners, periodType, ({id}) => {
+    backend.reservationService.reservation(menuId, companyId, reservationDate, diners, periodType, saleId, ({id}) => {
         dispatch(reservationCompleted(id));
         onSuccess();
     },
     onErrors);
 
-const cancelReservationCompleted = reserveId => ({
+const cancelReservationCompleted = (reserveId) => ({
     type: actionTypes.CANCEL_RESERVATION_COMPLETED,
     reserveId
 });
@@ -73,6 +73,30 @@ export const cancelReservation = (reserveId, onSuccess, onErrors) => dispatch =>
             onSuccess();
         },
         onErrors);
+
+const removeReservationCompleted = (reserveId) => ({
+    type: actionTypes.REMOVE_RESERVATION_COMPLETED,
+    reserveId
+});
+
+export const removeReservation = (reserveId, onSuccess, onErrors) => dispatch =>
+    backend.reservationService.removeReservation(reserveId,
+        () => {
+            dispatch(removeReservationCompleted(reserveId));
+            onSuccess();
+        },
+        onErrors);
+
+const calculateDepositCompleted = (price) => ({
+    type: actionTypes.CALCULATE_DEPOSIT_COMPLETED,
+    price
+});
+
+export const calculateDeposit = (companyId, totalPrice, onSuccess) => dispatch =>
+    backend.reservationService.calculateDepositFromPercentage(companyId, totalPrice, ({price}) => {
+        dispatch(calculateDepositCompleted(price));
+        onSuccess();
+    });
 
 const checkCapacityCompleted = () => ({
     type: actionTypes.CHECK_CAPACITY_COMPLETED
@@ -123,6 +147,19 @@ export const previousFindCompanyReservesResultPage = (companyId, reservationDate
 
 export const nextFindCompanyReservesResultPage = (companyId, reservationDate, periodType, criteria) => 
     findCompanyReserves(companyId, reservationDate, periodType, {page: criteria.page+1});
+
+export const findCompanyReservesCanceled = (companyId, criteria) => dispatch => {
+    dispatch(clearReserveSearch());
+    backend.reservationService.findCompanyReservesCanceled(companyId, criteria, 
+        result => dispatch(findReservesCompleted({criteria, result})));
+
+}    
+
+export const previousFindCompanyReservesCanceledResultPage = (companyId, criteria) => 
+    findCompanyReservesCanceled(companyId, {page: criteria.page-1});
+
+export const nextFindCompanyReservesCanceledResultPage = (companyId, criteria) => 
+    findCompanyReservesCanceled(companyId, {page: criteria.page+1});
 
 const findReserveCompleted = reserve => ({
     type: actionTypes.FIND_RESERVE_COMPLETED,

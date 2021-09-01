@@ -14,7 +14,8 @@ const FindShoppingCartProducts = () => {
 
     useEffect(() => {
 
-        dispatch(shoppingActions.findShoppingCartProducts(cart.id, id));
+        {cart &&
+        dispatch(shoppingActions.findShoppingCartProducts(cart.id, id));}
         history.push(`/productCatalog/find-products-by-company-to-deliver-result/${id}/${doReserve}/${cityId}`);
                        
     }, [id, cart, doReserve, cityId, dispatch, history]);

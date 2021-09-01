@@ -11,18 +11,21 @@ import * as actions from '../actions';
 
 const EditGoal = () => {
 
-    const goal1 = useSelector(businessSelectors.getGoal);
+    const goal = useSelector(businessSelectors.getGoal);
     const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
     const history = useHistory();
-    
     const [discountType, setdiscountType] = useState('CASH');
-    const [discountCash, setDiscountCash] = useState(goal1.discountCash);
-    const [discountPercentage, setDiscountPercentage] = useState(goal1.discountPercentage);
-    const [goalQuantity, setGoalQuantity] = useState(goal1.goalQuantity);
-    const [goalTypeId, setGoalTypeId]  = useState(goal1.goalTypeId);
+    const [discountCash, setDiscountCash] = useState(0);
+    const [discountPercentage, setDiscountPercentage] = useState(0);
+    const [goalQuantity, setGoalQuantity] = useState(0);
+    const [goalTypeId, setGoalTypeId]  = useState(0);
     const [backendErrors, setBackendErrors] = useState(null);
     let form;
+
+    if (!goal) {
+        return null;
+    }
 
     const handleSubmit = event => {
 
@@ -32,7 +35,7 @@ const EditGoal = () => {
             
             dispatch(actions,actions.editGoal(
                 {
-                    id: goal1.id,
+                    id: goal.id,
                     discountType: discountType.trim(),
                     discountCash: discountCash,
                     discountPercentage: discountPercentage,

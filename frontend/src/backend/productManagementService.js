@@ -49,4 +49,13 @@ export const findAllProductCategories = (onSuccess) =>
 export const findAllCompanyProducts = (companyId, onSuccess) => 
     appFetch(`/management/products?companyId=${companyId}`, 
         config('GET'), onSuccess);
+
+        export const addProductCategory = (name, onSuccess, onErrors) =>
+    appFetch(`/management/productCategories`,
+        config('POST', {name}), onSuccess, onErrors);
+
+export const modifyProductCategory = (productCategory, onSuccess, onErrors) =>
+    appFetch(`/management/productCategories/${productCategory.id}`, config('PUT', productCategory),
+        onSuccess, onErrors);
+
     

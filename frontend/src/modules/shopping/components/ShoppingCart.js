@@ -5,14 +5,17 @@ import {useHistory} from 'react-router-dom';
 
 import ShoppingItemList from './ShoppingItemList';
 import * as selectors from '../selectors';
+import * as businessSelectors from '../../business/selectors';
 import * as actions from '../actions';
 import {Errors} from '../../common';
 
 const ShoppingCart = ({companyId, cityId}) => {
 
     const cart = useSelector(selectors.getShoppingCart);
+    const company = useSelector(businessSelectors.getCompany);
     const dispatch = useDispatch();
     const [homeSale, setHomeSale] = useState(false);
+    console.log(homeSale);
     const [backendErrors, setBackendErrors] = useState(null);
     const history = useHistory();
     let form;
@@ -34,12 +37,13 @@ const ShoppingCart = ({companyId, cityId}) => {
         <div>
             <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
             
+            {company.homeSale && 
                 <div>
-                <form ref={node => form = node} className="needs-validation" 
+                    <form ref={node => form = node} className="needs-validation" 
                                 noValidate onSubmit={e => handleSubmit(e)}>
                         <div className="form-group">
                             <button type="submit" className="btn btn-primary"
-                            value={true}
+                            value={Boolean(true)}
                             onChange={e => setHomeSale(e.target.value)}
                             autoFocus>
                                 Domicilio
@@ -47,7 +51,7 @@ const ShoppingCart = ({companyId, cityId}) => {
                         </div> 
                         <div className="form-group">
                             <button type="submit" className="btn btn-success"
-                            value={false}
+                            value={Boolean(false)}
                             onChange={e => setHomeSale(e.target.value)}
                             autoFocus>
                                 Recogida
@@ -56,8 +60,10 @@ const ShoppingCart = ({companyId, cityId}) => {
                         <div className="invalid-feedback">
                             <FormattedMessage id='project.global.validator.required'/>
                         </div>
-                        </form>
+                    </form>
                 </div>
+            }
+                
                 
            
             <ShoppingItemList list={cart} edit companyId = {companyId}
@@ -75,7 +81,7 @@ const ShoppingCart = ({companyId, cityId}) => {
                         </button>
                     :
                         <button type="button" className="btn btn-primary"
-                            onClick={() => history.push(`/shopping/show-fav-addresses/${companyId}/${cityId}`)}>
+                            onClick={() => history.push(`/shopping/purchase-details/${companyId}`)}>
                             Recoger
                         </button>
                     }

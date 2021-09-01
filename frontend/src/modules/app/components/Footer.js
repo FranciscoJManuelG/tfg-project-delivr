@@ -4,9 +4,10 @@ import {FormattedMessage} from 'react-intl';
 const Footer = () => (
 
     <div>
+        <footer className="navbar-fixed-bottom">
         <br/>
         <hr/>
-        <footer className="navbar-fixed-bottom">
+        <br/>
             <p className="text-center">
                 <FormattedMessage id="project.app.Footer.text"/>
             </p>

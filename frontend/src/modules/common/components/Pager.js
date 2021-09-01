@@ -5,7 +5,7 @@ import {FormattedMessage} from 'react-intl';
 const Pager = ({back, next}) => (
 
     <nav aria-label="page navigation">
-        <ul className="pagination justify-content-left mt-3">
+        <ul className="pagination justify-content-center mt-3">
             <li className={`page-item ${back.enabled ? "": "disabled"}`}>
                 <button className="page-link"
                     onClick={back.onClick}>

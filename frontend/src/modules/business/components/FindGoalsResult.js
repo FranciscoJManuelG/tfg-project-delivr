@@ -34,7 +34,7 @@ const FindGoalsResult = () => {
 
         <div>
             <Sidebar/>
-            <Goals goalList = {goalSearch.result.items} goalTypes= {goalTypes} company={company}
+            <Goals goalList={goalSearch.result.items} goalTypes={goalTypes} company={company}
                 onChangeStateItem={(...args) => dispatch(actions.changeStateGoal(...args))}/>
             <Pager 
                 back={{

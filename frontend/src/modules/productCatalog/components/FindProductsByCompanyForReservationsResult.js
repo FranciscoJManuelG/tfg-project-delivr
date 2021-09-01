@@ -8,9 +8,11 @@ import * as actions from '../actions';
 import CompanyProductsForReservations from './CompanyProductsForReservations';
 import FindProductsByCompany from './FindProductsByCompany';
 import Menu from '../../reservation/components/Menu';
+import users from '../../users';
 
 const FindProductsByCompanyForReservationsResult = () => {
 
+    const userName = useSelector(users.selectors.getUserName);
     const productSearch = useSelector(selectors.getProductSearch);
     const productCategories = useSelector(selectors.getProductCategories);
     const dispatch = useDispatch();
@@ -39,7 +41,8 @@ const FindProductsByCompanyForReservationsResult = () => {
     if (productSearch.result.length === 0) {
         return (
             <div>
-                <FindProductsByCompany/>
+                {userName &&
+                <FindProductsByCompany/>}
                 <div className="alert alert-info" role="alert">
                     <FormattedMessage id='project.business.FindCompaniesResult.noCompanies'/>
                 </div>
@@ -50,9 +53,11 @@ const FindProductsByCompanyForReservationsResult = () => {
     return (
 
         <div>
-            <FindProductsByCompany/>
+            {userName &&
+            <FindProductsByCompany/>}
             <CompanyProductsForReservations products={productSearch.result} productCategories={productCategories} companyId={id}/>
-            <Menu companyId={id} reservationDate={reservationDate} periodType={periodType} diners={diners}/>
+            {userName &&
+            <Menu companyId={id} reservationDate={reservationDate} periodType={periodType} diners={diners}/>}
         </div>
 
     );

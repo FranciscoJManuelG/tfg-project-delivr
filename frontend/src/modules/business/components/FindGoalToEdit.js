@@ -17,7 +17,7 @@ const FindGoalToEdit = () => {
         dispatch(actions.findGoal(id, company.id));
         history.push(`/business/edit-goal`);
     
-    });
+    }, [id, company.id, dispatch, history]);
 
     return null;
 

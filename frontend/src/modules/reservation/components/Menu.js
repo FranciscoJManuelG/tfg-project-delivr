@@ -23,7 +23,7 @@ const Menu = ({companyId, reservationDate, periodType, diners}) => {
 
                 <div className="text-center">   
                     <button type="button" className="btn btn-primary"
-                        onClick={() => history.push(`/reservation/reservation-details/${companyId}/${reservationDate}/${periodType}/${diners}`)}>
+                        onClick={() => history.push(`/reservation/calculate-deposit/${companyId}/${reservationDate}/${periodType}/${diners}`)}>
                         Reservar
                     </button>
                 </div>

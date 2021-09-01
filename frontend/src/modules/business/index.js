@@ -14,6 +14,8 @@ export {default as FindGoals} from './components/FindGoals';
 export {default as FindGoalsResult} from './components/FindGoalsResult';
 export {default as FindGoalToEdit} from './components/FindGoalToEdit';
 export {default as EditGoal} from './components/EditGoal';
+export {default as FindCompanyCategoriesResult} from './components/FindCompanyCategoriesResult';
+export {default as FindCitiesResult} from './components/FindCitiesResult';
 
 export default {actions, actionTypes, reducer, selectors};
 

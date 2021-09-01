@@ -167,3 +167,14 @@ export const previousFindFavouriteAddressesByCityResultPage = (cityId, criteria)
 export const nextFindFavouriteAddressesByCityResultPage = (cityId, criteria) => 
     findFavouriteAddressesByCity(cityId, {page: criteria.page+1});
 
+const payFeeCompleted = (user) => ({
+    type: actionTypes.PAY_FEE_COMPLETED,
+    user
+});
+
+export const payFee = (onSuccess, onErrors) => dispatch =>
+    backend.userService.payQuarterlyFee(user => {
+        dispatch(payFeeCompleted(user));
+        onSuccess();
+    },
+    onErrors);

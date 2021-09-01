@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 import {FormattedMessage} from 'react-intl';
 
 import CitySelector from '../../business/components/CitySelector';
 import * as actions from '../actions';
+import users from '../../users';
+
 
 const FindCompaniesByAddress = () => {
 
+    const role = useSelector(users.selectors.getRole);
     const dispatch = useDispatch();
     const history = useHistory();
     const [cityId, setCityId] = useState('');
@@ -28,24 +31,26 @@ const FindCompaniesByAddress = () => {
 
     return (
 
-        <form className="form-inline mt-2 mt-md-0" onSubmit={e => handleSubmit(e)}>
-
-            <div className="card">
-                <article className="card-body">
-                    <div>
-                        <label>Introduzca el nombre de la calle o seleccione una ciudad para buscar restaurantes </label>
-                    </div>
-                    <CitySelector id="cityId" className="custom-select my-1 mr-sm-2"
-                        value={cityId} onChange={e => setCityId(e.target.value)}/>
-                    <input id="street" placeholder="Nombre de la calle" type="text" className="form-control mr-sm-2"
-                        value={street} onChange={e => setStreet(e.target.value)}/>
-                    
-                    <button type="submit" className="btn btn-primary my-2 my-sm-0">
-                        <FormattedMessage id='project.global.buttons.search'/>
-                    </button>
-                </article>
-            </div>
-
+       
+        <form className="form-inline mt-2 mt-md-0 justify-content-center" onSubmit={e => handleSubmit(e)}>
+            {role !== "ADMIN" &&
+                <div className="card">
+                    <article className="card-body">
+                        <div>
+                            <label>Introduzca el nombre de la calle o seleccione una ciudad para buscar restaurantes </label>
+                        </div>
+                        <br/>
+                        <CitySelector id="cityId" className="custom-select my-1 mr-sm-2"
+                            value={cityId} onChange={e => setCityId(e.target.value)}/>
+                        <input id="street" placeholder="Nombre de la calle" type="text" className="form-control mr-sm-2"
+                            value={street} onChange={e => setStreet(e.target.value)}/>
+                        
+                        <button type="submit" className="btn btn-primary my-2 my-sm-0">
+                            <FormattedMessage id='project.global.buttons.search'/>
+                        </button>
+                    </article>
+                </div>
+            }
         </form>
 
     );

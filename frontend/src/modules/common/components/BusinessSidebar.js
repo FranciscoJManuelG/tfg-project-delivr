@@ -5,7 +5,7 @@ import {FormattedMessage} from 'react-intl';
 const BusinessSidebar = () => {
     
     return (
-        <div>
+        <div className="sidebar">
             <div className="sidebar-heading">Ajustes de empresa</div>
                 <div className="list-group list-group-flush">
                     <Link className="list-group-item list-group-item-action" to="/business/modify-company">

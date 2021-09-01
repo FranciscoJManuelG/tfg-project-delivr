@@ -25,7 +25,7 @@ const Login = () => {
             dispatch(actions.login(
                 userName.trim(),
                 password,
-                () => history.push('/'),
+                () => history.push('/users/check-pay-fee'),
                 errors => setBackendErrors(errors),
                 () => {
                     history.push('/users/login');

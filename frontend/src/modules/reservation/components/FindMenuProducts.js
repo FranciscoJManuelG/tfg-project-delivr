@@ -14,7 +14,8 @@ const FindMenuProducts = () => {
 
     useEffect(() => {
 
-        dispatch(actions.findMenuProducts(menu.id, id));
+        {menu &&
+        dispatch(actions.findMenuProducts(menu.id, id));}
         history.push(`/productCatalog/find-products-by-company-for-reservations-result/${id}/${reservationDate}/${periodType}/${diners}`);
                        
     }, [id, reservationDate, periodType, diners, menu, dispatch, history]);

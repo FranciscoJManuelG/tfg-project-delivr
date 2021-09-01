@@ -15,7 +15,7 @@ const FindCompanyReserves = () => {
     useEffect(() => {
 
         dispatch(actions.findCompanyReserves(company.id, reservationDate, periodType, {page: 0}));
-        history.push('/reservation/find-company-reserves-result');
+        history.push(`/reservation/find-company-reserves-result/${reservationDate}/${periodType}`);
 
     });
 

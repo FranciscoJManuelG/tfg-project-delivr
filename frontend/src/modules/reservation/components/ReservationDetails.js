@@ -1,14 +1,15 @@
 import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {useHistory} from 'react-router-dom';
-import {useParams} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+import {useParams, useHistory} from 'react-router-dom';
 
 import {Errors} from '../../common';
+import * as actions from '../actions';
 import MenuItemList from './MenuItemList';
 import * as selectors from '../selectors';
-import * as actions from '../actions';
 import moment from 'moment';
 import 'moment/locale/es';
+import PayPalReserve from '../../common/components/PayPalReserve';
 
 const ReservationDetails = () => {
 
@@ -17,10 +18,9 @@ const ReservationDetails = () => {
     const menu = useSelector(selectors.getMenu);
     const [backendErrors, setBackendErrors] = useState(null);
     const {id, reservationDate, periodType, diners} = useParams();
-    let form;
     const companyId = id;
     var dateEs = moment(new Date(reservationDate)).format('LL');
-
+    let form;
 
     const handleSubmit = event => {
 
@@ -45,7 +45,6 @@ const ReservationDetails = () => {
 
     }
 
-
     if (menu.items.length === 0) {
         return null;
     }
@@ -66,17 +65,34 @@ const ReservationDetails = () => {
                 </div>
             </div>
             <MenuItemList list={menu}/>
-            <form ref={node => form = node}
-                className="needs-validation" noValidate 
-                onSubmit={(e) => handleSubmit(e)}>
-                <div className="form-group row">
-                    <div className="offset-md-3 col-md-1">
-                        <button type="submit" className="btn btn-primary">
-                            Comprar
-                        </button>
+            {menu.deposit > Number(0) ? 
+                <div>            
+                    <div>
+                        <p>Como señal de la reserva, se realizará ahora el pago de {menu.deposit}€</p>
+                        <p>El monto restante se pagará en el restaurante</p>
+                    </div>
+                    <div className="form-group row">
+                        <div className="offset-md-3 col-md-1">
+                            <PayPalReserve deposit={menu.deposit} menu={menu} companyId={companyId} reservationDate={reservationDate} periodType={periodType} diners={diners}/>
+                        </div>
                     </div>
                 </div>
-            </form>
+            :
+                <div>
+                    <p>En este restaurante no se paga un depósito. Se pagará el precio total en el local</p>
+                    <form ref={node => form = node}
+                        className="needs-validation" noValidate 
+                        onSubmit={(e) => handleSubmit(e)}>
+                        <div className="form-group row">
+                            <div className="offset-md-3 col-md-1">
+                                <button type="submit" className="btn btn-primary">
+                                    Reservar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }    
         </div>
     );
 

@@ -18,6 +18,10 @@ export {default as AddEventEvaluation} from './components/AddEventEvaluation';
 export {default as EvaluationCompleted} from './components/EvaluationCompleted';
 export {default as FindUserEventEvaluations} from './components/FindUserEventEvaluations';
 export {default as FindUserEventEvaluationsResult} from './components/FindUserEventEvaluationsResult';
+export {default as CalculateDeposit} from './components/CalculateDeposit';
+export {default as FindCompanyReservesCanceled} from './components/FindCompanyReservesCanceled';
+export {default as FindCompanyReservesCanceledResult} from './components/FindCompanyReservesCanceledResult';
+export {default as RefundReserveDetails} from './components/RefundReserveDetails';
 
 
 export default {actions, reducer, selectors};

@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+import {useParams} from 'react-router-dom';
 
 import * as actions from '../actions';
 import * as selectors from '../selectors';
@@ -12,6 +13,7 @@ const FindCompanyReservesResult = () => {
     const company = useSelector(businessSelectors.getCompany);
     const reserveSearch = useSelector(selectors.getReserveSearch);
     const dispatch = useDispatch();
+    const {reservationDate, periodType} = useParams();
 
     if (!reserveSearch) {
         return null;
@@ -32,10 +34,10 @@ const FindCompanyReservesResult = () => {
             <Pager 
                 back={{
                     enabled: reserveSearch.criteria.page >= 1,
-                    onClick: () => dispatch(actions.previousFindCompanyReservesResultPage(company.id, reserveSearch.criteria))}}
+                    onClick: () => dispatch(actions.previousFindCompanyReservesResultPage(company.id, reservationDate, periodType, reserveSearch.criteria))}}
                 next={{
                     enabled: reserveSearch.result.existMoreItems,
-                    onClick: () => dispatch(actions.nextFindCompanyReservesResultPage(company.id, reserveSearch.criteria))}}/>
+                    onClick: () => dispatch(actions.nextFindCompanyReservesResultPage(company.id, reservationDate, periodType, reserveSearch.criteria))}}/>
         </div>
 
     );
