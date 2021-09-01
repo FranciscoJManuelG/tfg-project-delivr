@@ -180,7 +180,7 @@ public class ReservationController {
 	}
 
 	@GetMapping("/menus/calculateDeposit")
-	public PriceDto calculateDepositFromPercentage(@RequestAttribute Long userId, @RequestParam Long companyId,
+	public PriceDto calculateDepositFromPercentage(@RequestParam Long companyId,
 			@RequestParam BigDecimal totalPrice) throws InstanceNotFoundException {
 
 		return new PriceDto(reservationService.calculateDepositFromPercentage(companyId, totalPrice));
@@ -188,7 +188,7 @@ public class ReservationController {
 	}
 
 	@GetMapping("/menus/checkCapacity")
-	public AllowDto checkCapacity(@RequestAttribute Long userId, @RequestParam Long companyId,
+	public AllowDto checkCapacity(@RequestParam Long companyId,
 			@RequestParam String reservationDate, @RequestParam String periodType, @RequestParam Integer diners)
 			throws InstanceNotFoundException, PermissionException, MaximumCapacityExceededException,
 			ReservationDateIsBeforeNowException {
@@ -199,7 +199,7 @@ public class ReservationController {
 	}
 
 	@GetMapping("/menus/obtainMaxDinersAllowed")
-	public DinersDto obtainMaxDinersAllowed(@RequestAttribute Long userId, @RequestParam Long companyId,
+	public DinersDto obtainMaxDinersAllowed(@RequestParam Long companyId,
 			@RequestParam String reservationDate, @RequestParam String periodType)
 			throws InstanceNotFoundException, PermissionException {
 

@@ -92,7 +92,6 @@ public class UserDto {
 		this.email = email.trim();
 	}
 
-	@NotNull
 	public String getRole() {
 		return role;
 	}
@@ -111,7 +110,6 @@ public class UserDto {
 		this.phone = phone;
 	}
 
-	@NotNull
 	public Boolean getFeePaid() {
 		return feePaid;
 	}

@@ -57,16 +57,12 @@ public interface BusinessService {
 	City modifyCity(Long userId, Long cityId, Long provinceId, String name)
 			throws InstanceNotFoundException, PermissionException;
 
-	void removeCity(Long userId, Long cityId) throws InstanceNotFoundException, PermissionException;
-
 	List<Province> findAllProvinces();
 
 	Province addProvince(Long userId, String name) throws InstanceNotFoundException, PermissionException;
 
 	Province modifyProvince(Long userId, Long provinceId, String name)
 			throws InstanceNotFoundException, PermissionException;
-
-	void removeProvince(Long userId, Long provinceId) throws InstanceNotFoundException, PermissionException;
 
 	Goal addGoal(Long userId, Long companyId, DiscountType discountType, BigDecimal discountCash,
 			Integer discountPercentage, Long goalTypeId, int goalQuantity)

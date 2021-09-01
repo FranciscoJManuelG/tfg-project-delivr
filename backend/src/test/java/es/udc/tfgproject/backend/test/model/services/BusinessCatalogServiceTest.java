@@ -72,7 +72,7 @@ public class BusinessCatalogServiceTest {
 	}
 
 	private Company createCompany(User user, String name, CompanyCategory companyCategory) {
-		return new Company(user, name, 20, true, true, 15, false, companyCategory, LocalTime.of(7, 0),
+		return new Company(user, name, 20, true, true, 15, false, companyCategory, LocalTime.of(1, 0),
 				LocalTime.of(23, 0), LocalTime.of(14, 0), LocalTime.of(21, 0));
 	}
 
@@ -204,6 +204,7 @@ public class BusinessCatalogServiceTest {
 	public void testFindCompaniesByAllCriteria() throws InstanceNotFoundException {
 
 		User user = signUpUser("user");
+		User user2 = signUpUser("user2");
 		Province province = new Province("Lugo");
 		provinceDao.save(province);
 		City city = new City("Lugo", province);
@@ -212,7 +213,7 @@ public class BusinessCatalogServiceTest {
 		CompanyCategory category1 = new CompanyCategory("Tradicional");
 		CompanyCategory category2 = new CompanyCategory("Vegano");
 		Company company1 = createCompany(user, "Company1", category1);
-		Company company2 = createCompany(user, "Company2", category2);
+		Company company2 = createCompany(user2, "Company2", category2);
 
 		companyCategoryDao.save(category1);
 		companyCategoryDao.save(category2);

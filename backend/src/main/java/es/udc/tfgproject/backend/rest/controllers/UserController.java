@@ -221,4 +221,15 @@ public class UserController {
 
 	}
 
+	@PostMapping("/payFee")
+	public UserDto payQuarterlyFee(@RequestAttribute Long userId) throws InstanceNotFoundException {
+
+		return toUserDto(userService.payQuarterlyFee(userId));
+	}
+
+	@PostMapping("/payWeeklyBalance")
+	public void payWeeklyBalance(@RequestAttribute Long userId) throws InstanceNotFoundException, PermissionException {
+
+		userService.payWeeklyBalanceToCompanies(userId);	}
+
 }

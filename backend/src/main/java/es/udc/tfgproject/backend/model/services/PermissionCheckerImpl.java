@@ -426,7 +426,7 @@ public class PermissionCheckerImpl implements PermissionChecker {
 			throw new InstanceNotFoundException("project.entities.user", userId);
 		}
 
-		if (RoleType.ADMIN.equals(user.get().getRole())) {
+		if (!RoleType.ADMIN.equals(user.get().getRole())) {
 			throw new PermissionException();
 		}
 

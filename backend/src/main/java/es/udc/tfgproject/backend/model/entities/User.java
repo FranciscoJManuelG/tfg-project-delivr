@@ -46,7 +46,7 @@ public class User {
 		this.phone = phone;
 		this.globalBalance = new BigDecimal(0);
 		this.renewDate = LocalDate.now().plusDays(Constantes.THREE_MONTHS_IN_DAYS);
-		this.feePaid = true;
+		this.feePaid = false;
 
 	}
 

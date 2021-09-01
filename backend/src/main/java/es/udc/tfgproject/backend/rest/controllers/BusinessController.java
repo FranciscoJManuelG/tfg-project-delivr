@@ -213,15 +213,6 @@ public class BusinessController {
 		return toCityDto(businessService.modifyCity(userId, cityId, params.getProvinceId(), params.getName()));
 	}
 
-	@DeleteMapping("/cities/{cityId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeCity(@RequestAttribute Long userId, @PathVariable Long cityId)
-			throws InstanceNotFoundException, PermissionException {
-
-		businessService.removeCity(userId, cityId);
-
-	}
-
 	@GetMapping("/provinces")
 	public List<ProvinceDto> findAllProvinces() {
 		return toProvinceDtos(businessService.findAllProvinces());
@@ -238,15 +229,6 @@ public class BusinessController {
 			@Validated @RequestBody ModifyProvinceParamsDto params)
 			throws InstanceNotFoundException, PermissionException {
 		return toProvinceDto(businessService.modifyProvince(userId, provinceId, params.getName()));
-	}
-
-	@DeleteMapping("/provinces/{provinceId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeProvince(@RequestAttribute Long userId, @PathVariable Long provinceId)
-			throws InstanceNotFoundException, PermissionException {
-
-		businessService.removeProvince(userId, provinceId);
-
 	}
 
 	@CrossOrigin

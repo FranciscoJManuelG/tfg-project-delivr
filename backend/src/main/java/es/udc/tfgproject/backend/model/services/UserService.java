@@ -35,4 +35,7 @@ public interface UserService {
 
 	FavouriteAddress findFavAddress(Long userId, Long addressId) throws InstanceNotFoundException, PermissionException;
 
+	void payWeeklyBalanceToCompanies(Long userId) throws InstanceNotFoundException, PermissionException;
+
+	User payQuarterlyFee(Long userId) throws InstanceNotFoundException;
 }

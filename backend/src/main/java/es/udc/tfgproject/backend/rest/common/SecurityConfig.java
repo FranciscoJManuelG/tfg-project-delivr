@@ -25,9 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and().addFilter(new JwtFilter(authenticationManager(), jwtGenerator)).authorizeRequests()
 				.antMatchers("/users/signUp").permitAll().antMatchers("/users/login").permitAll()
 				.antMatchers("/users/loginFromServiceToken").permitAll().antMatchers("/users/signUpBusinessman")
-				.permitAll().antMatchers("/business/companies/categories").permitAll().antMatchers("/business/cities").permitAll()
+				.permitAll().antMatchers("/business/companies/categories").permitAll().antMatchers("/business/cities").permitAll().antMatchers("/reservation/*").permitAll()
 				.antMatchers("/businessCatalog/companies").permitAll().antMatchers("/productCatalog/products/{companyId}/categories").permitAll()
-				.antMatchers("/productCatalog/*").permitAll()
+				.antMatchers("/productCatalog/*").permitAll().antMatchers("/shopping/shoppingCarts/*").permitAll().antMatchers("/reservation/menus/checkCapacity").permitAll()
 				.antMatchers("/management/products/categories").permitAll().antMatchers("/management/products/{companyId}").permitAll()
 				.anyRequest().hasAnyRole("CLIENT", "BUSINESSMAN", "ADMIN");
 

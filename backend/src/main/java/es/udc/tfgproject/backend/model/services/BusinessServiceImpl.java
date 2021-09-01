@@ -455,21 +455,6 @@ public class BusinessServiceImpl implements BusinessService {
 	}
 
 	@Override
-	public void removeCity(Long userId, Long cityId) throws InstanceNotFoundException, PermissionException {
-
-		permissionChecker.checkUserExistsAndIsAdmin(userId);
-		Optional<City> cityOptional = cityDao.findById(cityId);
-
-		if (!cityOptional.isPresent()) {
-			throw new InstanceNotFoundException("project.entities.city", cityId);
-
-		}
-
-		City city = cityOptional.get();
-		cityDao.delete(city);
-	}
-
-	@Override
 	@Transactional(readOnly = true)
 	public List<Province> findAllProvinces() {
 
@@ -504,20 +489,6 @@ public class BusinessServiceImpl implements BusinessService {
 		province.setName(name);
 
 		return province;
-	}
-
-	@Override
-	public void removeProvince(Long userId, Long provinceId) throws InstanceNotFoundException, PermissionException {
-
-		permissionChecker.checkUserExistsAndIsAdmin(userId);
-		Province province = permissionChecker.checkProvinceExists(provinceId);
-
-		List<City> cities = cityDao.findByProvinceId(provinceId);
-
-		for (City city : cities) {
-			cityDao.delete(city);
-		}
-		provinceDao.delete(province);
 	}
 
 	/*
